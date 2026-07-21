@@ -22,39 +22,39 @@ public class AnimationRegistryOperations {
 
     @SubscribeEvent
     public static void onRegistryAnimations(AnimationManager.AnimationRegistryEvent event) {
-        AnimationsRegistryBuilder.getAnimationDefinitionsData().forEach((modId, definitionList) ->
-                event.newBuilder(modId, animationBuilder -> {
-                    for (AnimationRegistryDefinition<?> def : definitionList) {
-                        registerDef(animationBuilder, def);
-                    }
-                })
+        AnimationsRegistryBuilder
+                .getAnimationDefinitionsData()
+                .forEach((modId, definitionList) ->
+                event.newBuilder(modId, animationBuilder ->
+                        definitionList.forEach(def -> registerDef(animationBuilder, def))
+                )
         );
     }
 
     @SubscribeEvent
-    public static void onVirtualizateAnimations(RegisterEvent event) {
+    public static void onVirtualizeAnimations(RegisterEvent event) {
         if (event.getRegistry().equals(EpicFightRegistries.SKILL)) {
-            AnimationsVirtualBuilder.getAnimationVirtualizationData().forEach((modId, virtualizationList) -> {
-                for (AnimationVirtualDefinition<?> vir : virtualizationList) {
-                    virtualizationDef(vir);
-                }
-            });
+            AnimationsVirtualBuilder
+                    .getAnimationVirtualizationData()
+                    .forEach((modId, virtualizationList) ->
+                            virtualizationList.forEach(AnimationRegistryOperations::virtualizationDef)
+                    );
         }
     }
 
     @SubscribeEvent
     public static void onModifierAnimations(FMLLoadCompleteEvent event) {
-        AnimationsConfigBuilder.getAnimationConfigData().forEach((modId, configList) -> {
-            for (AnimationConfigDefinition<?> cfg : configList) {
-                configDef(cfg);
-            }
-        });
+        AnimationsConfigBuilder
+                .getAnimationConfigData()
+                .forEach((modId, configList) ->
+                configList.forEach(AnimationRegistryOperations::configDef)
+        );
 
-        AnimationsVirtualBuilder.getAnimationVirtualizationData().forEach((modId, virtualizationList) -> {
-            for (AnimationVirtualDefinition<?> vir : virtualizationList) {
-                configVirtualizationDef(vir);
-            }
-        });
+        AnimationsVirtualBuilder
+                .getAnimationVirtualizationData()
+                .forEach((modId, virtualizationList) ->
+                        virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
+                );
     }
 
     private static <T extends DynamicAnimation> void registerDef(AnimationManager.AnimationBuilder builder,

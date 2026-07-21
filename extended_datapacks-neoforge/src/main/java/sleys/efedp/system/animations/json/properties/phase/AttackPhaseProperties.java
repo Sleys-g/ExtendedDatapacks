@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.capability.data.HitParticleCache;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
@@ -59,17 +60,29 @@ public record AttackPhaseProperties(
 
         if (swingSound != null) {
             SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(swingSound);
-            if (sound != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, sound);
+            if (sound != null) {
+                phase.addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, sound);
+            } else {
+                ExtendedDatapacks.LOGGER.warn("[Attack Phase Properties] The attempt to assign the Swing Sound failed: {}", swingSound);
+            }
         }
 
         if (hitSound != null) {
             SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(hitSound);
-            if (sound != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, sound);
+            if (sound != null) {
+                phase.addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, sound);
+            } else {
+                ExtendedDatapacks.LOGGER.warn("[Attack Phase Properties] The attempt to assign the Hit Sound failed: {}", hitSound);
+            }
         }
 
         if (particle != null) {
             DeferredHolder<ParticleType<?>, HitParticleType> hitParticle = HitParticleCache.getParticleDeferred(particle);
-            if (hitParticle != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, hitParticle);
+            if (hitParticle != null) {
+                phase.addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, hitParticle);
+            } else {
+                ExtendedDatapacks.LOGGER.warn("[Attack Phase Properties] The attempt to assign the Hit Particle failed: {}", particle);
+            }
         }
     }
 }

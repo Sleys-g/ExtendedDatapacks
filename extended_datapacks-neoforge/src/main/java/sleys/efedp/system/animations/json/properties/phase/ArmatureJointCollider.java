@@ -3,6 +3,11 @@ package sleys.efedp.system.animations.json.properties.phase;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.execution.policy.ResultProtocol;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 
@@ -19,6 +24,7 @@ public record ArmatureJointCollider(String joint, Optional<ColliderArray> collid
 
     public AttackAnimation.JointColliderPair resolve(ArmatureType armatureType) {
         Joint joint = armatureType.accessor.get().searchJointByName(this.joint);
+        if (joint == null) throw new RegistryObjectException("[Armature Joint Collider] The assigned joint does not exist or is out of range; this occurs for the ID: " + this.joint);
         if (collider.isPresent()) {
             return collider.get().arrayLength().isEmpty() ?
                     AttackAnimation.JointColliderPair.of(joint, ColliderArray.getOBBCollider(collider)) :
