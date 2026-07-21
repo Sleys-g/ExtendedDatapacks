@@ -1,0 +1,152 @@
+plugins {
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+version = project.mod_version + "-1.20.1+[Forge]"
+
+base {
+    archivesName = "EF-ExtendedDatapacks"
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        attributes([
+                "Specification-Title"     : "epicfight_edp",
+                "Specification-Vendor"    : "sleys",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : "EF: Extended Datapacks",
+                "Implementation-Version"  : project.version,
+                "Implementation-Vendor"   : "Sleys",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "Implementation-URL"       : "https://www.curseforge.com/minecraft/mc-mods/epic-fight-edp",
+                "Implementation-Issues"    : "https://github.com/Sleys-g/ExtendedDatapacks/issues",
+                "FMLAT"                   : "accesstransformer.cfg",
+                "MixinConfigs"            : "mixins.epicfight_edp.json,mixins.won_edp.json"
+        ])
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    copyIdeResources = true
+
+    runs {
+        client {
+            def JvmOptions = System.getenv('JVM_OPTIONS')
+            if (JvmOptions) {
+                jvmArgs += JvmOptions.split("\\s+").findAll { it.trim() }.toList()
+            }
+            args "--mixin", "mixins.won_edp.json"
+            args "--mixin", "mixins.epicfight_edp.json"
+        }
+
+        server {
+        }
+
+        configureEach {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                epicfight_edp {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.spongepowered.org/maven" }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:unchecked"
+    options.compilerArgs << "-Xlint:deprecation"
+}
+
+mixin {
+    add sourceSets.main, "mixins.epicfight_edp.refmap.json"
+}
+
+jar {
+    manifest {
+        attributes([
+                "MixinConfigs": "mixins.won_edp.json,mixins.epicfight_edp.json"
+        ])
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+repositories {
+    flatDir {
+        dirs 'local_api'
+    }
+}
+
+dependencies {
+    implementation name: 'SLM-EpicFight-1.2.1-1.20.1+[Forge]-api'
+    implementation name: 'SL-Library-1.4.3-1.20.1+[Forge]-api'
+    implementation name: 'SLM-Shaders-2.0-1.20.1+[Forge]-api'
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.4.0'
+    implementation 'org.json:json:20230618'
+    implementation "org.spongepowered:mixin:0.8.5"
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    testAnnotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:8049910")
+    implementation fg.deobf("curse.maven:weapons-of-miracles-epicfight-918614:8238967")
+    implementation fg.deobf("curse.maven:combat-evolution-1377795:8051212")
+    implementation fg.deobf("curse.maven:damage-status-indicator-1273620:8157671")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+
+tasks.register("apiJar", Jar) {
+    from sourceSets.main.output
+    archiveClassifier.set("api")
+
+    manifest {
+        attributes([
+                "MixinConfigs": "mixins.won_edp.json,mixins.epicfight_edp.json",
+                "FMLAT": "accesstransformer.cfg"
+        ])
+    }
+}

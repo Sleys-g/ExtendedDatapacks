@@ -1,0 +1,67 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="epicfight_edp"
+version="2.3.1"
+displayName="Epic Fight - Extended Datapacks"
+authors="Sleys"
+description="""
+Epic Fight, but the Datapacks Accepts Passives Skills, Skill Datakeys, Charged Attacks,
+Swing Trails per Style, Item Model per Style, ShaderFx On Skill, Style or Animations, Weapons Category,
+Extended Weapons of Miracle compatibility, and maybe more later!
+"""
+issueTrackerURL="https://github.com/Sleys-g/ExtendedDatapacks/issues"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/epic-fight-edp"
+
+mixins = ["mixins.epicfight_edp.json", "mixins.won_edp.json"]
+
+[[dependencies.epicfight_edp]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.epicfight_edp]]
+modId="sl_library"
+mandatory=true
+versionRange="[1.4.3,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.epicfight_edp]]
+modId="slm_epicfight"
+mandatory=true
+versionRange="[1.2.1,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.epicfight_edp]]
+modId="slm_shaders"
+mandatory=true
+versionRange="[2.0,)"
+ordering="AFTER"
+side="BOTH"
+
+#[[dependencies.epicfight_edp]]
+#modId="sl_data_driven"
+#mandatory=true
+#versionRange="[1.0,)"
+#ordering="AFTER"
+#side="BOTH"
+
+[[dependencies.epicfight_edp]]
+modId="epicfight"
+mandatory=true
+versionRange="[20.14.16.0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.epicfight_edp]]
+modId="wom"
+mandatory=false
+versionRange="[2.0.15,3.0.0)"
+ordering="AFTER"
+side="BOTH"

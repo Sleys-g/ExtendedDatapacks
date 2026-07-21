@@ -1,0 +1,11 @@
+.gradle/
+.idea/
+build/
+out/
+run/
+**/.gradle/
+**/build/
+**/run/
+**/.idea/
+**/local_api/
+*.iml

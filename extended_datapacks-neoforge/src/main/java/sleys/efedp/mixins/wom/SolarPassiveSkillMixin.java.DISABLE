@@ -1,0 +1,59 @@
+package sleys.epicfight_edp.wom_mixins;
+
+import net.minecraft.world.InteractionHand;
+import sleys.epicfight_edp.EpicFightEDP;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.*;
+import reascer.wom.skill.WOMSkillDataKeys;
+import reascer.wom.skill.weaponpassive.SolarPassiveSkill;
+import reascer.wom.world.item.WOMItems;
+import sleys.epicfight_edp.capability.ExtendedDatapacksUtilities;
+import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.skill.SkillDataKey;
+import yesman.epicfight.skill.SkillDataManager;
+
+
+@Mixin(SolarPassiveSkill.class)
+public class SolarPassiveSkillMixin {
+
+    @Unique
+    private static final String extended_datapacks$SolarTagKey = EpicFightEDP.MODID + ":allow_solar_particles";
+
+
+    @Redirect(
+            method = "updateContainer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lyesman/epicfight/skill/SkillDataManager;getDataValue(Lyesman/epicfight/skill/SkillDataKey;)Ljava/lang/Object;"
+            ),
+            remap = false
+    )
+    private Object redirectSolarObscuridad(SkillDataManager manager, SkillDataKey<?> key, SkillContainer container) {
+        try {
+            if (key.equals(WOMSkillDataKeys.SOLAR_OBSCURIDAD.get())) {
+                if (!container.getExecutor().isLogicalClient()) {
+                    return manager.getDataValue(key);
+                } else {
+                    var originalValue = manager.getDataValue(key);
+                    var actualItemStack = container.getExecutor().getOriginal().getItemInHand(InteractionHand.MAIN_HAND);
+                    var targetItem = ExtendedDatapacksUtilities.getSafeItem(
+                            "wom",
+                            "solar"
+                    );
+                    return (targetItem != null && actualItemStack.getItem() != targetItem) ? actualItemStack.getTags().anyMatch(
+                            itemTagKey -> itemTagKey.location().toString().equals(
+                                    extended_datapacks$SolarTagKey
+                            )
+                    ) ?
+                    originalValue :
+                    Boolean.FALSE :
+                    originalValue ;
+                }
+            }
+            return manager.getDataValue(key);
+        } catch (Exception ignored) {
+            return manager.getDataValue(key);
+        }
+    }
+}

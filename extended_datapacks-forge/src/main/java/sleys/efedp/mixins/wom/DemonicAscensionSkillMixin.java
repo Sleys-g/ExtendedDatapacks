@@ -1,0 +1,91 @@
+package sleys.efedp.mixins.wom;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
+import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
+import sleys.efedp.capability.ExtendedDatapacksUtilities;
+import sleys.sl.library.runtime.policy.PolicyRuntimeTasks;
+import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.world.entity.eventlistener.PlayerEventListener;
+
+import java.util.UUID;
+
+@SuppressWarnings("removal")
+@Mixin(DemonicAscensionSkill.class)
+public class DemonicAscensionSkillMixin {
+
+    @Unique
+    private static final UUID EVENT_UUID = UUID.fromString("52dc318a-10f6-11ed-861d-0242ac120002");
+
+    @Inject(method = "onInitiate", at = @At("TAIL"), remap = false)
+    private void injectCustomLogic(SkillContainer container, CallbackInfo ci) {
+        var listener = container.getExecutor().getEventListener();
+        listener.addEventListener(
+                PlayerEventListener.EventType.CLIENT_ITEM_USE_EVENT,
+                EVENT_UUID,
+                (event) -> {
+                    PlayerPatch<?> playerPatch = event.getPlayerPatch();
+                    Player player  = playerPatch.getOriginal();
+                    var capability = playerPatch.getHoldingItemCapability(InteractionHand.MAIN_HAND);
+                    boolean hasPassive = capability.getPassiveSkill() == WOMSkills.DEMON_MARK_PASSIVE;
+                    var itemPlayer = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+                    var registryItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+                    if (registryItem != null && !(itemPlayer.equals(registryItem)) && hasPassive) {
+                        if (extended_datapacks$needShouldActivate(container, player)) {
+                            player.startUsingItem(InteractionHand.MAIN_HAND);
+                        }
+                    }
+                }
+        );
+
+        listener.addEventListener(
+                PlayerEventListener.EventType.SERVER_ITEM_USE_EVENT,
+                EVENT_UUID,
+                (event) -> {
+                    ServerPlayer player = event.getPlayerPatch().getOriginal();
+                    var capability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
+                    boolean hasPassive = capability.getPassiveSkill() == WOMSkills.DEMON_MARK_PASSIVE;
+                    var itemPlayer = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+                    var registryItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+                    if (registryItem != null && !(itemPlayer.equals(registryItem)) && hasPassive) {
+                        if (extended_datapacks$needShouldActivate(container, player)) {
+                            player.startUsingItem(InteractionHand.MAIN_HAND);
+                            if (!container.getExecutor().isLogicalClient()) {
+                                container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), true, player);
+                            }
+                        }
+                        container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM_COOLDOWN.get(), 40);
+                        container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true);
+                    }
+                }
+        );
+    }
+
+    @Inject(method = "onRemoved", at = @At("HEAD"), remap = false)
+    private void injectOnRemoved(SkillContainer container, CallbackInfo ci) {
+        container.getExecutor().getEventListener().removeListener(PlayerEventListener.EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
+        container.getExecutor().getEventListener().removeListener(PlayerEventListener.EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
+    }
+
+    @Unique
+    private boolean extended_datapacks$needShouldActivate(SkillContainer container, Player player) {
+        return PolicyRuntimeTasks.getOrDefault(
+                ErrorPolicy.DEPURATE_ERROR,
+                () -> container.getExecutor().getEntityState().canBasicAttack() ||
+                      Boolean.TRUE.equals(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get())) ||
+                      (Boolean.TRUE.equals(container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) &&
+                      container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= 800) || player.isCreative(),
+                false
+        );
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "sleys.efedp.mixins",
+  "refmap": "mixins.epicfight_edp.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "epicfight.ItemMixinCommon",
+    "epicfight.WeaponTypeReloadListenerMixin"
+  ],
+  "client": [
+    "epicfight.ItemMixinClient",
+    "epicfight.ItemOverridesMixinClient",
+    "epicfight.RenderEngineMixinClient",
+    "epicfight.RenderItemBaseMixinClient"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

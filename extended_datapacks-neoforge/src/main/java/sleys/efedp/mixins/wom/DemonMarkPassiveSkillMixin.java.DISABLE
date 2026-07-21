@@ -1,0 +1,118 @@
+package sleys.epicfight_edp.wom_mixins;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import sleys.epicfight_edp.EpicFightEDP;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.*;
+import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
+import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
+import reascer.wom.world.item.WOMItems;
+import sleys.epicfight_edp.capability.ExtendedDatapacksUtilities;
+import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.skill.SkillDataKey;
+import yesman.epicfight.skill.SkillDataManager;
+
+import javax.annotation.Nullable;
+
+@Mixin(DemonMarkPassiveSkill.class)
+public class DemonMarkPassiveSkillMixin {
+
+    @Unique
+    private static final String extended_datapacks$AntitheusTagKey = EpicFightEDP.MODID + ":allow_antitheus_particles";
+
+    @Unique
+    private static final String extended_datapacks$AntitheusBasicTagKey = EpicFightEDP.MODID + ":allow_basic_antitheus_particles";
+
+
+    @Redirect(
+            method = "updateContainer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"
+            )
+    )
+    private Item redirectItemCheck(ItemStack stack, SkillContainer container) {
+        try {
+            Item originalItem = stack.getItem();
+            if (originalItem == ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus")) {
+                return originalItem;
+            }
+
+            var capability = container.getExecutor().getHoldingItemCapability(InteractionHand.MAIN_HAND);
+            if (capability != null && capability.getPassiveSkill() == WOMSkills.DEMON_MARK_PASSIVE) {
+                return ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+            }
+
+            return originalItem;
+        } catch (Exception ignored) {
+            return stack.getItem();
+        }
+    }
+
+    @ModifyConstant(
+            method = "updateContainer",
+            constant = @Constant(intValue = 7),
+            remap = false
+    )
+    private int modifyParticleCount(int original, SkillContainer container) {
+        try {
+            if (container != null) {
+                var entityPatch = container.getExecutor();
+                var actualItemStack = entityPatch.getOriginal().getItemInHand(InteractionHand.MAIN_HAND);
+                var actualItem = actualItemStack.getItem();
+                var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+                if (targetItem != null && actualItem != targetItem) {
+                    var isAllowDemonParticles = actualItemStack.getTags().anyMatch(
+                            itemTagKey -> itemTagKey.location().toString().equals(
+                                    extended_datapacks$AntitheusTagKey
+                            )
+                    );
+
+                    if (isAllowDemonParticles) {
+                        return original;
+                    }
+                    return 0;
+                }
+            }
+            return original;
+        } catch (Exception ignored) {
+            return original;
+        }
+    }
+
+    @Redirect(
+            method = "updateContainer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lyesman/epicfight/skill/SkillDataManager;getDataValue(Lyesman/epicfight/skill/SkillDataKey;)Ljava/lang/Object;"
+            ),
+            remap = false
+    )
+    private Object redirectAntitheusIf(SkillDataManager manager, SkillDataKey<?> key, SkillContainer container) {
+        try {
+            if (key.equals(WOMSkillDataKeys.BASIC_ATTACK.get())) {
+                var originalValue = manager.getDataValue(key);
+                var actualItemStack = container.getExecutor().getOriginal().getItemInHand(InteractionHand.MAIN_HAND);
+                var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+                return (targetItem != null && actualItemStack.getItem() != targetItem) ? actualItemStack.getTags().anyMatch(
+                        itemTagKey -> itemTagKey.location().toString().equals(
+                                extended_datapacks$AntitheusBasicTagKey
+                        )
+                ) ?
+                originalValue :
+                Boolean.FALSE :
+                originalValue ;
+            }
+            return manager.getDataValue(key);
+        } catch (Exception ignored) {
+            return manager.getDataValue(key);
+        }
+    }
+}

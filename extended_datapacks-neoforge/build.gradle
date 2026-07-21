@@ -1,0 +1,174 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'idea'
+    id 'net.neoforged.moddev' version '2.0.137'
+}
+
+version = project.mod_version + "-1.21.1+[NeoForge]"
+
+base {
+    archivesName = "EF-ExtendedDatapacks"
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        attributes([
+                "Specification-Title"     : "epicfight_edp",
+                "Specification-Vendor"    : "sleys",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : "EF: Extended Datapacks",
+                "Implementation-Version"  : project.version,
+                "Implementation-Vendor"   : "Sleys",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "Implementation-URL"       : "https://www.curseforge.com/minecraft/mc-mods/epic-fight-edp",
+                "Implementation-Issues"    : "https://github.com/Sleys-g/ExtendedDatapacks/issues",
+                "FMLAT"                   : "accesstransformer.cfg",
+                "MixinConfigs"            : "mixins.epicfight_edp.json"
+        ])
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+neoForge {
+    version = project.neo_version
+    accessTransformers = files("src/main/resources/META-INF/accesstransformer.cfg")
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll(
+                    '--mod', project.mod_id,
+                    '--all',
+                    '--output', file('src/generated/resources').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath
+            )
+        }
+
+        configureEach {
+            systemProperty 'neoforge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        epicfight_edp {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+/* ==============================
+   Generated Resources
+   ============================== */
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+/* ==============================
+   Repositories
+   ============================== */
+repositories {
+    mavenLocal()
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "curse.maven:epic-fight-mod-405076:8175609"
+    runtimeOnly "curse.maven:epic-fight-mod-405076:8175609"
+}
+
+
+repositories {
+    flatDir {
+        dirs 'local_api'
+    }
+}
+
+dependencies {
+    implementation name: 'SLM-EpicFight-1.3-1.21.1+[NeoForge]-api'
+    implementation name: 'SL-Library-1.5-1.21.1+[NeoForge]-api'
+    implementation name: 'SLM-Shaders-2.0-1.21.1+[NeoForge]-api'
+}
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version       : minecraft_version,
+            minecraft_version_range : minecraft_version_range,
+            neo_version             : neo_version,
+            neo_version_range       : neo_version_range,
+            loader_version_range    : loader_version_range,
+            mod_id                  : mod_id,
+            mod_name                : mod_name,
+            mod_license             : mod_license,
+            mod_version             : mod_version,
+            mod_authors             : mod_authors,
+            mod_description         : mod_description
+    ]
+
+    inputs.properties replaceProperties
+    expand replaceProperties
+
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+idea {
+    module {
+        downloadSources = false
+        downloadJavadoc = false
+    }
+}
