@@ -21,7 +21,6 @@ import sleys.efedp.system.weapons.json.WeaponsPassiveParticle;
 import sleys.sl.epicfight.mutator.WeaponCategoryIconHook;
 import sleys.sl.library.execution.task.Coroutine;
 
-@OnlyIn(Dist.CLIENT)
 public class BootstrapClient {
 
     protected static IEventBus Initialize(IEventBus modBus) {
