@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.conditions.charged.ChargedAttackCondition;
 import sleys.efedp.conditions.entity.*;
 import yesman.epicfight.data.conditions.Condition;

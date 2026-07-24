@@ -64,28 +64,29 @@ public class SimpleInnateSkillBuilder {
 
     private static void startToTrackingFromAPI() {
         var simpleInnateSkillsBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!simpleInnateSkillsBuilders.isEmpty()) {
-            for (var entry : simpleInnateSkillsBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Simple Innate Skills] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ExecutionTasks.runAndGetResult(
-                            ExecutionPolicy.RESIST,
-                            () -> startToLoad(file, modId)
-                    ).ifFailure(e ->
-                            ExtendedDatapacks.LOGGER.error("[Simple Innate Skills] Error reading: {}", file, e)
-                    );
-                }
-            }
-        } else {
+        if (simpleInnateSkillsBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+
+        for (var entry : simpleInnateSkillsBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info(
+                        "[Simple Innate Skills] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e ->
+                        ExtendedDatapacks.LOGGER.error("[Simple Innate Skills] Error reading: {}", file, e)
+                );
+            }
         }
     }
 

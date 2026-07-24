@@ -20,6 +20,7 @@ import sleys.efedp.system.combat.ExtendedSkillSlot;
 import sleys.efedp.system.combat.charged_attacks.ChargedAttackStyles;
 import sleys.efedp.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.config.EpicFightEDPConfig;
+import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.LogicalTasks;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -53,6 +54,7 @@ public class ExtendedDatapacks {
         );
     }
 
+    @ErrorHandled
     private static void ExtendedDatapacksClient(IEventBus modBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.CLIENT, EpicFightEDPClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
         NeoForge.EVENT_BUS.register(ExtendedDatapacksClientCommands.class);

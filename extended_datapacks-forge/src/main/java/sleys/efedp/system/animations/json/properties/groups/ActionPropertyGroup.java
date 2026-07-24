@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec2;
 import sleys.efedp.system.animations.json.properties.coords.AnimationCoords;
-import sleys.sl.library.util.data.SLCodec;
+import sleys.sl.library.util.data.codec.SLCodec;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.utils.TimePairList;

@@ -12,6 +12,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.SimpleInnateSkillBuilder;
 import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
 import sleys.sl.library.exceptions.RegistryObjectException;
@@ -70,8 +71,8 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                 ResourceLocation animationId = ResourceLocation.tryParse(animationName);
                 if (animationId == null) {
                     RUNTIME_ERRORS.add(
-                            RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.UNPARSEABLE,
+                            RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.UNPARSEABLE,
                                     name, modId, animationName, null
                             )
                     );
@@ -89,15 +90,15 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                         var animationKey = AnimationManager.byKey(virtualAnimationId);
                         if (animationKey == null) {
                             RUNTIME_ERRORS.add(
-                                    RegistryInnateHelper.getError(
-                                            RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                                    RegistryErrorHelper.getError(
+                                            RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                             name, modId, virtualAnimationId, null
                                     )
                             );
                             return Skill.EMPTY;
                         }
 
-                        var attackAnimationKey = RegistryInnateHelper.getAttackAnimationAccessor(animationKey);
+                        var attackAnimationKey = RegistryErrorHelper.getAttackAnimationAccessor(animationKey);
                         var isImplementTooltip = skillData.tooltip() != null;
                         var builder = SimpleWeaponInnateSkill
                                 .createSimpleWeaponInnateBuilder(builderKey -> new SimpleWeaponInnateSkill(builderKey) {
@@ -182,16 +183,16 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                         for (var registryId : registry.getEntries()) {
                             var registryName = registryId.get().getRegistryName();
                             if (registryName.equals(ResourceLocation.fromNamespaceAndPath(modId, name))) {
-                                RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.DUPE,
+                                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.DUPE,
                                         name, modId, animationId,e.getCause()
                                 ));
                                 return Skill.EMPTY;
                             }
                         }
                         RUNTIME_ERRORS.add(
-                                RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                                RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                         name, modId, animationId, e.getCause()
                                 )
                         );

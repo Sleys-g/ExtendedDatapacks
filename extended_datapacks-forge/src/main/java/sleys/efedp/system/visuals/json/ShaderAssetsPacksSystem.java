@@ -12,11 +12,11 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.io.IOUtils;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.sl.library.core.exceptions.OutrangePacketException;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.util.file.GsonUtilities;
-import sleys.sl.shaders.chains.ShaderEffectList;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.exceptions.OutrangePacketException;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.util.io.GsonUtilities;
 import sleys.sl.shaders.data.IShaderParameters;
 import yesman.epicfight.world.capabilities.item.Style;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
@@ -37,10 +37,9 @@ public class ShaderAssetsPacksSystem {
 
     @SubscribeEvent
     public static void onClientLogin(ClientPlayerNetworkEvent.LoggingIn event) {
-        if (!LOADED) {
-            LOADED = true;
-            initialize();
-        }
+        if (LOADED) return;
+        LOADED = true;
+        initialize();
     }
 
     public static void reinitializeShaderAssetsPack() {
@@ -49,9 +48,11 @@ public class ShaderAssetsPacksSystem {
 
     private static void initialize() {
         SHADER_PACKETS.clear();
-        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                ShaderAssetsPacksSystem::startToTracking,
-                "[Shader Packets] Error loading Shader Packets"
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                ShaderAssetsPacksSystem::startToTracking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Shader Packets] Error loading Shader Packets", e)
         );
     }
 
@@ -59,26 +60,31 @@ public class ShaderAssetsPacksSystem {
         var resourceManager = Minecraft.getInstance().getResourceManager();
         var resources = resourceManager.listResources(DIRECTORY_PATH, path -> path.getPath().endsWith(".json"));
         for (var entry : resources.entrySet()) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToLoad(entry.getValue()),
-                    "[Shader Packets] Error processing Shader Packet: " + entry.getValue()
-            );
+            var resource = entry.getValue();
+            ExecutionTasks.operateAndGetResult(
+                    ExecutionPolicy.RESIST,
+                    resource, ShaderAssetsPacksSystem::startToLoad
+            ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                    "[Shader Packets] Error processing Shader Packet: {}", entry.getValue(), e
+            ));
         }
 
         ExtendedDatapacks.LOGGER.info("[Shader Packets] Shader Packets LOADED: {}", SHADER_PACKETS.size());
     }
 
-    private static void startToLoad(Resource resource) throws IOException {
+    private static Resource startToLoad(Resource resource) throws IOException {
         var stream = resource.open();
         String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
-        if (!root.has("shader_packet")) return;
+        if (!root.has("shader_packet")) return null;
 
         JsonArray array = root.getAsJsonArray("shader_packet");
         for (JsonElement element : array) {
             ShaderPacket packet = ShaderPacket.tryToBuildThis(element.getAsJsonObject());
             SHADER_PACKETS.computeIfAbsent(packet.category(), k -> new ArrayList<>()).add(packet);
         }
+
+        return resource;
     }
 
     public static List<ShaderPacket> getForCategory(String category) {

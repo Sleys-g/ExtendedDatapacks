@@ -9,12 +9,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.capability.skill.HoldableInnateSkill;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.HoldableInnateSkillBuilder;
-import sleys.sl.epicfight.forgeevents.client.EFMovementInputEvent;
-import sleys.sl.epicfight.helper.animation.VirtualAnimationRegistry;
-import sleys.sl.library.core.exceptions.OutrangePacketException;
+import sleys.sl.epicfight.client.events.EFMovementInputEvent;
+import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
+import sleys.sl.library.exceptions.RegistryObjectException;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.SynchedAnimationVariableKeys;
 import yesman.epicfight.api.animation.property.AnimationProperty;
@@ -61,12 +62,12 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                 ResourceLocation chargeAnimationId = ResourceLocation.tryParse(chargeAnimation);
 
                 if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryInnateHelper.getError(RegistryInnateHelper.ErrorsType.UNPARSEABLE, name, modId, animationName, null));
+                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(RegistryErrorHelper.ErrorsType.UNPARSEABLE, name, modId, animationName, null));
                     continue;
                 }
 
                 if (chargeAnimationId == null) {
-                    RUNTIME_ERRORS.add(RegistryInnateHelper.getError(RegistryInnateHelper.ErrorsType.UNPARSEABLE, name, modId, chargeAnimation, null));
+                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(RegistryErrorHelper.ErrorsType.UNPARSEABLE, name, modId, chargeAnimation, null));
                     continue;
                 }
 
@@ -85,8 +86,8 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
 
                     var animationKey = AnimationManager.byKey(virtualAnimationId);
                     if (animationKey == null) {
-                        RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                        RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                 name, modId, animationId, null)
                         );
                         continue;
@@ -94,15 +95,15 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
 
                     var chargeAnimationKey = AnimationManager.byKey(virtualChargeAnimationId);
                     if (chargeAnimationKey == null) {
-                        RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                        RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                 name, modId, chargeAnimationId, null
                         ));
                         continue;
                     }
 
-                    var attackAnimationKey = RegistryInnateHelper.getAttackAnimationAccessor(animationKey);
-                    var chargedAnimationKey = RegistryInnateHelper.getStaticAnimationAccessor(chargeAnimationKey);
+                    var attackAnimationKey = RegistryErrorHelper.getAttackAnimationAccessor(animationKey);
+                    var chargedAnimationKey = RegistryErrorHelper.getStaticAnimationAccessor(chargeAnimationKey);
                     var maxAllowedCharging = skillData.maxAllowedCharging();
                     var maxChargingTicks = skillData.maxChargingTicks();
                     var minChargingTicks = skillData.minChargingTicks();
@@ -235,14 +236,14 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                     for (var registryId : build.getAllSkills()) {
                         var registry = registryId.getRegistryName();
                         if (registry.equals(ResourceLocation.fromNamespaceAndPath(modId, name))) {
-                            RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.DUPE,
+                            RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.DUPE,
                                     name, modId, animationId,e.getCause()
                             ));
                             return;
                         }
                     }
-                    RUNTIME_ERRORS.add(RegistryInnateHelper.getError(RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER, name, modId, animationId, e.getCause()));
+                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, animationId, e.getCause()));
                 }
             }
         }
@@ -252,7 +253,7 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
     public static void onClientModBusEvent(final FMLLoadCompleteEvent event) {
         if (!RUNTIME_ERRORS.isEmpty()) {
             String errorSummary = String.join("\n", RUNTIME_ERRORS);
-            throw new OutrangePacketException(
+            throw new RegistryObjectException(
                     "Failure during the operation to create a Charged Innate Skill...\n" +
                             "Total number of registry failures: " + RUNTIME_ERRORS.size() +
                             "\n\nProblematic Skills\n\n" + errorSummary

@@ -12,6 +12,7 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.capability.skills.StacksMultiConditionalWeaponInnateSkill;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.ConditionsType;
 import sleys.efedp.system.innates.json.StacksConditionalInnateSkillBuilder;
 import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
@@ -133,15 +134,15 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
                             var keyManager = AnimationManager.byKey(virtualAnimationId);
                             if (keyManager == null) {
                                 RUNTIME_ERRORS.add(
-                                        RegistryInnateHelper.getError(
-                                                RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                                        RegistryErrorHelper.getError(
+                                                RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                                 name, modId, animId, null
                                         )
                                 );
                                 return Skill.EMPTY;
                             }
 
-                            var accessor = RegistryInnateHelper.getAttackAnimationAccessor(keyManager);
+                            var accessor = RegistryErrorHelper.getAttackAnimationAccessor(keyManager);
                             List<Map<AnimationProperty.AttackPhaseProperty<?>, Object>> conditionPhases = new ArrayList<>();
                             for (var phase : conditionData.phases()) {
                                 Map<AnimationProperty.AttackPhaseProperty<?>, Object> phaseProperties = new HashMap<>();
@@ -172,8 +173,8 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
 
                         if (!hasNormal) {
                             RUNTIME_ERRORS.add(
-                                    RegistryInnateHelper.getError(
-                                            RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                                    RegistryErrorHelper.getError(
+                                            RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                             name, modId, null, "Missing NORMAL condition."
                                     )
                             );
@@ -189,16 +190,16 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
                         for (var registryId : registry.getEntries()) {
                             var registryName = registryId.get().getRegistryName();
                             if (registryName.equals(ResourceLocation.fromNamespaceAndPath(modId, name))) {
-                                RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.DUPE,
+                                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.DUPE,
                                         name, modId, skillData.animations(), e.getCause()
                                 ));
                                 return Skill.EMPTY;
                             }
                         }
                         RUNTIME_ERRORS.add(
-                                RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                                RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                         name, modId, skillData.animations(), e.getCause()
                                 )
                         );

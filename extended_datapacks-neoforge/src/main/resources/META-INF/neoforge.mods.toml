@@ -5,7 +5,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="epicfight_edp"
-version="2.4+1.21.1"
+version="2.4.1+1.21.1"
 displayName="Epic Fight - Extended Datapacks"
 authors="Sleys"
 logoFile = "extended_datapacks.png"

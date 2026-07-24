@@ -1,7 +1,7 @@
 package sleys.efedp.system.animations.json.properties.coords;
 
 import com.mojang.serialization.Codec;
-import sleys.sl.library.util.data.EnumCodecs;
+import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 

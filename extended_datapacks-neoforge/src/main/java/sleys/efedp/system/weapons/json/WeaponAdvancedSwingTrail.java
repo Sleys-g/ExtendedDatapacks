@@ -39,10 +39,9 @@ public class WeaponAdvancedSwingTrail {
 
     @SubscribeEvent
     public static void OnFinalProcessClient(FMLClientSetupEvent event) {
-        if (!LOADED) {
-            LOADED = true;
-            initialize();
-        }
+        if (LOADED) return;
+        LOADED = true;
+        initialize();
     }
 
      public static void reinitializeAdvancedSwingTrail() {

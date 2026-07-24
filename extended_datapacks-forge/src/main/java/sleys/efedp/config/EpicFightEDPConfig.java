@@ -1,7 +1,7 @@
 package sleys.efedp.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import sleys.sl.library.runtime.policy.ResultExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
 
 public class EpicFightEDPConfig {
 
@@ -10,7 +10,7 @@ public class EpicFightEDPConfig {
     public static final ForgeConfigSpec.BooleanValue USE_STAMINA_IN_CHARGED_ATTACKS;
     public static final ForgeConfigSpec.BooleanValue USE_WEIGHT_IN_CHARGED_ATTACKS;
     public static final ForgeConfigSpec.DoubleValue SET_WEIGHT_IN_CHARGED_ATTACKS;
-    public static final ForgeConfigSpec.EnumValue<ResultExecutionPolicy> RUNNER_TYPE_ENUM_VALUE;
+    public static final ForgeConfigSpec.EnumValue<ExecutionPolicy> RUNNER_TYPE_ENUM_VALUE;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -21,7 +21,7 @@ public class EpicFightEDPConfig {
                         "\n\nCATCH: Catches errors, preventing the game from closing if an error occurs. It does not provide any debugging data." +
                         "\n\nEXCEPTION: Closes the game immediately upon an error. The closure is immediate and provides debugging data."
                 )
-                .defineEnum("fatalEpicFightEDPRuntimeHandler", ResultExecutionPolicy.RESIST);
+                .defineEnum("fatalEpicFightEDPRuntimeHandler", ExecutionPolicy.RESIST);
 
 
         builder.pop();
@@ -73,7 +73,7 @@ public class EpicFightEDPConfig {
         }
     }
 
-    public static ResultExecutionPolicy getErrorHandlerEDP() {
+    public static ExecutionPolicy getErrorHandlerEDP() {
         return RUNNER_TYPE_ENUM_VALUE.get();
     }
 }

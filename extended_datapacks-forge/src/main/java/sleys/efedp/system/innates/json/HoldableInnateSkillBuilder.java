@@ -6,10 +6,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.util.file.JsonComponentArgs;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.util.io.JsonComponentArgs;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -35,52 +36,61 @@ public class HoldableInnateSkillBuilder {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWalking(configDir),
-                    "[Holdable Innate Skills] Error reading Holdable Innate config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                configDir, HoldableInnateSkillBuilder::startToWalking
+        ).ifFailure(e ->
+                ExtendedDatapacks.LOGGER.error("[Holdable Innate Skills] Error reading Holdable Innate config", e)
+        );
     }
 
-    private static void startToWalking(Path configDir) throws IOException, UncheckedIOException {
+    private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(root ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(root, "config"),
-                                "[Holdable Innate Skills] Error reading: " + root
+                        ExecutionTasks.runAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                () -> startToLoad(root, "config")
+                        ).ifFailure(e ->
+                                ExtendedDatapacks.LOGGER.error("[Holdable Innate Skills] Error reading: {}", root, e)
                         )
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var simpleInnateSkillsBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!simpleInnateSkillsBuilders.isEmpty()) {
-
-            for (var entry : simpleInnateSkillsBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Holdable Innate Skills] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file, modId),
-                            "[Holdable Innate Skills] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        if (simpleInnateSkillsBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+
+        for (var entry : simpleInnateSkillsBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+
+                ExtendedDatapacks.LOGGER.info(
+                        "[Holdable Innate Skills] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.error(
+                        "[Holdable Innate Skills] Error reading: {}", file, e)
+                );
+            }
         }
     }
 
@@ -181,15 +191,15 @@ public class HoldableInnateSkillBuilder {
 
         JsonObject properties = root.getAsJsonObject("properties");
 
-        List<AnimationsProperties> phases = new ArrayList<>();
+        List<InnateAnimationsProperties> phases = new ArrayList<>();
 
         switch (type) {
-            case "mono_phase" -> phases.add(AnimationsProperties.parseProperties(properties));
+            case "mono_phase" -> phases.add(InnateAnimationsProperties.parseProperties(properties));
             case "multi_phase" -> properties.entrySet().stream()
                     .sorted(Comparator.comparingInt(e -> Integer.parseInt(e.getKey())))
                     .forEach(entry -> {
                         JsonObject phaseObj = entry.getValue().getAsJsonObject();
-                        phases.add(AnimationsProperties.parseProperties(phaseObj));
+                        phases.add(InnateAnimationsProperties.parseProperties(phaseObj));
                     });
 
             default -> {
@@ -240,7 +250,7 @@ public class HoldableInnateSkillBuilder {
             String animation,
             boolean reduceSpeed,
             @Nullable List<JsonComponentArgs> tooltip,
-            List<AnimationsProperties> phases
+            List<InnateAnimationsProperties> phases
     ) {
         public Component getFormattedAdditional(String key, ItemStack stack) {
             if (key == null || key.isEmpty()) return Component.empty();

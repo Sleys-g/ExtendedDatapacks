@@ -1,7 +1,7 @@
 package sleys.efedp.registry;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.combat.charged_attacks.ChargedAttack;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.skill.Skill;

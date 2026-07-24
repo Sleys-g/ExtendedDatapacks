@@ -1,10 +1,12 @@
 package sleys.efedp.system.innates.json;
 
 import com.google.gson.JsonObject;
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.world.damagesource.StunType;
 
 import java.util.Locale;
 
+@Internal
 public record InnateAnimationsProperties(float maxStrikes,
                                          float damageMultiplier,
                                          float armorNegation,

@@ -25,6 +25,7 @@ import sleys.sl.epicfight.skills.extender.ExtendedPassiveSkill;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnAnimationPhaseEFSkillEvent;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnAttackSpeedEFSkillEvent;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnLivingDamageEFSkillEvent;
+import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.network.sync.TagSyncSender;
@@ -220,6 +221,7 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
         );
     }
 
+    @ErrorHandled
     private float calculateStaminaCost(PlayerPatch<?> patch) {
         if (EpicFightEDPConfig.getUseStaminaInChargedAttacks()) {
             if (EpicFightEDPConfig.getUseWeightInChargedAttacks()) {

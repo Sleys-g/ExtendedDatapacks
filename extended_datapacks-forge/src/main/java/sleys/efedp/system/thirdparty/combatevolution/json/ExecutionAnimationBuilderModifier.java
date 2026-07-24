@@ -11,12 +11,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.shelmarow.combat_evolution.execution.ExecutionTypeManager;
 import net.shelmarow.combat_evolution.gameassets.animation.ExecutionAttackAnimation;
 import net.shelmarow.combat_evolution.gameassets.animation.ExecutionHitAnimation;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.bootstrap.BootstrapThirdParties;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
 import sleys.sl.epicfight.capability.StyleInvalid;
-import sleys.sl.library.runtime.policy.PolicyRuntimeTasks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -45,53 +45,62 @@ public class ExecutionAnimationBuilderModifier {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWaling(configDir),
-                    "[Add Execution to Build] Error reading Category config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                configDir, ExecutionAnimationBuilderModifier::startToWaling
+        ).ifFailure(e ->
+                ExtendedDatapacks.LOGGER.error("[Add Execution to Build] Error reading Category config", e)
+        );
     }
 
-    private static void startToWaling(Path configDir) throws IOException {
+    private static Path startToWaling(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(path ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(path),
-                                "[Add Execution to Build] Error reading: " + path
+                        ExecutionTasks.operateAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                path, ExecutionAnimationBuilderModifier::startToLoad
+                        ).ifFailure(e ->
+                                ExtendedDatapacks.LOGGER.warn("[Add Execution to Build] Error reading: {}", path, e)
                         )
                 );
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var executionAnimationBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
 
-        if (!executionAnimationBuilders.isEmpty()) {
-            for (var entry : executionAnimationBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Add Execution to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file),
-                            "[Add Execution to Build] Error reading: " + file
-                    );
-                }
-            }
-
-        } else {
+        if (executionAnimationBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
         }
+
+        for (var entry : executionAnimationBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info(
+                        "[Add Execution to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.operateAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        file, ExecutionAnimationBuilderModifier::startToLoad
+                ).ifFailure(e ->
+                        ExtendedDatapacks.LOGGER.warn( "[Add Execution to Build] Error reading: {}", file, e)
+                );
+            }
+        }
+
     }
 
     private static void fileError(String side) {
@@ -102,7 +111,7 @@ public class ExecutionAnimationBuilderModifier {
     }
 
 
-    private static void startToLoad(Path file) throws IOException {
+    private static Path startToLoad(Path file) throws IOException {
         Reader reader = Files.newBufferedReader(file);
         JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
         ExtendedDatapacks.LOGGER.info(
@@ -111,6 +120,7 @@ public class ExecutionAnimationBuilderModifier {
         );
 
         startToProcessExecutions(root, file.getFileName().toString());
+        return file;
     }
 
     private static void startToProcessExecutions(JsonObject root, String fileName) {
@@ -276,8 +286,9 @@ public class ExecutionAnimationBuilderModifier {
         }
 
         public WeaponCategory getParsedWeaponCategory() {
-            return PolicyRuntimeTasks.getOrDefault(
-                    ErrorPolicy.IGNORE_ERROR, () -> WeaponCategory.ENUM_MANAGER.getOrThrow(category),
+            return ExecutionTasks.getAndFallback(
+                    ExecutionPolicy.RESIST,
+                    () -> WeaponCategory.ENUM_MANAGER.getOrThrow(category),
                     null
             );
         }

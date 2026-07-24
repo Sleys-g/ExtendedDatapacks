@@ -15,8 +15,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.io.IOUtils;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.world.capabilities.item.Style;
 
 import java.io.IOException;
@@ -45,9 +46,11 @@ public class WeaponPerStyleModelBaker {
 
     private static void initialize() {
         MODELS_ITEMS_DATA.clear();
-        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                WeaponPerStyleModelBaker::startToTracking,
-                "[Weapon Model Properties] Error loading parameterization configuration..."
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                WeaponPerStyleModelBaker::startToTracking
+        ).ifFailure(e ->
+                ExtendedDatapacks.LOGGER.error("[Weapon Model Properties] Error loading parameterization configuration...")
         );
     }
 
@@ -65,9 +68,13 @@ public class WeaponPerStyleModelBaker {
 
         ExtendedDatapacks.LOGGER.info("[Weapon Model Properties] Loading {} parameterization files for Weapon Models", resources.size());
         for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToLoad(entry.getValue(), entry.getKey()),
-                    "[Weapon Model Properties] Error loading file: " + entry.getKey()
+            ExecutionTasks.runAndGetResult(
+                    ExecutionPolicy.RESIST,
+                    () -> startToLoad(entry.getValue(), entry.getKey())
+            ).ifFailure(e ->
+                    ExtendedDatapacks.LOGGER.error(
+                            "[Weapon Model Properties] Error loading file: {}", entry.getKey()
+                    )
             );
         }
 
@@ -104,7 +111,8 @@ public class WeaponPerStyleModelBaker {
             return;
         }
 
-        WeaponModelPerStyle models = ErrorPolicy.DEPURATE_ERROR.executeSupplier(
+        WeaponModelPerStyle models = ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
                 () -> parseModelsConfig(trailObj),
                 null
         );
@@ -125,9 +133,11 @@ public class WeaponPerStyleModelBaker {
                 JsonObject obj = e.getAsJsonObject();
 
                 if (!obj.has("style") || !obj.has("model")) continue;
-                ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                        () -> registryParsedConfig(styleModels, obj),
-                        "[Weapon Model Properties] Invalid style config"
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> registryParsedConfig(styleModels, obj)
+                ).ifFailure(exception ->
+                        ExtendedDatapacks.LOGGER.error("[Weapon Model Properties] Invalid style config: ", exception)
                 );
             }
         }

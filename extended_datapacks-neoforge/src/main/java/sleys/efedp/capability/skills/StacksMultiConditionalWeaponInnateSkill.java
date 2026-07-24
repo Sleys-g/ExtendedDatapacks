@@ -3,6 +3,7 @@ package sleys.efedp.capability.skills;
 import net.minecraft.nbt.CompoundTag;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.innates.json.ConditionsType;
+import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import yesman.epicfight.api.animation.AnimationManager;
@@ -52,6 +53,7 @@ public class StacksMultiConditionalWeaponInnateSkill extends WeaponInnateSkill {
         return this;
     }
 
+    @ErrorHandled
     private StacksMultiConditionalWeaponInnateSkill.ConditionData registryAnimationsData(StacksMultiConditionalWeaponInnateSkill.ConditionData entry) {
         var animation = entry.animationAccessor().get();
         if (!(animation instanceof AttackAnimation attack)) {

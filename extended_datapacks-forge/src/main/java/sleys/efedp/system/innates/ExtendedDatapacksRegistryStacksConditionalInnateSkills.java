@@ -9,11 +9,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import sleys.efedp.capability.skill.StacksMultiConditionalWeaponInnateSkill;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.StacksConditionalInnateSkillBuilder;
 import sleys.efedp.system.innates.json.ConditionsType;
-import sleys.sl.epicfight.helper.animation.VirtualAnimationRegistry;
-import sleys.sl.library.core.exceptions.OutrangePacketException;
+import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
+import sleys.sl.library.exceptions.RegistryObjectException;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
@@ -61,15 +62,15 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
                         var keyManager = AnimationManager.byKey(virtualAnimationId);
                         if (keyManager == null) {
                             RUNTIME_ERRORS.add(
-                                    RegistryInnateHelper.getError(
-                                            RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                                    RegistryErrorHelper.getError(
+                                            RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                             name, modId, animId, null
                                     )
                             );
                             continue;
                         }
 
-                        var accessor = RegistryInnateHelper.getAttackAnimationAccessor(keyManager);
+                        var accessor = RegistryErrorHelper.getAttackAnimationAccessor(keyManager);
                         List<Map<AnimationProperty.AttackPhaseProperty<?>, Object>> conditionPhases = new ArrayList<>();
                         for (var phase : conditionData.phases()) {
                             Map<AnimationProperty.AttackPhaseProperty<?>, Object> phaseProperties = new HashMap<>();
@@ -99,8 +100,8 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
 
                     if (!hasNormal) {
                         RUNTIME_ERRORS.add(
-                                RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                                RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                         name, modId, null, "Missing NORMAL condition."
                                 )
                         );
@@ -168,8 +169,8 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
                     for (var registryId : build.getAllSkills()) {
                         var registry = registryId.getRegistryName();
                         if (registry.equals(ResourceLocation.fromNamespaceAndPath(modId, name))) {
-                            RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.DUPE,
+                            RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.DUPE,
                                     name, modId, skillData.animations(),
                                     e.getCause()
                             ));
@@ -177,8 +178,8 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
                         }
                     }
                     RUNTIME_ERRORS.add(
-                            RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                            RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                     name, modId, skillData.animations(), e.getCause()
                             )
                     );
@@ -195,7 +196,7 @@ public class ExtendedDatapacksRegistryStacksConditionalInnateSkills {
     public static void onClientModBusEvent(final FMLLoadCompleteEvent event) {
         if (!RUNTIME_ERRORS.isEmpty()) {
             String errorSummary = String.join("\n", RUNTIME_ERRORS);
-            throw new OutrangePacketException(
+            throw new RegistryObjectException(
                     "Failure during the operation to create a Conditional Innate Skill...\n" +
                             "Total number of registry failures: " + RUNTIME_ERRORS.size() +
                             "\n\nProblematic Skills\n\n" + errorSummary

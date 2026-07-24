@@ -7,9 +7,10 @@ import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 import java.io.IOException;
@@ -35,49 +36,59 @@ public class SkillIconBuilderModifier {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWalking(configDir),
-                    "[Add Icon to Build] Error reading IconSkillBuilder config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError(" /Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                configDir, SkillIconBuilderModifier::startToWalking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Add Icon to Build] Error reading IconSkillBuilder config", e
+        ));
     }
 
-    private static void startToWalking(Path configDir) throws IOException, UncheckedIOException {
+    private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(path ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(path),
-                                "[Add Icon to Build] Error reading: " + path
-                        )
+                        ExecutionTasks.operateAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                path, SkillIconBuilderModifier::startToLoad
+                        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                                "[Add Icon to Build] Error reading: {}", path, e
+                        ))
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var iconSkillBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!iconSkillBuilders.isEmpty()) {
-            for (var entry : iconSkillBuilders.entrySet()) {
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info("[Add Icon to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file),
-                            "[Add Icon to Build] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        if (iconSkillBuilders.isEmpty()) {
             fileError(" In-Jar Folder");
+            return;
+        }
+
+        for (var entry : iconSkillBuilders.entrySet()) {
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info("[Add Icon to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.operateAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        file, SkillIconBuilderModifier::startToLoad
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Add Icon to Build] Error reading: {}", file, e
+                ));
+            }
         }
     }
 
@@ -87,11 +98,13 @@ public class SkillIconBuilderModifier {
         );
     }
 
-    private static void startToLoad(Path file) throws IOException {
+    private static Path startToLoad(Path file) throws IOException {
         Reader reader = Files.newBufferedReader(file);
         JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
         ExtendedDatapacks.LOGGER.info("[Add Icon to Build] Reading file: {}", file.getFileName().toString());
         startToProcessIconEntry(root, file.getFileName().toString());
+
+        return file;
     }
 
     private static void startToProcessIconEntry(JsonObject root, String fileName) {

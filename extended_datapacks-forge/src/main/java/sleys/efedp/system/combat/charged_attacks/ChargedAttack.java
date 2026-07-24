@@ -13,17 +13,20 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.efedp.client.EDPCombatKeyBinding;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.config.EpicFightEDPConfig;
 import sleys.efedp.system.combat.ExtendedSkillCategory;
 import sleys.efedp.registry.ExtendedDatapacksRegistrySkills;
-import sleys.sl.epicfight.forgeevents.EFPlayerAnimationEvent;
-import sleys.sl.epicfight.forgeevents.EFPlayerAttackSpeedEvent;
-import sleys.sl.epicfight.skills.ExtendedPassiveSkill;
+import sleys.sl.epicfight.events.EFPlayerAnimationEvent;
+import sleys.sl.epicfight.events.EFPlayerAttackSpeedEvent;
+import sleys.sl.epicfight.skills.extender.ExtendedPassiveSkill;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnAnimationPhaseEFSkillEvent;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnAttackSpeedEFSkillEvent;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnLivingDamageEFSkillEvent;
+import sleys.sl.library.annotations.ErrorHandled;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.network.sync.TagSyncSender;
 import yesman.epicfight.skill.SkillBuilder;
 import yesman.epicfight.skill.SkillContainer;
@@ -210,20 +213,25 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
     }
 
     private float getCorrectlyStaminaCost(PlayerPatch<?> patch) {
-        try {
-            if (EpicFightEDPConfig.getUseStaminaInChargedAttacks()) {
-                if (EpicFightEDPConfig.getUseWeightInChargedAttacks()) {
-                    LivingEntity entity = patch.getOriginal();
-                    AttributeInstance weightAttr = entity.getAttribute(EpicFightAttributes.WEIGHT.get());
-                    float weight = weightAttr != null ? (float) weightAttr.getValue() != 0.0F ? (float) weightAttr.getValue() : 1F : 1F;
-                    return (CostStamina * (1.0F + weight * 0.05F) / EpicFightEDPConfig.getWeightValueInChargedAttacks()) / 1.5F;
-                } else {
-                    return CostStamina;
-                }
+        return ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
+                () -> calculateStaminaCost(patch),
+                0F
+        );
+    }
+
+    @ErrorHandled
+    private float calculateStaminaCost(PlayerPatch<?> patch) {
+        if (EpicFightEDPConfig.getUseStaminaInChargedAttacks()) {
+            if (EpicFightEDPConfig.getUseWeightInChargedAttacks()) {
+                LivingEntity entity = patch.getOriginal();
+                AttributeInstance weightAttr = entity.getAttribute(EpicFightAttributes.WEIGHT.get());
+                float weight = weightAttr != null ? (float) weightAttr.getValue() != 0.0F ? (float) weightAttr.getValue() : 1F : 1F;
+                return (CostStamina * (1.0F + weight * 0.05F) / EpicFightEDPConfig.getWeightValueInChargedAttacks()) / 1.5F;
             } else {
-                return 0;
+                return CostStamina;
             }
-        } catch (Exception ignored) {
+        } else {
             return 0;
         }
     }

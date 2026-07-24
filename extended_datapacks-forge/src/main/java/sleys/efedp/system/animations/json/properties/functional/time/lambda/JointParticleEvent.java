@@ -3,13 +3,16 @@ package sleys.efedp.system.animations.json.properties.functional.time.lambda;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.epicfight.model.JointModelParticleEngine;
-import sleys.sl.library.particle.emitters.SimpleParticleEmitter;
+import sleys.sl.library.client.particle.emitters.SimpleParticleEmitter;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -35,14 +38,11 @@ public record JointParticleEvent(ResourceLocation particle, Vec3 volume,
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
-        var particleType = BuiltInRegistries.PARTICLE_TYPE.get(particle);
-
+        ParticleType<?> particleType = BuiltInRegistries.PARTICLE_TYPE.get(particle);
         if (!(particleType instanceof SimpleParticleType simpleParticle)) return;
         LivingEntity livingEntity = patch.getOriginal();
-        if (this.isInvalid(livingEntity.level(), AnimationEvent.Side.CLIENT,"Joint Particle Event")) {
-            return;
-        }
 
+        if (this.isInvalid(livingEntity.level(), AnimationEvent.Side.CLIENT,"Joint Particle Event")) return;
         JointModelParticleEngine.generateParticles(
                 livingEntity, joint,
                 offSets, step,

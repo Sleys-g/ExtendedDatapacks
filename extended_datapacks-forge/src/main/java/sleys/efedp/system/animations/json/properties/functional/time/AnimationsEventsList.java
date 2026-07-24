@@ -3,7 +3,7 @@ package sleys.efedp.system.animations.json.properties.functional.time;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.*;
-import sleys.sl.library.util.data.EnumCodecs;
+import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;

@@ -11,8 +11,8 @@ import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
 import sleys.efedp.system.thirdparty.wom.json.WoMSkillAccessorBuilder;
-import sleys.sl.library.runtime.policy.PolicyRuntimeTasks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataKey;
 import yesman.epicfight.skill.SkillDataManager;
@@ -87,8 +87,8 @@ public class DemonMarkPassiveSkillMixin {
             remap = false
     )
     private Object redirectAntitheusIf(SkillDataManager manager, SkillDataKey<?> key, SkillContainer container) {
-        return PolicyRuntimeTasks.getOrDefault(
-                ErrorPolicy.DEPURATE_ERROR,
+        return ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
                 () -> extended_datapacks$listenSkillDataKeys(manager, key, container),
                 manager.getDataValue(key)
         );

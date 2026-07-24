@@ -2,7 +2,7 @@ package sleys.efedp.system.skills;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.skills.json.SkillIconBuilderModifier;
 import yesman.epicfight.api.client.forgeevent.WeaponCategoryIconRegisterEvent;
 

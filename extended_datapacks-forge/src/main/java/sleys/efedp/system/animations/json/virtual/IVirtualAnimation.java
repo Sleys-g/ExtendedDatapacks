@@ -3,7 +3,7 @@ package sleys.efedp.system.animations.json.virtual;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.system.animations.json.definitions.AnimationGroupType;
 import sleys.efedp.system.animations.json.properties.IAnimationProperty;
-import sleys.sl.epicfight.helper.animation.VirtualAnimationRegistry;
+import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 

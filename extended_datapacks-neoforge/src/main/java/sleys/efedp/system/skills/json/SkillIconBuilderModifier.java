@@ -67,27 +67,28 @@ public class SkillIconBuilderModifier {
 
     private static void startToTrackingFromAPI() {
         var iconSkillBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!iconSkillBuilders.isEmpty()) {
-            for (var entry : iconSkillBuilders.entrySet()) {
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info("[Add Icon to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ExecutionTasks.operateAndGetResult(
-                            ExecutionPolicy.RESIST,
-                            file, SkillIconBuilderModifier::startToLoad
-                    ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
-                            "[Add Icon to Build] Error reading: {}", file, e
-                    ));
-                }
-            }
-        } else {
+        if (iconSkillBuilders.isEmpty()) {
             fileError(" In-Jar Folder");
+            return;
+        }
+
+        for (var entry : iconSkillBuilders.entrySet()) {
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info("[Add Icon to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.operateAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        file, SkillIconBuilderModifier::startToLoad
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Add Icon to Build] Error reading: {}", file, e
+                ));
+            }
         }
     }
 

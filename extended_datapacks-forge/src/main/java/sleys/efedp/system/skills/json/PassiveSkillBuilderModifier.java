@@ -5,9 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 import javax.annotation.Nullable;
@@ -33,48 +34,59 @@ public class PassiveSkillBuilderModifier {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWalking(configDir),
-                    "[Add Skill to Build] Error reading SkillBuilder config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError(" /Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST, configDir,
+                PassiveSkillBuilderModifier::startToWalking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Add Skill to Build] Error reading SkillBuilder config", e
+        ));
     }
 
-    private static void startToWalking(Path configDir) throws IOException, UncheckedIOException {
+    private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(path ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () ->  startToLoad(path),
-                                "[Add Skill to Build] Error reading: " + path
-                        )
+                        ExecutionTasks.operateAndGetResult(
+                                ExecutionPolicy.RESIST, configDir,
+                                PassiveSkillBuilderModifier::startToLoad
+                        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                                "[Add Skill to Build] Error reading: {}", path, e
+                        ))
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var passiveSkillBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!passiveSkillBuilders.isEmpty()) {
-            for (var entry : passiveSkillBuilders.entrySet()) {
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-
-                    ExtendedDatapacks.LOGGER.info("[Add Skill to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () ->  startToLoad(file), "[Add Skill to Build] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        if (passiveSkillBuilders.isEmpty()) {
             fileError(" In-Jar Folder");
+            return;
+        }
+
+        for (var entry : passiveSkillBuilders.entrySet()) {
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+
+                ExtendedDatapacks.LOGGER.info("[Add Skill to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.operateAndGetResult(
+                        ExecutionPolicy.RESIST, file,
+                        PassiveSkillBuilderModifier::startToLoad
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Add Skill to Build] Error reading: {}", file, e
+                ));
+            }
         }
     }
 
@@ -84,11 +96,13 @@ public class PassiveSkillBuilderModifier {
         );
     }
 
-    private static void startToLoad(Path file) throws IOException {
+    private static Path startToLoad(Path file) throws IOException {
         Reader reader = Files.newBufferedReader(file);
         JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
         ExtendedDatapacks.LOGGER.info("[Add Skill to Build] Reading file: {}", file.getFileName().toString());
         startToProcessSkillEntry(root, file.getFileName().toString());
+
+        return file;
     }
 
     private static void startToProcessSkillEntry(JsonObject root, String fileName) {

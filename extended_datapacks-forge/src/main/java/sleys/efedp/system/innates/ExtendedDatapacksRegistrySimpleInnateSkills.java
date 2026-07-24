@@ -9,11 +9,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.SimpleInnateSkillBuilder;
-import sleys.sl.epicfight.helper.animation.VirtualAnimationRegistry;
-import sleys.sl.library.core.exceptions.OutrangePacketException;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
+import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
@@ -54,8 +56,8 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
 
                 if (animationId == null) {
                     RUNTIME_ERRORS.add(
-                            RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.UNPARSEABLE,
+                            RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.UNPARSEABLE,
                                     name, modId, animationName, null
                             )
                     );
@@ -72,15 +74,15 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                     var animationKey = AnimationManager.byKey(virtualAnimationId);
                     if (animationKey == null) {
                         RUNTIME_ERRORS.add(
-                                RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                                RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                         name, modId, animationId, null
                                 )
                         );
                         continue;
                     }
 
-                    var attackAnimationKey = RegistryInnateHelper.getAttackAnimationAccessor(animationKey);
+                    var attackAnimationKey = RegistryErrorHelper.getAttackAnimationAccessor(animationKey);
 
                     var builder = SimpleWeaponInnateSkill.createSimpleWeaponInnateBuilder()
                             .setAnimations(attackAnimationKey);
@@ -93,11 +95,14 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
 
                                 @Override
                                 public WeaponInnateSkill registerPropertiesToAnimation() {
-                                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                            this::registryAnimationsData,
-                                            "[Simple - InnateSkill] Fatal error caught during property assignment attempt... " +
-                                                    "For Skill: "  + this.registryName.getPath() +
-                                                    ", under NameSpaces: " + this.registryName.getNamespace()
+                                    ExecutionTasks.runAndGetResult(
+                                            ExecutionPolicy.RESIST,
+                                            this::registryAnimationsData
+                                    ).ifFailure(e ->
+                                            ExtendedDatapacks.LOGGER.error(
+                                                    "[Simple - InnateSkill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
+                                                    this.registryName.getPath(), this.registryName.getNamespace()
+                                            )
                                     );
                                     return this;
                                 }
@@ -162,16 +167,16 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                     for (var registryId : build.getAllSkills()) {
                         var registry = registryId.getRegistryName();
                         if (registry.equals(ResourceLocation.fromNamespaceAndPath(modId, name))) {
-                            RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.DUPE,
+                            RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.DUPE,
                                     name, modId, animationId, e.getCause()
                             ));
                             return;
                         }
                     }
                     RUNTIME_ERRORS.add(
-                            RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                            RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                     name, modId, animationId, e.getCause()
                             )
                     );
@@ -184,7 +189,7 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
     public static void onClientModBusEvent(final FMLLoadCompleteEvent event) {
         if (!RUNTIME_ERRORS.isEmpty()) {
             String errorSummary = String.join("\n", RUNTIME_ERRORS);
-            throw new OutrangePacketException(
+            throw new RegistryObjectException(
                     "Failure during the operation to create a Simple Innate Skill...\n" +
                             "Total number of registry failures: " + RUNTIME_ERRORS.size() +
                             "\n\nProblematic Skills\n\n" + errorSummary

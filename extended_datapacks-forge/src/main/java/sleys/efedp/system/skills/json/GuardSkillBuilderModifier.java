@@ -5,9 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -34,48 +35,58 @@ public class GuardSkillBuilderModifier {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> GuardSkillBuilderModifier.startToWalking(configDir),
-                    "[Add Guard to Build] Error reading SkillGuardBuilder config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError(" /Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                configDir, GuardSkillBuilderModifier::startToWalking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Add Guard to Build] Error reading SkillGuardBuilder config", e
+        ));
     }
 
-    private static void startToWalking(Path configDir) throws IOException, UncheckedIOException {
+    private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(path ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(path),
-                                "[Add Guard to Build] Error reading: " + path
-                        )
+                        ExecutionTasks.operateAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                path, GuardSkillBuilderModifier::startToLoad
+                        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                                "[Add Guard to Build] Error reading: {}", path, e
+                        ))
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var guardSkillBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!guardSkillBuilders.isEmpty()) {
-            for (var entry : guardSkillBuilders.entrySet()) {
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info("[Add Guard to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file),
-                            "[Add Guard to Build] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        if (guardSkillBuilders.isEmpty()) {
             fileError(" In-Jar Folder");
+            return;
+        }
+
+        for (var entry : guardSkillBuilders.entrySet()) {
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info("[Add Guard to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.operateAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        file, GuardSkillBuilderModifier::startToLoad
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Add Guard to Build] Error reading: {}", file, e
+                ));
+            }
         }
     }
 
@@ -85,11 +96,13 @@ public class GuardSkillBuilderModifier {
         );
     }
 
-    private static void startToLoad(Path file) throws IOException {
+    private static Path startToLoad(Path file) throws IOException {
         Reader reader = Files.newBufferedReader(file);
         JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
         ExtendedDatapacks.LOGGER.info("[Add Guard to Build] Reading file: {}", file.getFileName().toString());
         startToProcessGuardEntry(root, file.getFileName().toString());
+
+        return file;
     }
 
     private static void startToProcessGuardEntry(JsonObject root, String fileName) {

@@ -37,10 +37,9 @@ public class ShaderAssetsPacksSystem {
 
     @SubscribeEvent
     public static void onClientLogin(ClientPlayerNetworkEvent.LoggingIn event) {
-        if (!LOADED) {
-            LOADED = true;
-            initialize();
-        }
+        if (LOADED)  return;
+        LOADED = true;
+        initialize();
     }
 
     public static void reinitializeShaderAssetsPack() {

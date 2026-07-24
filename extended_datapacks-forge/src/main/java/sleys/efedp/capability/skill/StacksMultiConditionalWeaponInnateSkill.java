@@ -1,9 +1,11 @@
 package sleys.efedp.capability.skill;
 
 import net.minecraft.network.FriendlyByteBuf;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.innates.json.ConditionsType;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.annotations.ErrorHandled;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
@@ -37,20 +39,25 @@ public class StacksMultiConditionalWeaponInnateSkill extends WeaponInnateSkill {
     @Override
     public WeaponInnateSkill registerPropertiesToAnimation() {
         for (var entry : this.conditionMap.values()) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> this.registryAnimationsData(entry),
-                    "[Stacks Multi Conditional - InnateSkill] Fatal error caught during property assignment attempt... " +
-                            "For Skill: "  + this.registryName.getPath() + ", under NameSpaces: " + this.registryName.getNamespace()
+            ExecutionTasks.operateAndGetResult(
+                    ExecutionPolicy.RESIST,
+                    entry, this::registryAnimationsData
+            ).ifFailure(e ->
+                    ExtendedDatapacks.LOGGER.error(
+                            "[Stacks Multi Conditional - InnateSkill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
+                            this.registryName.getPath(), this.registryName.getNamespace()
+                    )
             );
         }
         return this;
     }
 
-    private void registryAnimationsData(StacksMultiConditionalWeaponInnateSkill.ConditionData entry) {
+    @ErrorHandled
+    private ConditionData registryAnimationsData(StacksMultiConditionalWeaponInnateSkill.ConditionData entry) {
         var animation = entry.animationAccessor().get();
         if (!(animation instanceof AttackAnimation attack)) {
             ExtendedDatapacks.LOGGER.warn("[Stacks Multi Conditional - InnateSkill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animation);
-            return;
+            return null;
         }
 
         for (int i = 0; i < attack.phases.length; i++) {
@@ -58,6 +65,8 @@ public class StacksMultiConditionalWeaponInnateSkill extends WeaponInnateSkill {
                 attack.phases[i].addProperties(entry.properties().get(i).entrySet());
             }
         }
+
+        return entry;
     }
 
     @Override

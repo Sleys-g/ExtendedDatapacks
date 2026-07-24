@@ -23,37 +23,38 @@ public class WeaponCategoryAdder {
 
     public static void startToTracking(Path configDir) {
         WEAPON_CATEGORY_DATA.clear();
-
-        if (Files.exists(configDir)) {
-            ExecutionTasks.runAndGetResult(
-                    ExecutionPolicy.RESIST,
-                    () -> startToLoadFromConfig(configDir)
-            ).ifFailure(e ->
-                    ExtendedDatapacks.LOGGER.error("[Add Category to Build] Error reading Category config", e)
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
 
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                () -> startToLoadFromConfig(configDir)
+        ).ifFailure(e ->
+                ExtendedDatapacks.LOGGER.error("[Add Category to Build] Error reading Category config", e)
+        );
+
         var weaponCategoryBuilders = SLDataDrivenAPI.collectResources("weapon_builder/category");
-        if (!weaponCategoryBuilders.isEmpty()) {
-            for (var entry : weaponCategoryBuilders.entrySet()) {
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Add Category to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-                    ExecutionTasks.runAndGetResult(
-                            ExecutionPolicy.RESIST,
-                            () -> startToLoad(file, modId)
-                    ).ifFailure(e -> ExtendedDatapacks.LOGGER.error("[Add Category to Build] Error reading: {}", file, e));
-                }
-            }
-        } else {
+        if (weaponCategoryBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+
+        for (var entry : weaponCategoryBuilders.entrySet()) {
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info(
+                        "[Add Category to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.error("[Add Category to Build] Error reading: {}", file, e));
+            }
         }
     }
 

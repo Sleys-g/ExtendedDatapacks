@@ -3,8 +3,8 @@ package sleys.efedp.system.thirdparty.combatevolution;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.shelmarow.combat_evolution.api.event.RegisterCustomExecutionEvent;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.efedp.system.innates.RegistryInnateHelper;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.thirdparty.combatevolution.json.ExecutionAnimationBuilderModifier;
 import yesman.epicfight.api.animation.AnimationManager;
 
@@ -33,8 +33,8 @@ public class ExtendedDatapacksRegistryExecution {
             var item = entry.getParseItem();
             if (itemCategory != null && item != null) {
                 RUNTIME_ERRORS.add(
-                        RegistryInnateHelper.getError(
-                                RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                        RegistryErrorHelper.getError(
+                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                 "Execution Registry Animation", "null",
                                 null,
                                 "A registration attempt can only be made for categories or objects, never for both."
@@ -50,8 +50,8 @@ public class ExtendedDatapacksRegistryExecution {
             ResourceLocation executedId = ResourceLocation.tryParse(executedName);
 
             if (executionId == null) {
-                RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                        RegistryInnateHelper.ErrorsType.UNPARSEABLE,
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
                         "Execution Animation Registry", "null",
                         executionName, null
                 ));
@@ -59,8 +59,8 @@ public class ExtendedDatapacksRegistryExecution {
             }
             
             if (executedId == null) {
-                RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                        RegistryInnateHelper.ErrorsType.UNPARSEABLE,
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
                         "Executed Animation Registry", "null",
                         executionName, null
                 ));
@@ -72,8 +72,8 @@ public class ExtendedDatapacksRegistryExecution {
                 var executedKey = AnimationManager.byKey(executedId);
                 if (executionKey == null) {
                     RUNTIME_ERRORS.add(
-                            RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                            RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                     "Execution Animation Registry", "null"
                                     , executionId, null)
                     );
@@ -82,8 +82,8 @@ public class ExtendedDatapacksRegistryExecution {
                 
                 if (executedKey == null) {
                     RUNTIME_ERRORS.add(
-                            RegistryInnateHelper.getError(
-                                    RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                            RegistryErrorHelper.getError(
+                                    RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                     "Executed Animation Registry", "null"
                                     , executionId, null)
                     );
@@ -108,8 +108,8 @@ public class ExtendedDatapacksRegistryExecution {
                 }
             } catch (Exception e) {
                 RUNTIME_ERRORS.add(
-                        RegistryInnateHelper.getError(
-                                RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                        RegistryErrorHelper.getError(
+                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                 "Execution Registry Animation", "null",
                                 executionId, e.getCause()
                         )

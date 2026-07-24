@@ -1,8 +1,8 @@
 package sleys.efedp.system.visuals.json;
 
 import com.google.gson.JsonObject;
-import sleys.sl.library.util.color.RGB;
-import sleys.sl.library.util.file.GsonUtilities;
+import sleys.sl.library.util.data.color.RGB;
+import sleys.sl.library.util.io.GsonUtilities;
 import sleys.sl.shaders.chains.ShaderEffectList;
 import sleys.sl.shaders.data.*;
 

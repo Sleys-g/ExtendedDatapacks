@@ -1,7 +1,7 @@
 package sleys.efedp.system.animations.json.properties.coords;
 
 import com.mojang.serialization.Codec;
-import sleys.sl.library.util.data.EnumCodecs;
+import sleys.sl.library.util.data.codec.EnumCodecs;
 
 public enum MoveAnimationType {
     /// Cords

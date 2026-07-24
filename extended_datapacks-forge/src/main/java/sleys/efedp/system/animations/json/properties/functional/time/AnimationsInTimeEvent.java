@@ -1,19 +1,12 @@
 package sleys.efedp.system.animations.json.properties.functional.time;
 
 import com.mojang.serialization.*;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.AnimationEventSideCodec;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.IAnimationEventParams;
-import sleys.sl.epicfight.model.JointModelParticleEngine;
-import sleys.sl.library.particle.emitters.SimpleParticleEmitter;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
-import java.util.LinkedList;
 import java.util.stream.Stream;
 
 public record AnimationsInTimeEvent<T extends StaticAnimation>(AnimationsEventsList type,

@@ -3,22 +3,21 @@ package sleys.efedp.system.visuals;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import sleys.efedp.main.ExtendedDatapacks;
+import net.minecraftforge.registries.ForgeRegistries;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.visuals.json.ActivationType;
 import sleys.efedp.system.visuals.json.ShaderAssetsPacksSystem;
-import sleys.sl.library.core.SLLCore;
-import sleys.sl.library.helper.player.PlayerHelper;
-import sleys.sl.library.runtime.task.CoroutineTask;
+import sleys.sl.library.execution.policy.ResultProtocol;
+import sleys.sl.library.execution.task.CoroutineTask;
 import sleys.sl.shaders.chains.IChainEffect;
 import sleys.sl.shaders.chains.IPhaseChain;
 import sleys.sl.shaders.chains.ShaderEffectList;
 import sleys.sl.shaders.data.*;
-import sleys.sl.shaders.network.CTSColoredImpactFramePacket;
-import sleys.sl.shaders.network.CTSImpactFramePacket;
 import sleys.sl.shaders.system.ShaderEventListener;
 import sleys.sl.shaders.system.ShaderPhaseManager;
 import yesman.epicfight.api.animation.types.LayerOffAnimation;
@@ -53,14 +52,11 @@ public class ShaderPacketCoroutineRunner extends CoroutineTask {
         LocalPlayer player = MINECRAFT.player;
         ClientLevel level = MINECRAFT.level;
 
-        if (!PlayerHelper.isValidPlayerAllowDeath(player) || level == null) {
-            return true;
-        }
+        if (!sleys.sl.library.util.helper.player.PlayerHelper.isValidPlayerAllowDeath(player) || level == null) return true;
+
 
         PlayerPatch<?> playerPatch = EpicFightCapabilities.getPlayerPatch(player);
-        if (playerPatch == null) {
-            return true;
-        }
+        if (playerPatch == null) return true;
 
         updatePlayerState(playerPatch);
         onPlayerClientTick(player, playerPatch);
@@ -95,19 +91,14 @@ public class ShaderPacketCoroutineRunner extends CoroutineTask {
 
     private void updateCurrentSkill(PlayerPatch<?> playerPatch) {
         var container = playerPatch.getSkill(SkillSlots.WEAPON_INNATE);
-        if (container == null) {
-            return;
-        }
+        if (container == null) return;
+
 
         var skill = container.getSkill();
-        if (skill == null) {
-            return;
-        }
+        if (skill == null) return;
 
-        if (!skill.isActivated(container)) {
-            return;
-        }
 
+        if (!skill.isActivated(container)) return;
         ACTUALLY_SKILL = skill.getRegistryName();
     }
 
@@ -177,7 +168,7 @@ public class ShaderPacketCoroutineRunner extends CoroutineTask {
         var actuallyElapseTime = ELAPSE;
 
         if (Math.abs(elapseTime - actuallyElapseTime) < 0.15f) {
-            dispatchOneshotShader(effect.shader());
+            dispatchOneshotShader(effect.shader(), elapseTime);
         }
     }
 
@@ -191,40 +182,41 @@ public class ShaderPacketCoroutineRunner extends CoroutineTask {
     }
 
     private void dispatchHoldShader(EffectCondition condition, IShaderParameters shader) {
-        registerChainEffect(shader.effectType(), condition, shader::create);
+        var id = getHoldShaderId(condition, shader);
+        registerChainEffect(shader.effectType(), condition, () -> shader.create(id));
     }
 
-    private void dispatchOneshotShader(IShaderParameters shader) {
-        if (!isAlreadyActive(shader)) {
-            var fx = shader.create();
-            if (fx == null) {
-                if (shader instanceof ImpactFrameParams i) {
-                    SLLCore.PACKET_HANDLER.sendToServer(
-                            new CTSImpactFramePacket(
-                                    i.radius(), 0, 8, 2,
-                                    i.intensity(), 1, i.atLook(), i.useAberration()
-                            )
-                    );
-                } else if (shader instanceof ColoredImpactFrameParams ci) {
-                    SLLCore.PACKET_HANDLER.sendToServer(
-                            new CTSColoredImpactFramePacket(
-                                    ci.radius(), 0, 8, 2,
-                                    ci.intensity(), 1, ci.atLook(), ci.useAberration(),
-                                    ci.dark_color(), ci.light_color(), ci.contrast()
-                            )
-                    );
-                }
-            }
+    private String getHoldShaderId(EffectCondition condition, IShaderParameters shader) {
+        if (condition instanceof StyleCondition sc) {
+            return "HOLD-" + ForgeRegistries.ITEMS.getKey(sc.weapon()) + "-" + sc.style() + "-" + shader.effectType();
+        } else if (condition instanceof SkillCondition sk) {
+            return "HOLD-" + ForgeRegistries.ITEMS.getKey(sk.weapon()) + "-" + sk.skill() + "-" + shader.effectType();
+        }
+
+        throw new IllegalStateException("The operation fell into an unattainable state");
+    }
+
+    private void dispatchOneshotShader(IShaderParameters shader, float elapse) {
+        var id = getOneshotShaderId(shader, elapse);
+        if (!isAlreadyActive(shader, id)) {
+            if (shader instanceof ImpactFrameParams i ) { i.sendCTS(id); }
+            else if (shader instanceof ColoredImpactFrameParams ci) { ci.sendCTS(id); }
+            shader.create(id);
         }
     }
 
-    private boolean isAlreadyActive(IShaderParameters shader) {
+    private String getOneshotShaderId(IShaderParameters shader, float elapse) {
+        return "ONESHOT-" + ANIMATION + "-" + elapse + "-" + shader.effectType();
+    }
+
+    private boolean isAlreadyActive(IShaderParameters shader, String id) {
         for (var effect : ShaderEventListener.activeEffects()) {
             if (effect.effectType() != shader.effectType()) continue;
-            if (effect.parameters().equals(shader)) {
-                return true;
-            }
+            var activeId = effect.shaderId();
+            if (activeId == null || activeId.isEmpty()) continue;
+            if (activeId.equals(id)) return true;
         }
+
         return false;
     }
 

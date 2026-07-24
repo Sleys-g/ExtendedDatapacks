@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sleys.efedp.capability.StyleWrappedBakedModel;
 import sleys.efedp.system.weapons.ExtendedDatapacksRegistryWeaponsModels;
 import sleys.efedp.system.weapons.json.WeaponPerStyleModelBaker;
-import sleys.sl.epicfight.helper.patch.PatchPlayerHelper;
+import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;

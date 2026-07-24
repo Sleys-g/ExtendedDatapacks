@@ -15,10 +15,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.io.IOUtils;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.util.color.RGB;
-import sleys.sl.library.util.file.GsonUtilities;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.util.data.color.RGB;
+import sleys.sl.library.util.io.GsonUtilities;
 import yesman.epicfight.world.capabilities.item.Style;
 
 import java.io.IOException;
@@ -38,10 +39,9 @@ public class WeaponAdvancedSwingTrail {
 
     @SubscribeEvent
     public static void OnFinalProcessClient(FMLClientSetupEvent event) {
-        if (!LOADED) {
-            LOADED = true;
-            initialize();
-        }
+        if (LOADED) return;
+        LOADED = true;
+        initialize();
     }
 
      public static void reinitializeAdvancedSwingTrail() {
@@ -50,10 +50,12 @@ public class WeaponAdvancedSwingTrail {
 
     private static void initialize() {
         SWING_TRAIL_DATA.clear();
-        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                WeaponAdvancedSwingTrail::startToTracking,
-                "[Advanced Swing Trail] Error loading parameterization configuration"
-        );
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                WeaponAdvancedSwingTrail::startToTracking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Advanced Swing Trail] Error loading parameterization configuration", e
+        ));
     }
 
     private static void startToTracking() {
@@ -70,10 +72,12 @@ public class WeaponAdvancedSwingTrail {
 
         ExtendedDatapacks.LOGGER.info("[Advanced Swing Trail] Loading {} parameterization files for Swing Trails:", resources.size());
         for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () ->  startToLoad(entry.getValue(), entry.getKey()),
-                    "[Advanced Swing Trail] Error loading file: " + entry.getKey()
-            );
+            ExecutionTasks.runAndGetResult(
+                    ExecutionPolicy.RESIST,
+                    () ->  startToLoad(entry.getValue(), entry.getKey())
+            ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                    "[Advanced Swing Trail] Error loading file: {}", entry.getKey(), e
+            ));
         }
 
         ExtendedDatapacks.LOGGER.info("[Advanced Swing Trail] Swing Trails configuration LOADED successfully. {} records",
@@ -110,8 +114,10 @@ public class WeaponAdvancedSwingTrail {
             return;
         }
 
-        AdvancedSwingTrails trail = ErrorPolicy.DEPURATE_ERROR.executeSupplier(
-                () -> parseTrailConfig(trailObj), null
+        AdvancedSwingTrails trail = ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
+                () -> parseTrailConfig(trailObj),
+                null
         );
 
         if (trail != null) {
@@ -138,10 +144,12 @@ public class WeaponAdvancedSwingTrail {
                     continue;
                 }
 
-                ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                        () -> registryParsedAdvancedTrails(styleTrailMap, obj),
-                        "[Advanced Swing Trail] Invalid Style configuration entry: " + obj
-                );
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> registryParsedAdvancedTrails(styleTrailMap, obj)
+                ).ifFailure(exception -> ExtendedDatapacks.LOGGER.warn(
+                        "[Advanced Swing Trail] Invalid Style configuration entry: {}", obj, exception
+                ));
             }
         }
 

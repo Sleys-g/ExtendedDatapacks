@@ -1,16 +1,18 @@
 package sleys.efedp.system.innates.json;
 
 import com.google.gson.JsonObject;
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.world.damagesource.StunType;
 
 import java.util.Locale;
 
-public record AnimationsProperties(float maxStrikes,
-                                   float damageMultiplier,
-                                   float armorNegation,
-                                   float impact,
-                                   String stunType,
-                                   boolean extraDamage) {
+@Internal
+public record InnateAnimationsProperties(float maxStrikes,
+                                         float damageMultiplier,
+                                         float armorNegation,
+                                         float impact,
+                                         String stunType,
+                                         boolean extraDamage) {
 
     public StunType getParsedStuntype() {
         return switch (stunType.toUpperCase(Locale.ROOT)) {
@@ -24,7 +26,7 @@ public record AnimationsProperties(float maxStrikes,
         };
     }
 
-    public static AnimationsProperties parseProperties(JsonObject obj) {
+    public static InnateAnimationsProperties parseProperties(JsonObject obj) {
 
         float maxStrikes = obj.has("max_strikes") ? obj.get("max_strikes").getAsFloat() : 1.0F;
         float damageMultiplier = obj.has("damage_multiplier") ? obj.get("damage_multiplier").getAsFloat() : 1.0F;
@@ -33,7 +35,7 @@ public record AnimationsProperties(float maxStrikes,
         String stunType = obj.has("stun_type") ? obj.get("stun_type").getAsString() : "NONE";
         boolean extraDamage = obj.has("extra_damage") && obj.get("extra_damage").getAsBoolean();
 
-        return new AnimationsProperties(
+        return new InnateAnimationsProperties(
                 maxStrikes,
                 damageMultiplier,
                 armorNegation,

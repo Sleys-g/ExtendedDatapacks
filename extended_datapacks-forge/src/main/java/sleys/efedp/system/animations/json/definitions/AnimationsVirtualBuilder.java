@@ -3,10 +3,11 @@ package sleys.efedp.system.animations.json.definitions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.virtualization.AnimationVirtualDefinition;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -29,51 +30,61 @@ public class AnimationsVirtualBuilder {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWalking(configDir),
-                    "[Animations Virtualization] Error reading Animation Virtualizate config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                configDir, AnimationsVirtualBuilder::startToWalking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Animations Virtualization] Error reading Animation Virtualizate config", e
+        ));
     }
 
-    private static void startToWalking(Path configDir) throws IOException {
+    private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(root ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(root, "config"),
-                                "[Animations Virtualization] Error reading: " + root
-                        )
+                        ExecutionTasks.runAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                () -> startToLoad(root, "config")
+                        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                                "[Animations Virtualization] Error reading: {}", root, e
+                        ))
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var advancedAnimationsBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!advancedAnimationsBuilders.isEmpty()) {
-            for (var entry : advancedAnimationsBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Animations Virtualization] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file, modId),
-                            "[Animations Virtualization] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        if (advancedAnimationsBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+
+        for (var entry : advancedAnimationsBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+
+                ExtendedDatapacks.LOGGER.info(
+                        "[Animations Virtualization] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Animations Virtualization] Error reading: {}", file, e
+                ));
+            }
         }
     }
 

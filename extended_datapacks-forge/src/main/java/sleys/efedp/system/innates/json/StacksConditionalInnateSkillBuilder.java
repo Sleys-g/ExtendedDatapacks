@@ -7,11 +7,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.util.file.GsonUtilities;
-import sleys.sl.library.util.file.JsonComponentArgs;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.util.io.GsonUtilities;
+import sleys.sl.library.util.io.JsonComponentArgs;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -33,51 +34,61 @@ public class StacksConditionalInnateSkillBuilder {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWalking(configDir),
-                    "[Stacks Conditional Innate Skills] Error reading Conditional Innate config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                configDir, StacksConditionalInnateSkillBuilder::startToWalking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.error(
+                "[Stacks Conditional Innate Skills] Error reading Conditional Innate config", e
+        ));
     }
 
-    private static void startToWalking(Path configDir) throws IOException {
+    private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(root ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(root, "config"),
-                                "[Stacks Conditional Innate Skills] Error reading: " + root
-                        )
+                        ExecutionTasks.runAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                () -> startToLoad(root, "config")
+                        ).ifFailure(e -> ExtendedDatapacks.LOGGER.error(
+                                "[Stacks Conditional Innate Skills] Error reading: {}", root, e
+                        ))
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
         var simpleInnateSkillsBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!simpleInnateSkillsBuilders.isEmpty()) {
-            for (var entry : simpleInnateSkillsBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Stacks Conditional Innate Skills] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file, modId),
-                            "[Stacks Conditional Innate Skills] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        if (simpleInnateSkillsBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+
+        for (var entry : simpleInnateSkillsBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info(
+                        "[Stacks Conditional Innate Skills] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.error(
+                        "[Stacks Conditional Innate Skills] Error reading: {}", file, e
+                ));
+            }
         }
     }
 
@@ -147,7 +158,7 @@ public class StacksConditionalInnateSkillBuilder {
 
             String animation = conditionBody.get("animation").getAsString();
             int stacks = GsonUtilities.getAsInteger(conditionBody, "stacks", 1);
-            List<AnimationsProperties> phases = parsePhases(
+            List<InnateAnimationsProperties> phases = parsePhases(
                     conditionBody.get("properties_type").getAsString(),
                     conditionBody.getAsJsonObject("properties"),
                     fileName
@@ -173,19 +184,19 @@ public class StacksConditionalInnateSkillBuilder {
         STACKS_CONDITIONAL_INNATE_SKILL_BUILD_DATA.computeIfAbsent(modId, k -> new ArrayList<>()).add(data);
     }
 
-    private static List<AnimationsProperties> parsePhases(
+    private static List<InnateAnimationsProperties> parsePhases(
             String type,
             JsonObject properties,
             String fileName
     ) {
 
-        List<AnimationsProperties> phases = new ArrayList<>();
+        List<InnateAnimationsProperties> phases = new ArrayList<>();
 
         switch (type) {
 
             case "mono_phase" ->
                     phases.add(
-                            AnimationsProperties.parseProperties(properties)
+                            InnateAnimationsProperties.parseProperties(properties)
                     );
 
             case "multi_phase" ->
@@ -202,7 +213,7 @@ public class StacksConditionalInnateSkillBuilder {
                                         entry.getValue().getAsJsonObject();
 
                                 phases.add(
-                                        AnimationsProperties.parseProperties(phaseObj)
+                                        InnateAnimationsProperties.parseProperties(phaseObj)
                                 );
                             });
 
@@ -245,7 +256,7 @@ public class StacksConditionalInnateSkillBuilder {
     public record ConditionalAnimationData(
             String animation,
             int stacks,
-            List<AnimationsProperties> phases
+            List<InnateAnimationsProperties> phases
     ) {
     }
 }

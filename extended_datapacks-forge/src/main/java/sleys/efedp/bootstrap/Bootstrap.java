@@ -1,10 +1,10 @@
 package sleys.efedp.bootstrap;
 
 import net.minecraftforge.eventbus.api.IEventBus;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.sl.library.runtime.policy.PolicyRuntimeTasks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.runtime.policy.side.LogicalPolicy;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.LogicalPolicy;
+import sleys.sl.library.execution.policy.LogicalTasks;
 
 public class Bootstrap {
 
@@ -13,10 +13,11 @@ public class Bootstrap {
         BootstrapBuilds.Initialize();
         BootstrapCommon.Initialize(modBus);
         BootstrapThirdParties.Initialize(modBus);
-        PolicyRuntimeTasks.runOnLogicalSide(
+        LogicalTasks.operate(
                 LogicalPolicy.LOGICAL_CLIENT,
-                ErrorPolicy.DEPURATE_ERROR,
-                () -> BootstrapClient.Initialize(modBus)
+                ErrorPolicy.DEPURATE,
+                "Bootstrap - Client",
+                modBus, BootstrapClient::Initialize
         );
     }
 }

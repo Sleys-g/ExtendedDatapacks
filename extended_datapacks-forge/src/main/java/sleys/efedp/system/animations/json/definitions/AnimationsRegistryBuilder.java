@@ -4,10 +4,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.registry.AnimationRegistryDefinition;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -30,26 +31,31 @@ public class AnimationsRegistryBuilder {
     }
 
     private static void startToTrackingFromConfig(Path configDir) {
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToWalking(configDir),
-                    "[Animations Registry] Error reading Animation Registry Config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
+
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST, configDir,
+                AnimationsRegistryBuilder::startToWalking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn("[Animations Registry] Error reading Animation Registry Config", e));
     }
 
-    private static void startToWalking(Path configDir) throws IOException {
+    private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
                 .forEach(root ->
-                        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                                () -> startToLoad(root, "config"),
-                                "[Animations Registry] Error reading: " + root
-                        )
+                        ExecutionTasks.runAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                () -> startToLoad(root, "config")
+                        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                                "[Animations Registry] Error reading: {}", root, e
+                        ))
                 )
         ;
+
+        return configDir;
     }
 
     private static void startToTrackingFromAPI() {
@@ -67,10 +73,12 @@ public class AnimationsRegistryBuilder {
                             file.getFileName()
                     );
 
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file, modId),
-                            "[Animations Registry] Error reading: " + file
-                    );
+                    ExecutionTasks.runAndGetResult(
+                            ExecutionPolicy.RESIST,
+                            () -> startToLoad(file, modId)
+                    ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                            "[Animations Registry] Error reading: {}", file, e
+                    ));
                 }
             }
         } else {

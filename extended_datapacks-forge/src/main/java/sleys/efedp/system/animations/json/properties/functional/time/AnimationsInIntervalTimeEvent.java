@@ -1,7 +1,7 @@
 package sleys.efedp.system.animations.json.properties.functional.time;
 
 import com.mojang.serialization.*;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.AnimationEventSideCodec;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.IAnimationEventParams;
 import yesman.epicfight.api.animation.property.AnimationEvent;

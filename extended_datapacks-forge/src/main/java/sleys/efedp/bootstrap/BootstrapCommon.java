@@ -3,7 +3,7 @@ package sleys.efedp.bootstrap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.AnimationRegistryOperations;
 import sleys.efedp.system.innates.ExtendedDatapacksRegistryConditionalInnateSkills;
 import sleys.efedp.system.innates.ExtendedDatapacksRegistryHoldableInnateSkills;

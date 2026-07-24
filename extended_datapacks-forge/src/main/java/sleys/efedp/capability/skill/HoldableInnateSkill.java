@@ -1,8 +1,11 @@
 package sleys.efedp.capability.skill;
 
 import net.minecraft.client.KeyMapping;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.epicfight.skills.interfaces.movement.IOnMovementInputEFSkillEvent;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.annotations.ErrorHandled;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.SynchedAnimationVariableKeys;
 import yesman.epicfight.api.animation.types.AttackAnimation;
@@ -29,15 +32,17 @@ public abstract class HoldableInnateSkill extends WeaponInnateSkill implements C
 
     @Override
     public WeaponInnateSkill registerPropertiesToAnimation() {
-        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                this::registryAnimationsData,
-                "[Holdable - InnateSkill] Fatal error caught during property assignment attempt... " +
-                        "For Skill: "  + this.registryName.getPath() +
-                        ", under NameSpaces: " + this.registryName.getNamespace()
-        );
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                this::registryAnimationsData
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.error(
+                "[Holdable - InnateSkill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
+                this.registryName.getPath(), this.registryName.getNamespace()
+        ));
         return this;
     }
 
+    @ErrorHandled
     private void registryAnimationsData() {
         AttackAnimation anim = this.attackAnimation.get();
         for(AttackAnimation.Phase phase : anim.phases) {

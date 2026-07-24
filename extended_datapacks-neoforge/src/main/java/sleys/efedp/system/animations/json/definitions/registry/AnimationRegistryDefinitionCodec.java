@@ -51,7 +51,9 @@ public record AnimationRegistryDefinitionCodec<T extends DynamicAnimation>(
                     Map.entry(AnimationRegistryType.LONG_HIT,
                             new AnimationRegistryDefinitionCodec<>(LongHitAnimationAccessor.CODEC, LongHitAnimationProperties.CODEC)),
                     Map.entry(AnimationRegistryType.HIT,
-                            new AnimationRegistryDefinitionCodec<>(HitAnimationAccessor.CODEC, HitAnimationProperties.CODEC))
+                            new AnimationRegistryDefinitionCodec<>(HitAnimationAccessor.CODEC, HitAnimationProperties.CODEC)),
+                    Map.entry(AnimationRegistryType.KNOCKDOWN,
+                            new AnimationRegistryDefinitionCodec<>(KnockdownAnimationAccessor.CODEC, KnockdownAnimationProperties.CODEC))
             );
 
 

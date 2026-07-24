@@ -14,9 +14,10 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.io.IOUtils;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.util.file.GsonUtilities;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.util.io.GsonUtilities;
 import yesman.epicfight.world.capabilities.item.Style;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
@@ -33,10 +34,9 @@ public class OverlayAssetPacksSystem {
 
     @SubscribeEvent
     public static void onClientLogin(ClientPlayerNetworkEvent.LoggingIn event) {
-        if (!LOADED) {
-            LOADED = true;
-            initialize();
-        }
+        if (LOADED) return;
+        LOADED = true;
+        initialize();
     }
 
     public static void reinitializeOverlayAssetPack() {
@@ -45,35 +45,42 @@ public class OverlayAssetPacksSystem {
 
     private static void initialize() {
         OVERLAY_PACKETS.clear();
-        ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                OverlayAssetPacksSystem::startToTracking,
-                "[Overlays Packets] Error loading overlay configs"
-        );
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                OverlayAssetPacksSystem::startToTracking
+        ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                "[Overlays Packets] Error loading overlay configs", e
+        ));
     }
 
     private static void startToTracking() {
         var resourceManager = Minecraft.getInstance().getResourceManager();
         var resources = resourceManager.listResources(DIRECTORY_PATH, path -> path.getPath().endsWith(".json"));
         for (var entry : resources.entrySet()) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToLoad(entry.getValue()),
-                    "[Overlays Packets] Error processing: " + entry.getKey()
-            );
+            var resource = entry.getValue();
+            ExecutionTasks.operateAndGetResult(
+                    ExecutionPolicy.RESIST, resource,
+                    OverlayAssetPacksSystem::startToLoad
+            ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                    "[Overlays Packets] Error processing: {}", entry.getKey(), e
+            ));
         }
         ExtendedDatapacks.LOGGER.info("[Overlays Packets] Loaded {} overlay packets", OVERLAY_PACKETS.size());
     }
 
-    private static void startToLoad(Resource resource) throws IOException {
+    private static Resource startToLoad(Resource resource) throws IOException {
         var stream = resource.open();
         String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
-        if (!root.has("overlay_packet") || !root.get("overlay_packet").isJsonArray()) return;
+        if (!root.has("overlay_packet") || !root.get("overlay_packet").isJsonArray()) return null;
 
         JsonArray array = root.getAsJsonArray("overlay_packet");
         for (JsonElement element : array) {
             OverlayPacket packet = OverlayPacket.tryToBuildThis(element.getAsJsonObject());
             OVERLAY_PACKETS.computeIfAbsent(packet.category(), k -> new ArrayList<>()).add(packet);
         }
+
+        return resource;
     }
 
     public static List<OverlayPacket> getForCategory(String category) {

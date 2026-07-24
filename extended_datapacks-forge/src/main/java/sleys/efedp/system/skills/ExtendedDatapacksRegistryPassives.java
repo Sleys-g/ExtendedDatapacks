@@ -1,7 +1,7 @@
 package sleys.efedp.system.skills;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.skills.json.PassiveSkillBuilderModifier;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.skill.guard.GuardSkill;

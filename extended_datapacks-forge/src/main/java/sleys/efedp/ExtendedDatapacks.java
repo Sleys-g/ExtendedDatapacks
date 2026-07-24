@@ -1,10 +1,12 @@
-package sleys.efedp.main;
+package sleys.efedp;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sleys.efedp.client.ExtendedDatapacksClientCommands;
+import sleys.efedp.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.bootstrap.Bootstrap;
+import sleys.efedp.client.config.EpicFightEDPClientConfig;
 import sleys.efedp.system.skills.ExtendedDatapacksRegistryCategoryIcon;
 import sleys.efedp.system.combat.MechanicsAssignerEvent;
 import sleys.efedp.system.combat.ExtendedSkillCategory;
@@ -14,12 +16,13 @@ import sleys.efedp.registry.ExtendedDatapacksRegistrySkills;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import sleys.efedp.system.combat.charged_attacks.ChargedAttackStyles;
-import sleys.efedp.client.EDPCombatKeyBinding;
+import sleys.efedp.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.config.EpicFightEDPConfig;
 import net.minecraftforge.fml.common.Mod;
-import sleys.sl.library.runtime.policy.PolicyRuntimeTasks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
-import sleys.sl.library.runtime.policy.side.LogicalPolicy;
+import sleys.sl.library.annotations.ErrorHandled;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.LogicalPolicy;
+import sleys.sl.library.execution.policy.LogicalTasks;
 import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -29,6 +32,7 @@ public class ExtendedDatapacks {
     public static final Logger LOGGER = LogManager.getLogger(ExtendedDatapacks.class);
 	public static final String MODID = "epicfight_edp";
     private static final String CONFIG_PATH = "epicfight_edp/extended_datapack_config.toml";
+    private static final String CLIENT_CONFIG_PATH = "epicfight_edp/extended_datapack_client_config.toml";
 
 	public ExtendedDatapacks(FMLJavaModLoadingContext context) {
         final var modBus = context.getModEventBus();
@@ -42,14 +46,18 @@ public class ExtendedDatapacks {
         modBus.register(EpicFightConditionsAdderInjector.class);
         context.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EPICFIGHT_CONFIG, CONFIG_PATH);
 
-        PolicyRuntimeTasks.runOnLogicalSide(
+        LogicalTasks.run(
                 LogicalPolicy.LOGICAL_CLIENT,
-                ErrorPolicy.DEPURATE_ERROR,
-                () -> {
-                    modBus.register(EDPCombatKeyBinding.class);
-                    modBus.register(ExtendedDatapacksRegistryCategoryIcon.class);
-                    MinecraftForge.EVENT_BUS.register(ExtendedDatapacksClientCommands.class);
-                }
+                ErrorPolicy.DEPURATE,
+                "Extended Datapacks - Client",
+                () -> ExtendedDatapacksClient(modBus, context)
         );
 	}
+
+    @ErrorHandled
+    private static void ExtendedDatapacksClient(IEventBus modBus, FMLJavaModLoadingContext context) {
+        context.registerConfig(ModConfig.Type.CLIENT, EpicFightEDPClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
+        modBus.register(EDPCombatKeyBinding.class);
+        MinecraftForge.EVENT_BUS.register(ExtendedDatapacksClientCommands.class);
+    }
 }

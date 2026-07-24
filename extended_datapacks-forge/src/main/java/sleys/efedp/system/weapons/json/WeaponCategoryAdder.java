@@ -4,9 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 import java.io.IOException;
@@ -21,34 +22,39 @@ public class WeaponCategoryAdder {
 
     public static void startToTracking(Path configDir) {
         WEAPON_CATEGORY_DATA.clear();
-        if (Files.exists(configDir)) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> startToLoadFromConfig(configDir), "[Add Category to Build] Error reading Category config"
-            );
-        } else {
+        if (!Files.exists(configDir)) {
             fileError("/Config Folder");
+            return;
         }
 
-        var weaponCategoryBuilders = SLDataDrivenAPI.collectResources("weapon_builder/category");
-        if (!weaponCategoryBuilders.isEmpty()) {
-            for (var entry : weaponCategoryBuilders.entrySet()) {
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Add Category to Build] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
+        ExecutionTasks.runAndGetResult(
+                ExecutionPolicy.RESIST,
+                () -> startToLoadFromConfig(configDir)
+        ).ifFailure(e ->
+                ExtendedDatapacks.LOGGER.error("[Add Category to Build] Error reading Category config", e)
+        );
 
-                    ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                            () -> startToLoad(file, modId),
-                            "[Add Category to Build] Error reading: " + file
-                    );
-                }
-            }
-        } else {
+        var weaponCategoryBuilders = SLDataDrivenAPI.collectResources("weapon_builder/category");
+        if (weaponCategoryBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+
+        for (var entry : weaponCategoryBuilders.entrySet()) {
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+                ExtendedDatapacks.LOGGER.info(
+                        "[Add Category to Build] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.error("[Add Category to Build] Error reading: {}", file, e));
+            }
         }
     }
 
@@ -62,9 +68,12 @@ public class WeaponCategoryAdder {
     @SuppressWarnings("all")
     private static void startToLoadFromConfig(Path configDir) throws IOException {
         Files.list(configDir).filter(p -> p.toString().endsWith(".json"))
-                .forEach(p -> ErrorPolicy.DEPURATE_ERROR.executeTask(
-                        () -> startToLoad(p, "config")
-                ))
+                .forEach(p ->
+                        ExecutionTasks.runAndGetResult(
+                                ExecutionPolicy.RESIST,
+                                () -> startToLoad(p, "config")
+                        )
+                )
         ;
     }
 

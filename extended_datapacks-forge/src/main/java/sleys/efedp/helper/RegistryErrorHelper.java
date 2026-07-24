@@ -1,20 +1,20 @@
-package sleys.efedp.system.innates;
+package sleys.efedp.helper;
 
 import net.minecraft.resources.ResourceLocation;
 import sleys.sl.epicfight.util.helper.animation.AnimationHelper;
 
 import javax.annotation.Nullable;
 
-public final class RegistryInnateHelper extends AnimationHelper {
+public final class RegistryErrorHelper extends AnimationHelper {
 
-    protected enum ErrorsType {
+    public enum ErrorsType {
         DUPE,
         REGISTRY_BUILDER,
         NULL_ANIMATION_KEY,
         UNPARSEABLE
     }
 
-    static String getError(ErrorsType type, String name, String modId, Object errorComodin, @Nullable Object errorExtra) {
+    public static String getError(ErrorsType type, String name, String modId, Object errorComodin, @Nullable Object errorExtra) {
         return switch (type) {
             case UNPARSEABLE -> String.format("""
                     Skill name: %s

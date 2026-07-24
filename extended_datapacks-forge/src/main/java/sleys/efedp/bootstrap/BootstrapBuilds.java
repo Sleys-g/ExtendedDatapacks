@@ -1,7 +1,7 @@
 package sleys.efedp.bootstrap;
 
 import net.minecraftforge.fml.loading.FMLPaths;
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.AnimationsConfigBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsRegistryBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsVirtualBuilder;
@@ -14,7 +14,7 @@ import sleys.efedp.system.skills.json.PassiveSkillBuilderModifier;
 import sleys.efedp.system.skills.json.SkillIconBuilderModifier;
 import sleys.efedp.system.thirdparty.combatevolution.json.ExecutionAnimationBuilderModifier;
 import sleys.efedp.system.weapons.json.WeaponCategoryAdder;
-import sleys.sl.library.util.file.BuildPathOrFile;
+import sleys.sl.library.util.io.BuildPathOrFile;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;

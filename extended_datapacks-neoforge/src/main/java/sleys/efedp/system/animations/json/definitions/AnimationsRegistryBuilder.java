@@ -60,29 +60,29 @@ public class AnimationsRegistryBuilder {
 
     private static void startToTrackingFromAPI() {
         var advancedAnimationsBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!advancedAnimationsBuilders.isEmpty()) {
-            for (var entry : advancedAnimationsBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Animations Registry] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ExecutionTasks.runAndGetResult(
-                            ExecutionPolicy.RESIST,
-                            () -> startToLoad(file, modId)
-                    ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
-                            "[Animations Registry] Error reading: {}", file, e
-                    ));
-                }
-            }
-        } else {
+        if (advancedAnimationsBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+        for (var entry : advancedAnimationsBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+
+                ExtendedDatapacks.LOGGER.info(
+                        "[Animations Registry] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Animations Registry] Error reading: {}", file, e
+                ));
+            }
         }
     }
 

@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.system.animations.json.properties.functional.helpers.ParticleShapeHelper;
-import sleys.sl.library.util.data.EnumCodecs;
+import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;

@@ -4,9 +4,10 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="epicfight_edp"
-version="2.4"
+version="2.4.1"
 displayName="Epic Fight - Extended Datapacks"
 authors="Sleys"
+logoFile = "extended_datapacks.png"
 description="""
 Epic Fight, but the Datapacks Accepts Passives Skills, Skill Datakeys, Charged Attacks,
 Swing Trails per Style, Item Model per Style, ShaderFx On Skill, Style or Animations, Weapons Category,

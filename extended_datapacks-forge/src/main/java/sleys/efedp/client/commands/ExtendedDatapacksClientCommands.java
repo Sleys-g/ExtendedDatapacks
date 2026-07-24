@@ -1,4 +1,4 @@
-package sleys.efedp.client;
+package sleys.efedp.client.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.client.Minecraft;
@@ -6,13 +6,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.system.visuals.ShaderPacketCoroutineRunner;
 import sleys.efedp.system.visuals.json.OverlayAssetPacksSystem;
 import sleys.efedp.system.visuals.json.ShaderAssetsPacksSystem;
 import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrail;

@@ -12,8 +12,8 @@ import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
-import sleys.sl.library.runtime.policy.PolicyRuntimeTasks;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener;
@@ -79,12 +79,12 @@ public class DemonicAscensionSkillMixin {
 
     @Unique
     private boolean extended_datapacks$needShouldActivate(SkillContainer container, Player player) {
-        return PolicyRuntimeTasks.getOrDefault(
-                ErrorPolicy.DEPURATE_ERROR,
+        return ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
                 () -> container.getExecutor().getEntityState().canBasicAttack() ||
-                      Boolean.TRUE.equals(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get())) ||
-                      (Boolean.TRUE.equals(container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) &&
-                      container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= 800) || player.isCreative(),
+                        Boolean.TRUE.equals(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get())) ||
+                        (Boolean.TRUE.equals(container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) &&
+                                container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= 800) || player.isCreative(),
                 false
         );
     }

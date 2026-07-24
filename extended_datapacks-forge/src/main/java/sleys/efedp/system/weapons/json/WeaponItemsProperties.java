@@ -13,9 +13,10 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
-import sleys.efedp.main.ExtendedDatapacks;
-import sleys.sl.epicfight.helper.patch.PatchPlayerHelper;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,10 +55,16 @@ public class WeaponItemsProperties extends SimplePreparableReloadListener<Map<Re
 
         Map<ResourceLocation, WeaponItemPropertyData> newEntries = new HashMap<>();
         object.forEach((location, element) ->
-                ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                        () -> this.startToRegistry(newEntries, location, element),
-                "[Weapons Item Properties] Error when trying to load the weapon properties: " + location + "; due to a: "
-        ));
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> this.startToRegistry(newEntries, location, element)
+                ).ifFailure(e ->
+                        ExtendedDatapacks.LOGGER.error(
+                                "[Weapons Item Properties] Error when trying to load the weapon properties: {}; due to a: ",
+                                location, e
+                        )
+                )
+        );
 
         WEAPON_ITEM_PROPERTIES_DATA = newEntries;
     }

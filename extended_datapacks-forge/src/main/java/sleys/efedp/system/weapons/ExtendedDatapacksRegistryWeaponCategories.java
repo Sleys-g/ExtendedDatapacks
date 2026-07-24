@@ -1,6 +1,6 @@
 package sleys.efedp.system.weapons;
 
-import sleys.efedp.main.ExtendedDatapacks;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.weapons.json.WeaponCategoryAdder;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 

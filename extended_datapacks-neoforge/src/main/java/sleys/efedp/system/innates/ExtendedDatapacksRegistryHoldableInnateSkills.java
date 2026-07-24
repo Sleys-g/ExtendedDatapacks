@@ -13,6 +13,7 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.capability.skills.HoldableInnateSkill;
+import sleys.efedp.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.HoldableInnateSkillBuilder;
 import sleys.sl.epicfight.client.events.EFMovementInputEvent;
 import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
@@ -73,11 +74,11 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                 ResourceLocation animationId = ResourceLocation.tryParse(animationName);
                 ResourceLocation chargeAnimationId = ResourceLocation.tryParse(chargeAnimation);
                 if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryInnateHelper.getError(RegistryInnateHelper.ErrorsType.UNPARSEABLE, name, modId, animationName, null));
+                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(RegistryErrorHelper.ErrorsType.UNPARSEABLE, name, modId, animationName, null));
                     continue;
                 }
                 if (chargeAnimationId == null) {
-                    RUNTIME_ERRORS.add(RegistryInnateHelper.getError(RegistryInnateHelper.ErrorsType.UNPARSEABLE, name, modId, chargeAnimation, null));
+                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(RegistryErrorHelper.ErrorsType.UNPARSEABLE, name, modId, chargeAnimation, null));
                     continue;
                 }
 
@@ -98,8 +99,8 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                         var animationKey = AnimationManager.byKey(virtualAnimationId);
                         if (animationKey == null) {
                             RUNTIME_ERRORS.add(
-                                    RegistryInnateHelper.getError(
-                                            RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                                    RegistryErrorHelper.getError(
+                                            RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                             name, modId, animationId, null
                                     )
                             );
@@ -109,16 +110,16 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                         var chargeAnimationKey = AnimationManager.byKey(virtualChargeAnimationId);
                         if (chargeAnimationKey == null) {
                             RUNTIME_ERRORS.add(
-                                    RegistryInnateHelper.getError(
-                                            RegistryInnateHelper.ErrorsType.NULL_ANIMATION_KEY,
+                                    RegistryErrorHelper.getError(
+                                            RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
                                             name, modId, chargeAnimationId, null
                                     )
                             );
                             return Skill.EMPTY;
                         }
 
-                        var attackAnimationKey = RegistryInnateHelper.getAttackAnimationAccessor(animationKey);
-                        var chargedAnimationKey = RegistryInnateHelper.getStaticAnimationAccessor(chargeAnimationKey);
+                        var attackAnimationKey = RegistryErrorHelper.getAttackAnimationAccessor(animationKey);
+                        var chargedAnimationKey = RegistryErrorHelper.getStaticAnimationAccessor(chargeAnimationKey);
                         var maxAllowedCharging = skillData.maxAllowedCharging();
                         var maxChargingTicks = skillData.maxChargingTicks();
                         var minChargingTicks = skillData.minChargingTicks();
@@ -251,16 +252,16 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                         for (var registryId : registry.getEntries()) {
                             var registryName = registryId.get().getRegistryName();
                             if (registryName.equals(ResourceLocation.fromNamespaceAndPath(modId, name))) {
-                                RUNTIME_ERRORS.add(RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.DUPE,
+                                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.DUPE,
                                         name, modId, animationId,e.getCause()
                                 ));
                                 return Skill.EMPTY;
                             }
                         }
                         RUNTIME_ERRORS.add(
-                                RegistryInnateHelper.getError(
-                                        RegistryInnateHelper.ErrorsType.REGISTRY_BUILDER,
+                                RegistryErrorHelper.getError(
+                                        RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
                                         name, modId, animationId, e.getCause()
                                 )
                         );

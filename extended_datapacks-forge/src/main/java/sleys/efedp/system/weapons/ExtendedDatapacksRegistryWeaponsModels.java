@@ -5,8 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.weapons.json.WeaponPerStyleModelBaker;
-import sleys.sl.library.runtime.policy.error.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +28,14 @@ public class ExtendedDatapacksRegistryWeaponsModels {
     public static void registryStyleModels(ModelEvent.RegisterAdditional registerAdditional) {
         var modelsSet = WeaponPerStyleModelBaker.getAllModels();
         for (var model : modelsSet) {
-            ErrorPolicy.DEPURATE_ERROR.executeTaskWithMsg(
-                    () -> setModelResourceLocation(registerAdditional, model),
-                    "[Registry Style Models] Fatal error when trying to register the model: " + model
+            ExecutionTasks.runAndGetResult(
+                    ExecutionPolicy.RESIST,
+                    () -> setModelResourceLocation(registerAdditional, model)
+            ).ifFailure(e ->
+                    ExtendedDatapacks.LOGGER.error(
+                            "[Registry Style Models] Fatal error when trying to register the model: {}",
+                            model
+                    )
             );
         }
     }

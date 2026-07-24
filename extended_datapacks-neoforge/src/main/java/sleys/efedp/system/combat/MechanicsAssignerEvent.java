@@ -14,12 +14,11 @@ public class MechanicsAssignerEvent {
     @SubscribeEvent
     public static void onPlayerTickEvent(PlayerTickEvent.Post event) {
         PlayerPatch<?> playerPatch = PatchPlayerHelper.safeParametricePlayerPatchTickEvent(event);
-        if (playerPatch != null) {
-            ExecutionTasks.operateAndGetResult(
-                    ExecutionPolicy.RESIST,
-                    playerPatch, MechanicsAssignerEvent::onChargedSlot
-            );
-        }
+        if (playerPatch == null) return;
+        ExecutionTasks.operateAndGetResult(
+                ExecutionPolicy.RESIST,
+                playerPatch, MechanicsAssignerEvent::onChargedSlot
+        );
     }
 
     @ErrorHandled
