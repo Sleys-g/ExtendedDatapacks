@@ -7,6 +7,7 @@ import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
+
 public sealed interface IVirtualAnimation<T extends StaticAnimation> permits
         VirtualActionAnimationGroup, VirtualAttackAnimationGroup, VirtualStaticAnimationGroup {
 
