@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(AnimationsEventsList type,
+public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimationEventType type,
                                                                        AnimationEvent.Side side,
                                                                        Float start,
                                                                        Float interval,
@@ -40,7 +40,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(Animation
                     return DataResult.error(() -> "Missing 'type' field in animation event");
                 }
 
-                return AnimationsEventsList.CODEC.parse(ops, typeRaw).flatMap(type -> {
+                return AnimationEventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
                     O sideRaw = input.get("side");
                     O startRaw = input.get("start");
                     O intervalRaw = input.get("interval");
@@ -93,7 +93,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(Animation
             @Override
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsInIntervalTimeEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
-                prefix.add("type", AnimationsEventsList.CODEC.encodeStart(ops, input.type()));
+                prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
                 prefix.add("side", AnimationEventSideCodec.CODEC.encodeStart(ops, input.side()));
                 prefix.add("start", Codec.FLOAT.encodeStart(ops, input.start()));
                 prefix.add("interval", Codec.FLOAT.encodeStart(ops, input.interval));

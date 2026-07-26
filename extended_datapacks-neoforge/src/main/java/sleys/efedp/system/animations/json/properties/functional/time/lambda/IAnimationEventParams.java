@@ -9,7 +9,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public sealed interface IAnimationEventParams permits CameraTransitionEvent, CircleParticleEvent, ColumnEvent, ColumnLineEvent, CommandAnimationEvent, DirectionalBurstEvent, EntityAfterImageEvent, FloorParticleEvent, FractureGroundEvent, InvulnerabilityAnimationEvent, JointParticleEvent, JointShootProjectileEvent, PlayAnimationEvent, RadialFloorExpandEvent, ShapeParticleEvent, SmallExplosionEvent, SummonEntityOnTargetEvent, TeleportEvent, ThunderAnimationEvent, TranslateEvent, WeaponShapeParticleEvent, WhiteAfterImageEvent {
+public sealed interface IAnimationEventParams permits CameraTransitionEvent, CircleParticleEvent, ColumnEvent, ColumnLineEvent, CommandAnimationEvent, DirectionalBurstEvent, EntityAfterImageEvent, FloorParticleEvent, FractureGroundEvent, IAnimationExternalEventParams, InvulnerabilityAnimationEvent, JointParticleEvent, JointShootProjectileEvent, PlayAnimationEvent, RadialFloorExpandEvent, ShapeParticleEvent, SmallExplosionEvent, SummonEntityOnTargetEvent, TeleportEvent, ThunderAnimationEvent, TranslateEvent, WeaponShapeParticleEvent, WhiteAfterImageEvent {
 
     <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch);
 

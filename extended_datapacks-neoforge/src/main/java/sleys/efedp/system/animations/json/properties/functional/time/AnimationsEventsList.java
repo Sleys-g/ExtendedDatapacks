@@ -1,16 +1,9 @@
 package sleys.efedp.system.animations.json.properties.functional.time;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.*;
-import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-import java.util.Locale;
-
-public enum AnimationsEventsList {
+public enum AnimationsEventsList implements IAnimationEventType {
     WHITE_AFTERIMAGE(WhiteAfterImageEvent.CODEC),
     ENTITY_AFTERIMAGE(EntityAfterImageEvent.CODEC),
     FRACTURE_GROUND(FractureGroundEvent.CODEC),
@@ -46,16 +39,4 @@ public enum AnimationsEventsList {
     public MapCodec<? extends IAnimationEventParams> paramsCodec() {
         return codec;
     }
-
-    public <T extends StaticAnimation> void runEvent(
-            IAnimationEventParams event,
-            AssetAccessor<T> accessor,
-            LivingEntityPatch<?> livingEntityPatch) {
-
-        event.execute(accessor, livingEntityPatch);
-    }
-
-    public static final Codec<AnimationsEventsList> CODEC = EnumCodecs.byId(values(),
-            e -> e.name().toUpperCase(Locale.ROOT)
-    );
 }

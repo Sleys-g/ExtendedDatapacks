@@ -8,7 +8,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 
 import java.util.stream.Stream;
 
-public record PlaySpeedModifier<T extends StaticAnimation>(PlaySpeedModifierLambdaList type,
+public record PlaySpeedModifier<T extends StaticAnimation>(IPlaySpeedModifierType type,
                                                            IPlaySpeedModifierParams params) implements IPlaySpeedModifier<T> {
 
     public static <T extends StaticAnimation> Codec<PlaySpeedModifier<T>> codec() {
@@ -29,7 +29,7 @@ public record PlaySpeedModifier<T extends StaticAnimation>(PlaySpeedModifierLamb
                     return DataResult.error(() -> "Missing 'type' field in Play Speed Animation Lambda");
                 }
 
-                return PlaySpeedModifierLambdaList.CODEC.parse(ops, typeRaw).flatMap(type -> {
+                return PlaySpeedModifierTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
                     O paramsRaw = input.get("params");
 
                     DataResult<? extends IPlaySpeedModifierParams> paramsResult = type
@@ -54,7 +54,7 @@ public record PlaySpeedModifier<T extends StaticAnimation>(PlaySpeedModifierLamb
             @Override
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(PlaySpeedModifier<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
-                prefix.add("type", PlaySpeedModifierLambdaList.CODEC.encodeStart(ops, input.type()));
+                prefix.add("type", PlaySpeedModifierTypeRegistry.CODEC.encodeStart(ops, input.type()));
                 if (input.params() != null) {
                     Codec<IPlaySpeedModifierParams> paramsCodec = (Codec) input.type().paramsCodec().codec();
                     prefix.add("params", paramsCodec.encodeStart(ops, input.params()));

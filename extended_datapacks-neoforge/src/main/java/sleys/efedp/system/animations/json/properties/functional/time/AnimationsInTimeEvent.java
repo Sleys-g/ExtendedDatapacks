@@ -9,7 +9,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 
 import java.util.stream.Stream;
 
-public record AnimationsInTimeEvent<T extends StaticAnimation>(AnimationsEventsList type,
+public record AnimationsInTimeEvent<T extends StaticAnimation>(IAnimationEventType type,
                                                                AnimationEvent.Side side,
                                                                Float start,
                                                                IAnimationEventParams params) implements IAnimationEvent<T> {
@@ -34,7 +34,7 @@ public record AnimationsInTimeEvent<T extends StaticAnimation>(AnimationsEventsL
                     return DataResult.error(() -> "Missing 'type' field in animation event");
                 }
 
-                return AnimationsEventsList.CODEC.parse(ops, typeRaw).flatMap(type -> {
+                return AnimationEventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
                     O sideRaw = input.get("side");
                     O startRaw = input.get("start");
                     O paramsRaw = input.get("params");
@@ -73,7 +73,7 @@ public record AnimationsInTimeEvent<T extends StaticAnimation>(AnimationsEventsL
             @Override
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsInTimeEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
-                prefix.add("type", AnimationsEventsList.CODEC.encodeStart(ops, input.type()));
+                prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
                 prefix.add("side", AnimationEventSideCodec.CODEC.encodeStart(ops, input.side()));
                 prefix.add("start", Codec.FLOAT.encodeStart(ops, input.start()));
 
