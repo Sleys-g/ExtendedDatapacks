@@ -9,7 +9,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 
 import java.util.stream.Stream;
 
-public record AnimationsInPeriodTimeEvent<T extends StaticAnimation>(AnimationsEventsList type,
+public record AnimationsInPeriodTimeEvent<T extends StaticAnimation>(IAnimationEventType type,
                                                                      AnimationEvent.Side side,
                                                                      Float start, Float end,
                                                                      IAnimationEventParams params) implements IAnimationEvent<T> {
@@ -35,7 +35,7 @@ public record AnimationsInPeriodTimeEvent<T extends StaticAnimation>(AnimationsE
                     return DataResult.error(() -> "Missing 'type' field in animation event");
                 }
 
-                return AnimationsEventsList.CODEC.parse(ops, typeRaw).flatMap(type -> {
+                return AnimationEventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
                     O sideRaw = input.get("side");
                     O startRaw = input.get("start");
                     O endRaw = input.get("end");
@@ -79,7 +79,7 @@ public record AnimationsInPeriodTimeEvent<T extends StaticAnimation>(AnimationsE
             @Override
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsInPeriodTimeEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
-                prefix.add("type", AnimationsEventsList.CODEC.encodeStart(ops, input.type()));
+                prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
                 prefix.add("side", AnimationEventSideCodec.CODEC.encodeStart(ops, input.side()));
                 prefix.add("start", Codec.FLOAT.encodeStart(ops, input.start()));
                 prefix.add("end", Codec.FLOAT.encodeStart(ops, input.end()));
