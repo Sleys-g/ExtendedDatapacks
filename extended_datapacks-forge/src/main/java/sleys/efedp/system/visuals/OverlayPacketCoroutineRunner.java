@@ -102,6 +102,7 @@ public class OverlayPacketCoroutineRunner extends CoroutineTask implements IEven
     }
 
     private void onClientAnimator(PlayerPatch<?> playerPatch) {
+        ACTUALLY_ANIMATION = null; /// Bug Fix #2, Overlay Looping
         for (var layer : playerPatch.getClientAnimator().getAllLayers()) {
             var animationPlayer = layer.animationPlayer;
             if (Float.isNaN(animationPlayer.getElapsedTime())) continue;
