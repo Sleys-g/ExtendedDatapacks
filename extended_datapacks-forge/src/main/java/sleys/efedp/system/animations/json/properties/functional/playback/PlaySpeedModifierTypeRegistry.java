@@ -33,6 +33,7 @@ public final class PlaySpeedModifierTypeRegistry {
     }
 
     public static IPlaySpeedModifierType get(String key) {
+        key = key.toLowerCase(Locale.ROOT);
         IPlaySpeedModifierType type = BY_KEY.get(key);
         if (type != null) return type;
 

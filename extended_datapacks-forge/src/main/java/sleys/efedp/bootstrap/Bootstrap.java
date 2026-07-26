@@ -3,6 +3,8 @@ package sleys.efedp.bootstrap;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierLambdaList;
+import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierTypeRegistry;
+import sleys.efedp.system.animations.json.properties.functional.time.AnimationEventTypeRegistry;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationsEventsList;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;

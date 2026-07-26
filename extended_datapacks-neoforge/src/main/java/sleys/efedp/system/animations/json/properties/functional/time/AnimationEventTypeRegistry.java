@@ -34,6 +34,7 @@ public final class AnimationEventTypeRegistry {
     }
 
     public static IAnimationEventType get(String key) {
+        key = key.toLowerCase(Locale.ROOT);
         IAnimationEventType type = BY_KEY.get(key);
         if (type != null) return type;
 
