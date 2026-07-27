@@ -37,14 +37,14 @@ Take a look at what is currently implemented and what is coming next!
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates
-| Update | Priority |
-|--------|----------|
-| ?      | 🔻 Low   |
-| ?      | 🔻 Low   |
+| Update                                    | Priority | version |
+|-------------------------------------------|----------|---------|
+| Camera Packet on Animations               | 🔻 Low   | v2.6    |
+| Weapons Passive Skill                     | 🔻 Low   | v2.7    |
+| Skill Books (Dodge / Guard / Passive)     | 🔻 Low   | v2.8    |
+| Custom Skill Slots, Slots, Modified Slots | 🔻 Low   | v2.9    |
 
-## 💡 **Future Ideas**
+## 📌 Project Status
 
-| Update                                | Probability |
-|---------------------------------------|-------------|
-| Camera Packet on Animations (1.20.1)  | 🔶 Mid      |
-| Skill Books (Dodge / Guard / General) | 🔻 Low      |
+As version **3.0** approaches, the focus will be on consolidating, stabilizing, and freezing the system to ensure stability before beginning UI development and facilitating the design and creation of datapacks, assetpacks, and add-ons.
+Once version **3.0** is reached, the project will be renamed from **"Epic Fight: Extended Datapacks"** to **"Epic Fight: Extended Development Platform"**.
