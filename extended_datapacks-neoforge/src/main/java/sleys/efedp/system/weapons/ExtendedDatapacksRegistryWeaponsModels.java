@@ -1,5 +1,6 @@
 package sleys.efedp.system.weapons;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
@@ -24,7 +25,7 @@ public class ExtendedDatapacksRegistryWeaponsModels {
         return MODEL_RESOURCE_LOCATION.get(model);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registryStyleModels(ModelEvent.RegisterAdditional registerAdditional) {
         var modelsSet = WeaponPerStyleModelBaker.getAllModels();
         for (var model : modelsSet) {
@@ -40,10 +41,26 @@ public class ExtendedDatapacksRegistryWeaponsModels {
         }
     }
 
-    private static void setModelResourceLocation(ModelEvent.RegisterAdditional registerAdditional,
-                                                 ResourceLocation model) {
-        var modelResourceLocation = ModelResourceLocation.standalone(model);
+    private static void setModelResourceLocation(ModelEvent.RegisterAdditional registerAdditional, ResourceLocation model) {
+        ExtendedDatapacks.LOGGER.warn("[Registry Style Models] Modelo: {}", model);
+        if (!modelFileExists(model)) {
+            ExtendedDatapacks.LOGGER.warn("[Registry Style Models] Model not found, omitted: {}", model);
+            return;
+        }
+
+        var modelResourceLocation = new ModelResourceLocation(model, "standalone");
         registerAdditional.register(modelResourceLocation);
         MODEL_RESOURCE_LOCATION.put(model, modelResourceLocation);
+    }
+
+    private static boolean modelFileExists(ResourceLocation model) {
+        ResourceLocation modelFile = ResourceLocation.fromNamespaceAndPath(
+                model.getNamespace(),
+                "models/" + model.getPath() + ".json"
+        );
+        return Minecraft.getInstance()
+                .getResourceManager()
+                .getResource(modelFile)
+                .isPresent();
     }
 }

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sleys.efedp.capability.StyleWrappedBakedModel;
 import sleys.efedp.system.weapons.ExtendedDatapacksRegistryWeaponsModels;
 import sleys.efedp.system.weapons.json.WeaponPerStyleModelBaker;
+import sleys.sl.epicfight.capability.StyleInvalid;
 import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -27,9 +29,6 @@ import javax.annotation.Nullable;
 
 @Mixin(ItemOverrides.class)
 public class ItemOverridesMixinClient {
-
-    @Unique
-    private static final BakedModel MISSING_TEXTURE = Minecraft.getInstance().getModelManager().getMissingModel();
 
     @Inject(
             method = "resolve",
@@ -50,31 +49,35 @@ public class ItemOverridesMixinClient {
         BakedModel modelSocket = extended_datapacks$getModelStyleSocket(config, playerPatch, stack);
         if (modelSocket == null) return;
 
-        if (modelSocket != MISSING_TEXTURE) {
+        if (modelSocket != Minecraft.getInstance().getModelManager().getMissingModel()) {
             BakedModel wrapped = new StyleWrappedBakedModel(originalModel, modelSocket);
             cir.setReturnValue(wrapped);
         }
     }
 
-    @Unique
-    private static BakedModel extended_datapacks$getModelStyleSocket(WeaponPerStyleModelBaker.WeaponModelPerStyle config, PlayerPatch<?> playerPatch, ItemStack stack) {
+    @Unique @SuppressWarnings("all")
+    private static BakedModel extended_datapacks$getModelStyleSocket(WeaponPerStyleModelBaker.WeaponModelPerStyle config,
+                                                                     PlayerPatch<?> playerPatch, ItemStack stack) {
         final boolean isMainHanded = playerPatch.getOriginal()
                 .getItemInHand(InteractionHand.MAIN_HAND)
                 .getItem().equals(stack.getItem());
+        if (!isMainHanded) return null;
 
-        if (isMainHanded) {
-            CapabilityItem currentCapability = playerPatch.getHoldingItemCapability(InteractionHand.MAIN_HAND);
-            if (currentCapability != null) {
-                Style currentStyle = currentCapability.getStyle(playerPatch);
-                ResourceLocation currentModel = config.getModel(currentStyle);
-                if (currentModel != null) {
-                    return Minecraft.getInstance().getItemRenderer()
-                            .getItemModelShaper()
-                            .getModelManager()
-                            .getModel(ExtendedDatapacksRegistryWeaponsModels.getModelResourceLocation(currentModel));
-                }
-            }
-        }
-        return null;
+        CapabilityItem currentCapability = playerPatch.getHoldingItemCapability(InteractionHand.MAIN_HAND);
+        if (currentCapability == null) return null;
+
+        Style currentStyle = currentCapability.getStyle(playerPatch);
+        if (currentStyle == null || currentStyle.equals(StyleInvalid.INVALID)) return null;
+
+        ResourceLocation currentModel = config.getModel(currentStyle);
+        if (currentModel == null) return null;
+
+        ModelResourceLocation redirectedModel = ExtendedDatapacksRegistryWeaponsModels.getModelResourceLocation(currentModel);
+        if (redirectedModel == null) return null;
+
+        return Minecraft.getInstance().getItemRenderer()
+                .getItemModelShaper()
+                .getModelManager()
+                .getModel(redirectedModel);
     }
 }

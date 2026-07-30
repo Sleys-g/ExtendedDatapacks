@@ -1,5 +1,6 @@
 package sleys.efedp.system.weapons;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelEvent;
@@ -24,7 +25,7 @@ public class ExtendedDatapacksRegistryWeaponsModels {
         return MODEL_RESOURCE_LOCATION.get(model);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registryStyleModels(ModelEvent.RegisterAdditional registerAdditional) {
         var modelsSet = WeaponPerStyleModelBaker.getAllModels();
         for (var model : modelsSet) {
@@ -40,13 +41,6 @@ public class ExtendedDatapacksRegistryWeaponsModels {
         }
     }
 
-    private static void setModelResourceLocation(ModelEvent.RegisterAdditional registerAdditional, ResourceLocation rawModel) {
-        ResourceLocation model = getModelPath(rawModel);
-        var modelResourceLocation = new ModelResourceLocation(model, "inventory");
-        registerAdditional.register(modelResourceLocation);
-        MODEL_RESOURCE_LOCATION.put(rawModel, modelResourceLocation);
-    }
-
     private static ResourceLocation getModelPath(ResourceLocation rawModel) {
         ResourceLocation model = rawModel;
 
@@ -56,5 +50,29 @@ public class ExtendedDatapacksRegistryWeaponsModels {
         }
 
         return model;
+    }
+
+    private static void setModelResourceLocation(ModelEvent.RegisterAdditional registerAdditional, ResourceLocation rawModel) {
+        ResourceLocation model = getModelPath(rawModel);
+
+        if (!modelFileExists(model)) {
+            ExtendedDatapacks.LOGGER.warn("[Registry Style Models] Model not found, omitted: {}", model);
+            return;
+        }
+
+        var modelResourceLocation = new ModelResourceLocation(model, "inventory");
+        registerAdditional.register(modelResourceLocation);
+        MODEL_RESOURCE_LOCATION.put(rawModel, modelResourceLocation);
+    }
+
+    private static boolean modelFileExists(ResourceLocation model) {
+        ResourceLocation modelFile = ResourceLocation.fromNamespaceAndPath(
+                model.getNamespace(),
+                "models/item/" + model.getPath() + ".json"
+        );
+        return Minecraft.getInstance()
+                .getResourceManager()
+                .getResource(modelFile)
+                .isPresent();
     }
 }
