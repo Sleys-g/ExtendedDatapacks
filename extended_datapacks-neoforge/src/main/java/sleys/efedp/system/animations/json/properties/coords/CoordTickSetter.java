@@ -6,7 +6,7 @@ import yesman.epicfight.api.animation.types.ActionAnimation;
 
 public record CoordTickSetter<T extends ActionAnimation>(MoveCoordSetterFn function) implements IAnimationCoord<T> {
 
-    public static <T extends ActionAnimation> MapCodec<CoordTickSetter<T>> codec() {
+    public static <T extends ActionAnimation> MapCodec<? extends IAnimationCoord<?>> codec() {
         return MoveCoordSetterFn.CODEC.fieldOf("coord_function").xmap(CoordTickSetter::new, CoordTickSetter::function);
     }
 

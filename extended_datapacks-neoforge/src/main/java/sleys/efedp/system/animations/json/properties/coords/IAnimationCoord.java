@@ -11,14 +11,7 @@ public sealed interface IAnimationCoord<T extends ActionAnimation> permits
         return AnimationCoordType.CODEC.dispatch(
                 "coord_type",
                 IAnimationCoord::coordType,
-                type -> switch (type) {
-                    case COORD_SET_BEGIN -> CoordBeginSetter.codec();
-                    case COORD_SET_TICK -> CoordTickSetter.codec();
-                    case COORD_GET -> CoordGetter.codec();
-                    case DEST_LOCATION_PROVIDER -> DestLocationProvider.codec();
-                    case ENTITY_YROT_PROVIDER -> EntityYRotProvider.codec();
-                    case DEST_COORD_YROT_PROVIDER -> DestCoordYRotProvider.codec();
-                }
+                AnimationCoordType::codec
         );
     }
 
