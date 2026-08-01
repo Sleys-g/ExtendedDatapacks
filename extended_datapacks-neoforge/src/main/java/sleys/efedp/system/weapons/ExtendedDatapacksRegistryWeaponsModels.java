@@ -42,7 +42,6 @@ public class ExtendedDatapacksRegistryWeaponsModels {
     }
 
     private static void setModelResourceLocation(ModelEvent.RegisterAdditional registerAdditional, ResourceLocation model) {
-        ExtendedDatapacks.LOGGER.warn("[Registry Style Models] Modelo: {}", model);
         if (!modelFileExists(model)) {
             ExtendedDatapacks.LOGGER.warn("[Registry Style Models] Model not found, omitted: {}", model);
             return;
