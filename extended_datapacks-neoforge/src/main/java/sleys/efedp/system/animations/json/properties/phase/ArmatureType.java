@@ -1,7 +1,6 @@
 package sleys.efedp.system.animations.json.properties.phase;
 
 import com.mojang.serialization.Codec;
-import sleys.efedp.system.animations.json.properties.coords.MoveAnimationType;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.asset.AssetAccessor;

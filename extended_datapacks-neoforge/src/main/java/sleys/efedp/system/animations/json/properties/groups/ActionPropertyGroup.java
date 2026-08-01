@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec2;
-import sleys.efedp.system.animations.json.properties.coords.AnimationCoords;
+import sleys.efedp.system.animations.json.properties.coords.IAnimationCoord;
 import sleys.sl.library.util.data.codec.SLCodec;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
@@ -24,7 +24,7 @@ public record ActionPropertyGroup<T extends ActionAnimation>(
         Optional<Boolean> syncCamera,
 
         Optional<Vec2> noGravityTime,
-        Optional<AnimationCoords<T>> animationCoords
+        Optional<IAnimationCoord<T>> animationCoords
 ) {
 
     public static <T extends ActionAnimation> MapCodec<ActionPropertyGroup<T>> codec() {
@@ -60,7 +60,7 @@ public record ActionPropertyGroup<T extends ActionAnimation>(
                         SLCodec.VEC2_CODEC.optionalFieldOf("no_gravity_time")
                                 .forGetter(ActionPropertyGroup::noGravityTime),
 
-                        AnimationCoords.<T>codec().codec().optionalFieldOf("animation_coords")
+                        IAnimationCoord.<T>codec().optionalFieldOf("animation_coords")
                                 .forGetter(ActionPropertyGroup::animationCoords)
                 ).apply(instance, ActionPropertyGroup::new)
         );
