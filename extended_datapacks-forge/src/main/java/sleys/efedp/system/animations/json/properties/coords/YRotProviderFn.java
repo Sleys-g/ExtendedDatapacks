@@ -5,7 +5,7 @@ import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 
-public enum YRotProviderFn {
+public enum YRotProviderFn implements ICoordFunction<AnimationProperty.YRotProvider> {
     LOOK_DEST("look_dest", MoveCoordFunctions.LOOK_DEST),
     MOB_ATTACK_TARGET_LOOK("mob_attack_target_look", MoveCoordFunctions.MOB_ATTACK_TARGET_LOOK);
 
@@ -18,4 +18,9 @@ public enum YRotProviderFn {
     }
 
     public static final Codec<YRotProviderFn> CODEC = EnumCodecs.byId(values(), c -> c.id);
+
+    @Override
+    public AnimationProperty.YRotProvider value() {
+        return this.yRotProvider;
+    }
 }

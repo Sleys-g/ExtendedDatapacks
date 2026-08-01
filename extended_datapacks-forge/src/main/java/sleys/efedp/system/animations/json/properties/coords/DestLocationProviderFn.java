@@ -5,7 +5,7 @@ import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 
-public enum DestLocationProviderFn {
+public enum DestLocationProviderFn implements ICoordFunction<AnimationProperty.DestLocationProvider> {
     NO_DEST("no_dest", MoveCoordFunctions.NO_DEST),
     ATTACK_TARGET_LOCATION("attack_target_location", MoveCoordFunctions.ATTACK_TARGET_LOCATION),
     SYNCHED_DEST_VARIABLE("synched_dest_variable", MoveCoordFunctions.SYNCHED_DEST_VARIABLE),
@@ -20,4 +20,9 @@ public enum DestLocationProviderFn {
     }
 
     public static final Codec<DestLocationProviderFn> CODEC = EnumCodecs.byId(values(), c -> c.id);
+
+    @Override
+    public AnimationProperty.DestLocationProvider value() {
+        return this.destLocationProvider;
+    }
 }

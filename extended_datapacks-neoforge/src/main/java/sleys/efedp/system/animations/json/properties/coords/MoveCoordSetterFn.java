@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 
-public enum MoveCoordSetterFn {
+public enum MoveCoordSetterFn implements ICoordFunction<MoveCoordFunctions.MoveCoordSetter> {
     RAW_COORD("raw_coord", MoveCoordFunctions.RAW_COORD),
     RAW_COORD_WITH_X_ROT("raw_coord_with_x_rot", MoveCoordFunctions.RAW_COORD_WITH_X_ROT),
     TRACE_ORIGIN_AS_DESTINATION("trace_origin_as_destination", MoveCoordFunctions.TRACE_ORIGIN_AS_DESTINATION),
@@ -21,4 +21,9 @@ public enum MoveCoordSetterFn {
     }
 
     public static final Codec<MoveCoordSetterFn> CODEC = EnumCodecs.byId(values(), c -> c.id);
+
+    @Override
+    public MoveCoordFunctions.MoveCoordSetter value() {
+        return this.setter;
+    }
 }
