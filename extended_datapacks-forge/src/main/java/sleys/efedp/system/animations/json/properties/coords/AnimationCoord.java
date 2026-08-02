@@ -24,7 +24,7 @@ public record AnimationCoord<T extends ActionAnimation>(AnimationCoordType coord
             public <O> DataResult<AnimationCoord<T>> decode(DynamicOps<O> ops, MapLike<O> input) {
                 O typeRaw = input.get("coord_type");
                 if (typeRaw == null) {
-                    return DataResult.error(() -> "Missing 'coord_type' field in Play Speed Animation Lambda");
+                    return DataResult.error(() -> "Missing 'coord_type' field in Animation Coord Provider");
                 }
 
                 return AnimationCoordType.CODEC.parse(ops, typeRaw).flatMap(type -> {
