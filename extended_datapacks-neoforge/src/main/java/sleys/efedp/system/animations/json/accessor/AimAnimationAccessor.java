@@ -10,7 +10,6 @@ import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.AimAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.model.Armature;
-import yesman.epicfight.gameasset.Animations;
 
 public record AimAnimationAccessor(float transitionTime, boolean isRepeat, String animationPath,
                                    String animationMidPath, String animationUpPath,

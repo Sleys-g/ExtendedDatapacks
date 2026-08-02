@@ -1,7 +1,5 @@
 package sleys.efedp.bootstrap;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
@@ -19,10 +17,12 @@ import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrail;
 import sleys.efedp.system.weapons.json.WeaponPerStyleModelBaker;
 import sleys.efedp.system.weapons.json.WeaponsPassiveParticle;
 import sleys.sl.epicfight.mutator.WeaponCategoryIconHook;
+import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.task.Coroutine;
 
 public class BootstrapClient {
 
+    @ErrorHandled
     protected static IEventBus Initialize(IEventBus modBus) {
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap Client] Initializing Client Systems...");
         registerClientEvents();

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationGroupType;
-import sleys.efedp.system.animations.json.definitions.registry.AnimationRegistryDefinition;
 import sleys.efedp.system.animations.json.properties.ActionAnimationProperties;
 import sleys.efedp.system.animations.json.properties.AttackAnimationProperties;
 import sleys.efedp.system.animations.json.properties.IAnimationProperty;

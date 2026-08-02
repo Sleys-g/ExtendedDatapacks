@@ -18,13 +18,13 @@
 
 ## 📌 Requirements
 
-| Dependency | Versions Compatibility | Notes |
-| :--- | :--- | :--- |
-| **Epic Fight Mod** | Required (All versions) |  |
-| **Lazy Utilities** | Required **(Pre v2.0)** | Legacy library. |
-| **SL Library / SLM** | Required **(Post v2.0)** | New libraries (Epic Fight & Shaders modules). |
-| **Weapons Of Miracle** | Optional | Unlocks Passive Skills & Innate Skills Utilities for WoM. |
-| **Combat Evolution** | Optional | Unlocks Json Execution Animation Registry. |
+| Dependency             | Versions Compatibility   | Notes                                                     |
+|------------------------|--------------------------|-----------------------------------------------------------|
+| **Epic Fight Mod**     | Required (All versions)  |                                                           |
+| **Lazy Utilities**     | Required **(Pre v2.0)**  | Legacy library.                                           |
+| **SL Library / SLM**   | Required **(Post v2.0)** | New libraries (Epic Fight & Shaders modules).             |
+| **Weapons Of Miracle** | Optional                 | Unlocks Passive Skills & Innate Skills Utilities for WoM. |
+| **Combat Evolution**   | Optional                 | Unlocks Json Execution Animation Registry.                |
 
 ## 🧭 Project Roadmap
 

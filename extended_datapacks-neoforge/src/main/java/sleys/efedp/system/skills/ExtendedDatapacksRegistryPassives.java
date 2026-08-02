@@ -56,7 +56,7 @@ public class ExtendedDatapacksRegistryPassives {
                 try {
                     set.add(weaponCategory);
                 } catch (Exception e) {
-                    ExtendedDatapacks.LOGGER.fatal("[Passive Skill Mutator] A fatal error ocurred while trying to assign WeaponCategory {}", weaponCategory, e);
+                    ExtendedDatapacks.LOGGER.fatal("[Passive Skill Mutator] A fatal error occurred while trying to assign WeaponCategory {}", weaponCategory, e);
                     ExtendedDatapacks.LOGGER.warn("[Passive Skill Mutator] Caught error, ignore this message");
                 }
             } else {

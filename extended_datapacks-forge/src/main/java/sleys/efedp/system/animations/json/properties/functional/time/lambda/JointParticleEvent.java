@@ -9,8 +9,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
-import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.epicfight.model.JointModelParticleEngine;
 import sleys.sl.library.client.particle.emitters.SimpleParticleEmitter;
 import yesman.epicfight.api.animation.property.AnimationEvent;

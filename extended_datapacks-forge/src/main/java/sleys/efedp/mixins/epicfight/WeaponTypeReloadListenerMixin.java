@@ -14,6 +14,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.capabilities.item.WeaponTypeReloadListener;
 
+@SuppressWarnings("all")
 @Mixin(WeaponTypeReloadListener.class)
 public abstract class WeaponTypeReloadListenerMixin {
 
@@ -23,7 +24,6 @@ public abstract class WeaponTypeReloadListenerMixin {
             cancellable = true,
             remap = false
     )
-    @SuppressWarnings("removal")
     private static void injectPassiveSkill(ResourceLocation rl, CompoundTag tag, CallbackInfoReturnable<WeaponCapability.Builder> cir) {
         WeaponCapability.Builder builder = cir.getReturnValue();
         if (tag.contains("passive_skill")) {

@@ -14,10 +14,10 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.capabilities.item.WeaponTypeReloadListener;
 
+@SuppressWarnings("all")
 @Mixin(WeaponTypeReloadListener.class)
 public abstract class WeaponTypeReloadListenerMixin {
 
-    @SuppressWarnings("removal")
     @Inject(
             method = "deserializeWeaponCapabilityBuilder",
             at = @At("RETURN"),

@@ -59,7 +59,9 @@ public record StyleWrappedBakedModel(BakedModel original, BakedModel dynamic) im
     }
 
     @Override
-    public @NotNull BakedModel applyTransform(@NotNull ItemDisplayContext transformType, @NotNull PoseStack poseStack, boolean applyLeftHandTransform) {
+    public @NotNull BakedModel applyTransform(@NotNull ItemDisplayContext transformType,
+                                              @NotNull PoseStack poseStack,
+                                              boolean applyLeftHandTransform) {
         return dynamic.applyTransform(transformType, poseStack, applyLeftHandTransform);
     }
 }

@@ -19,9 +19,10 @@ public class EpicFightEDPConfig {
         builder.push("Extended Datapacks");
 
         RUNNER_TYPE_ENUM_VALUE = builder
-                .comment("Determine how Epic Fight EDP will handle errors." +
-                        "\n\nRESIST: Catches errors, preventing the game from closing if an error occurs. It does not provide any debugging data." +
-                        "\n\nABORT: Closes the game immediately upon an error. The closure is immediate and provides debugging data."
+                .comment("""
+                        Determine how Epic Fight EDP will handle errors.\
+                        RESIST: Catches errors, preventing the game from closing if an error occurs. It does not provide any debugging data.\
+                        ABORT: Closes the game immediately upon an error. The closure is immediate and provides debugging data."""
                 )
                 .defineEnum("fatalEpicFightEDPRuntimeHandler", ExecutionPolicy.RESIST);
 
@@ -41,9 +42,10 @@ public class EpicFightEDPConfig {
         ;
 
         SET_WEIGHT_IN_CHARGED_ATTACKS = builder
-                .comment("Determine the value by which the stamina consumption result will be divided; this is a control factor.\n" +
-                        "The higher the value, the less stamina will be used, and the lower the value, the more realistic the value will be\n" +
-                        "(i.e., there is a greater demand for stamina).")
+                .comment("""
+                        Determine the value by which the stamina consumption result will be divided; this is a control factor.
+                        The higher the value, the less stamina will be used, and the lower the value, the more realistic the value will be
+                        (i.e., there is a greater demand for stamina).""")
                 .defineInRange("setWeightDivisorValue", 2.3, 1.0, 4.0)
         ;
         builder.pop();

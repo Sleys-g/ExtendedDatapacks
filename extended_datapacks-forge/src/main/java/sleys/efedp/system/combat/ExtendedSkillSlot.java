@@ -4,12 +4,12 @@ import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 
 public enum ExtendedSkillSlot implements SkillSlot {
-    CHARGED_ATTACK(ExtendedSkillCategory.CHARGED_ATTACK);
+    CHARGED_ATTACK();
     final SkillCategory category;
     final int id;
 
-    ExtendedSkillSlot(SkillCategory category) {
-        this.category = category;
+    ExtendedSkillSlot() {
+        this.category = ExtendedSkillCategory.CHARGED_ATTACK;
         this.id = SkillSlot.ENUM_MANAGER.assign(this);
     }
 

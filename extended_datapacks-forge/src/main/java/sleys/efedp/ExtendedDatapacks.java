@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import sleys.efedp.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.bootstrap.Bootstrap;
 import sleys.efedp.client.config.EpicFightEDPClientConfig;
-import sleys.efedp.system.skills.ExtendedDatapacksRegistryCategoryIcon;
 import sleys.efedp.system.combat.MechanicsAssignerEvent;
 import sleys.efedp.system.combat.ExtendedSkillCategory;
 import sleys.efedp.system.combat.ExtendedSkillSlot;

@@ -13,5 +13,5 @@ public enum AnimationRegistryType {
     GUARD,
     HIT,
     KNOCKDOWN,
-    LONG_HIT;
+    LONG_HIT
 }

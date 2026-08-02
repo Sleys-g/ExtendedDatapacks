@@ -3,11 +3,7 @@ package sleys.efedp.system.animations.json.properties.phase;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.library.exceptions.RegistryObjectException;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
-import sleys.sl.library.execution.policy.ExecutionTasks;
-import sleys.sl.library.execution.policy.ResultProtocol;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 

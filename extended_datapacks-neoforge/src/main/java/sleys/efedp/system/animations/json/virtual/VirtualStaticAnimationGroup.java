@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.system.animations.json.definitions.AnimationGroupType;
-import sleys.efedp.system.animations.json.properties.IAnimationProperty;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
 public record VirtualStaticAnimationGroup(ResourceLocation realAnimation,

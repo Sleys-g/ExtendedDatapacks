@@ -8,7 +8,6 @@ import sleys.efedp.system.animations.json.properties.functional.time.AnimationsI
 import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifier;
 import sleys.efedp.system.animations.json.properties.state.AnimationEntityState;
 import yesman.epicfight.api.animation.property.AnimationProperty;
-import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
 import java.util.List;
