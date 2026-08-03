@@ -175,11 +175,12 @@ public class ExtendedDatapacksRegistryHoldableInnateSkills {
                                     );
                                     list.add(skillData.getFormattedAdditional(translatableText + ".tooltip", itemStack));
 
-                                    this.generateTooltipforPhase(
-                                            list, itemStack, cap, playerCap,
-                                            this.properties.get(0),
-                                            "Each Strike:"
-                                    );
+
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : this.properties) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "Each Strike:"
+                                        );
+                                    }
                                     return list;
                                 }
                             },

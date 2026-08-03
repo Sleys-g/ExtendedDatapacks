@@ -44,9 +44,11 @@ public abstract class HoldableInnateSkill extends WeaponInnateSkill implements C
 
     @ErrorHandled
     private void registryAnimationsData() {
-        AttackAnimation anim = this.attackAnimation.get();
-        for(AttackAnimation.Phase phase : anim.phases) {
-            phase.addProperties(this.properties.getFirst().entrySet());
+        AttackAnimation.Phase[] phases = this.attackAnimation.get().phases;
+        for (int i = 0; i < phases.length; i++) {
+            if (i < this.properties.size()) {
+                phases[i].addProperties(this.properties.get(i).entrySet());
+            }
         }
     }
 

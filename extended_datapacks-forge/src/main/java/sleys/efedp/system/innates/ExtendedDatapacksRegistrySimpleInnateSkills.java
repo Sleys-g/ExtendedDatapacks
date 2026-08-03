@@ -108,9 +108,11 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                                 }
 
                                 private void registryAnimationsData() {
-                                    AttackAnimation anim = this.attackAnimation.get();
-                                    for(AttackAnimation.Phase phase : anim.phases) {
-                                        phase.addProperties(this.properties.get(0).entrySet());
+                                    AttackAnimation.Phase[] phases = this.attackAnimation.get().phases;
+                                    for (int i = 0; i < phases.length; i++) {
+                                        if (i < this.properties.size()) {
+                                            phases[i].addProperties(this.properties.get(i).entrySet());
+                                        }
                                     }
                                 }
 
@@ -127,11 +129,12 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                                     );
                                     list.add(skillData.getFormattedAdditional(translatableText + ".tooltip", itemStack));
 
-                                    this.generateTooltipforPhase(
-                                            list, itemStack, cap, playerCap,
-                                            this.properties.get(0),
-                                            "Each Strike:"
-                                    );
+
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : this.properties) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "Each Strike:"
+                                        );
+                                    }
                                     return list;
                                 }
                             },

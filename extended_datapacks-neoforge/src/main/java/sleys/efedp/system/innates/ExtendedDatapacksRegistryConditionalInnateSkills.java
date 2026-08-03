@@ -87,31 +87,51 @@ public class ExtendedDatapacksRegistryConditionalInnateSkills {
                             if (this.conditionMap.containsKey(ConditionsType.NORMAL)) {
                                 var normalData = this.conditionMap.get(ConditionsType.NORMAL);
                                 if (!normalData.properties().isEmpty()) {
-                                    this.generateTooltipforPhase(list, itemStack, cap, playerCap, normalData.properties().getFirst(), "On Impact:");
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : normalData.properties()) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "On Impact:"
+                                        );
+                                    }
                                 }
                             }
                             if (this.conditionMap.containsKey(ConditionsType.IN_AIR)) {
                                 var inAir = this.conditionMap.get(ConditionsType.IN_AIR);
                                 if (!inAir.properties().isEmpty()) {
-                                    this.generateTooltipforPhase(list, itemStack, cap, playerCap, inAir.properties().getFirst(), "Air-Slash Attack:");
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : inAir.properties()) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "Air-Slash Attack:"
+                                        );
+                                    }
                                 }
                             }
                             if (this.conditionMap.containsKey(ConditionsType.SPRINTING)) {
                                 var sprinting = this.conditionMap.get(ConditionsType.SPRINTING);
                                 if (!sprinting.properties().isEmpty()) {
-                                    this.generateTooltipforPhase(list, itemStack, cap, playerCap, sprinting.properties().getFirst(), "Dash Attack:");
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : sprinting.properties()) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "Dash Attack:"
+                                        );
+                                    }
                                 }
                             }
                             if (this.conditionMap.containsKey(ConditionsType.USE_ITEM)) {
                                 var useItem = this.conditionMap.get(ConditionsType.USE_ITEM);
                                 if (!useItem.properties().isEmpty()) {
-                                    this.generateTooltipforPhase(list, itemStack, cap, playerCap, useItem.properties().getFirst(), "Hold Attack:");
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : useItem.properties()) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "Hold Attack:"
+                                        );
+                                    }
                                 }
                             }
                             if (this.conditionMap.containsKey(ConditionsType.KNEELING)) {
                                 var kneeling = this.conditionMap.get(ConditionsType.KNEELING);
                                 if (!kneeling.properties().isEmpty()) {
-                                    this.generateTooltipforPhase(list, itemStack, cap, playerCap, kneeling.properties().getFirst(), "Kneel Attack:");
+                                    for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : kneeling.properties()) {
+                                        this.generateTooltipforPhase(
+                                                list, itemStack, cap, playerCap, property, "Kneel Attack:"
+                                        );
+                                    }
                                 }
                             }
                         }

@@ -32,6 +32,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class ExtendedDatapacksRegistrySimpleInnateSkills {
     private static final List<String> RUNTIME_ERRORS = Collections.synchronizedList(new ArrayList<>());
@@ -118,9 +119,11 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                                     }
 
                                     private void registryAnimationsData() {
-                                        AttackAnimation anim = this.attackAnimation.get();
-                                        for(AttackAnimation.Phase phase : anim.phases) {
-                                            phase.addProperties(this.properties.getFirst().entrySet());
+                                        AttackAnimation.Phase[] phases = this.attackAnimation.get().phases;
+                                        for (int i = 0; i < phases.length; i++) {
+                                            if (i < this.properties.size()) {
+                                                phases[i].addProperties(this.properties.get(i).entrySet());
+                                            }
                                         }
                                     }
 
@@ -137,11 +140,13 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                                         );
                                         list.add(skillData.getFormattedAdditional(translatableText + ".tooltip", itemStack));
 
-                                        this.generateTooltipforPhase(
-                                                list, itemStack, cap, playerCap,
-                                                this.properties.getFirst(),
-                                                "Each Strike:"
-                                        );
+
+                                        for (Map<AnimationProperty.AttackPhaseProperty<?>, Object> property : this.properties) {
+                                            this.generateTooltipforPhase(
+                                                    list, itemStack, cap, playerCap, property, "Each Strike:"
+                                            );
+                                        }
+
                                         return list;
                                     }
                                 })
@@ -149,6 +154,7 @@ public class ExtendedDatapacksRegistrySimpleInnateSkills {
                                 .setCategory(SkillCategories.WEAPON_INNATE);
 
                         for (var phase : skillData.phases()) {
+                            System.out.println("Phase: " + phase);
 
                             builder.newProperty()
                                     .addProperty(AnimationProperty.AttackPhaseProperty.MAX_STRIKES_MODIFIER,
