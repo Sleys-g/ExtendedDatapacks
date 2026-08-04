@@ -32,8 +32,23 @@ Take a look at what is currently implemented and what is coming next!
 
 - [x] **Advanced Animation JSON Registry v2.3** ✔️
 - [x] **Weapons Passive Particles v2.4** ✔️
-- [ ] **Innate Skills II - Payloads v2.5** ️🛠️
-
+- [ ] **Innate Skills II - Payloads v2.5** ️❌
+  - [ ] **Data Packets** 🛠️
+  - [ ] **More Conditional Types** ️❌
+    - [ ] **Left, Right, Forward, Back** ️❌
+    - [ ] **Read Data** ️❌
+    - [ ] **Read & Consume Data** ️❌
+  - [ ] **Additional Innate Skills** ❌
+    - [ ] **Sequential Innate Skill** ❌
+    - [ ] **Per Combo Innate Skill** ❌
+    - [ ] **Combable Innate Skill** ❌
+    - [ ] **Conditional Holdable Innate Skill** ❌
+    - [ ] **Conditional Stack Holdable Innate Skill** ❌
+    - [ ] **Timed Innate Skill** ❌
+      - [ ] **Controlable Events & Listeners** ❌
+  - [ ] **More Animation Events** ❌
+    - [ ] **Write Data** ❌
+ 
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates
