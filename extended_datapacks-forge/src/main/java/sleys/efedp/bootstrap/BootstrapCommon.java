@@ -5,14 +5,11 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.AnimationRegistryOperations;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistryConditionalInnateSkills;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistryHoldableInnateSkills;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistrySimpleInnateSkills;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistryStacksConditionalInnateSkills;
-import sleys.efedp.system.skills.ExtendedDatapacksRegistryGuards;
-import sleys.efedp.system.skills.ExtendedDatapacksRegistryPassives;
-import sleys.efedp.system.weapons.ExtendedDatapacksRegistryWeaponCategories;
-import sleys.efedp.system.weapons.json.WeaponItemsProperties;
+import sleys.efedp.system.innates.*;
+import sleys.efedp.system.skills.ModifyGuardsApplier;
+import sleys.efedp.system.skills.ModifyPassivesApplier;
+import sleys.efedp.system.weapons.WeaponCategoriesRegistry;
+import sleys.efedp.system.weapons.json.WeaponItemsPropertiesBuilder;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 public class BootstrapCommon {
@@ -25,23 +22,24 @@ public class BootstrapCommon {
     }
 
     private static void onReloadEvent(AddReloadListenerEvent event) {
-        event.addListener(new WeaponItemsProperties());
+        event.addListener(new WeaponItemsPropertiesBuilder());
     }
 
     private static void RegistryEnumerations() {
         WeaponCategory.ENUM_MANAGER.registerEnumCls(
                 ExtendedDatapacks.MODID,
-                ExtendedDatapacksRegistryWeaponCategories.class
+                WeaponCategoriesRegistry.class
         );
     }
 
     private static void InitializeRegistries(IEventBus modBus) {
-        modBus.register(ExtendedDatapacksRegistrySimpleInnateSkills.class);
-        modBus.register(ExtendedDatapacksRegistryConditionalInnateSkills.class);
-        modBus.register(ExtendedDatapacksRegistryHoldableInnateSkills.class);
-        modBus.register(ExtendedDatapacksRegistryStacksConditionalInnateSkills.class);
-        modBus.register(ExtendedDatapacksRegistryPassives.class);
-        modBus.register(ExtendedDatapacksRegistryGuards.class);
+        modBus.register(SimpleInnateSkillsRegistry.class);
+        modBus.register(HoldableInnateSkillsRegistry.class);
+        modBus.register(ConditionalInnateSkillsRegistry.class);
+        modBus.register(ConditionalStackInnateSkillsRegistry.class);
+
+        modBus.register(ModifyPassivesApplier.class);
+        modBus.register(ModifyGuardsApplier.class);
 
         modBus.register(AnimationRegistryOperations.class); /// BETA
     }

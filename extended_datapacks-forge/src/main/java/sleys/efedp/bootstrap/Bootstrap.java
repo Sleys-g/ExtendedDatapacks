@@ -6,6 +6,7 @@ import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpe
 import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierTypeRegistry;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationEventTypeRegistry;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationsEventsList;
+import sleys.sl.library.contract.ExpectedContracts;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
 import sleys.sl.library.execution.policy.LogicalTasks;
@@ -23,6 +24,8 @@ public class Bootstrap {
     }
 
     public static void start(IEventBus modBus) {
+        Bootstrap.changes();
+
         if (STATE.equals(SystemState.CLOSED)) return;
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing...");
         AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, AnimationsEventsList.class);
@@ -39,5 +42,22 @@ public class Bootstrap {
         );
 
         STATE = SystemState.CLOSED;
+    }
+
+    private static void changes() {
+        ExpectedContracts.require(
+                ExtendedDatapacks.MODID, ExtendedDatapacks.MODID, ExtendedDatapacks.VERSION,
+                """
+                        Changes have been introduced to the Innate Skills system. All dependents using this area are
+                        requested to update their implementations accordingly. If Innate Skills are not used, this
+                        message can be safely ignored.
+                        
+                        The registration and behavior of Innate Skills have been substantially revised to simplify
+                        their implementation and remove unnecessary references. This change makes the previous
+                        Phase-based system incompatible with current and newer versions.
+                        
+                        You can review the changes here: https://github.com/Sleys-g/ExtendedDatapacks/wiki/Recent-Changes
+                        """
+        );
     }
 }

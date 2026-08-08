@@ -10,10 +10,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.system.visuals.json.OverlayAssetPacksSystem;
-import sleys.efedp.system.visuals.json.ShaderAssetsPacksSystem;
-import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrail;
-import sleys.efedp.system.weapons.json.WeaponPerStyleModelBaker;
+import sleys.efedp.system.visuals.json.OverlayAssetPacksBuilder;
+import sleys.efedp.system.visuals.json.ShaderAssetsPacksBuilder;
+import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrailBuilder;
+import sleys.efedp.system.weapons.json.WeaponPerStyleModelBakerBuilder;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 
 @OnlyIn(Dist.CLIENT)
@@ -94,7 +94,7 @@ public class ExtendedDatapacksClientCommands {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         player.displayClientMessage(Component.literal("Reassigning Overlay configuration!"), false);
-        OverlayAssetPacksSystem.reinitializeOverlayAssetPack();
+        OverlayAssetPacksBuilder.reinitializeOverlayAssetPack();
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }
@@ -104,7 +104,7 @@ public class ExtendedDatapacksClientCommands {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         player.displayClientMessage(Component.literal("Reassigning Item Model configuration!"), false);
-        WeaponPerStyleModelBaker.reinitialize();
+        WeaponPerStyleModelBakerBuilder.reinitialize();
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }
@@ -114,7 +114,7 @@ public class ExtendedDatapacksClientCommands {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         player.displayClientMessage(Component.literal("Reassigning Swing Trails configuration!"), false);
-        WeaponAdvancedSwingTrail.reinitializeAdvancedSwingTrail();
+        WeaponAdvancedSwingTrailBuilder.reinitializeAdvancedSwingTrail();
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }
@@ -124,7 +124,7 @@ public class ExtendedDatapacksClientCommands {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         player.displayClientMessage(Component.literal("Reassigning Shader Packs configuration!"), false);
-        ShaderAssetsPacksSystem.reinitializeShaderAssetsPack();
+        ShaderAssetsPacksBuilder.reinitializeShaderAssetsPack();
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }

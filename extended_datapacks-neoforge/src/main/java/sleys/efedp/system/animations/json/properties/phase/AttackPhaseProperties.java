@@ -19,70 +19,129 @@ import yesman.epicfight.world.damagesource.StunType;
 import java.util.Optional;
 
 public record AttackPhaseProperties(
-        Float maxStrikes,
-        Float damageMultiplier,
-        Float armorNegation,
-        Float impact,
-        StunType stunType,
-        ResourceLocation swingSound,
-        ResourceLocation hitSound,
-        ResourceLocation particle
+        Optional<Float> maxStrikes,
+        Optional<Float> damageMultiplier,
+        Optional<Float> armorNegation,
+        Optional<Float> impact,
+        Optional<StunType> stunType,
+        Optional<ResourceLocation> swingSound,
+        Optional<ResourceLocation> hitSound,
+        Optional<ResourceLocation> particle
 ) {
     public static final AttackPhaseProperties EMPTY = new AttackPhaseProperties(
-            null, null, null,
-            null, null, null, null, null
+            Optional.empty(), Optional.empty(),
+            Optional.empty(), Optional.empty(),
+            Optional.empty(), Optional.empty(),
+            Optional.empty(), Optional.empty()
     );
 
     public static final MapCodec<AttackPhaseProperties> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Codec.FLOAT.optionalFieldOf("max_strikes").forGetter(p -> Optional.ofNullable(p.maxStrikes())),
-                    Codec.FLOAT.optionalFieldOf("damage").forGetter(p -> Optional.ofNullable(p.damageMultiplier())),
-                    Codec.FLOAT.optionalFieldOf("armor_negation").forGetter(p -> Optional.ofNullable(p.armorNegation())),
-                    Codec.FLOAT.optionalFieldOf("impact").forGetter(p -> Optional.ofNullable(p.impact())),
-                    PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(p -> Optional.ofNullable(p.stunType())),
-                    ResourceLocation.CODEC.optionalFieldOf("swing_sound").forGetter(p -> Optional.ofNullable(p.swingSound())),
-                    ResourceLocation.CODEC.optionalFieldOf("hit_sound").forGetter(p -> Optional.ofNullable(p.hitSound())),
-                    ResourceLocation.CODEC.optionalFieldOf("particle").forGetter(p -> Optional.ofNullable(p.particle()))
-            ).apply(instance, (maxStrikes, damage, armor, impact, stunType, swing, hit, particle) ->
-                    new AttackPhaseProperties(
-                            maxStrikes.orElse(null), damage.orElse(null), armor.orElse(null), impact.orElse(null),
-                            stunType.orElse(null), swing.orElse(null), hit.orElse(null), particle.orElse(null)
-                    )
-            )
+                    Codec.FLOAT.optionalFieldOf("max_strikes").forGetter(AttackPhaseProperties::maxStrikes),
+                    Codec.FLOAT.optionalFieldOf("damage").forGetter(AttackPhaseProperties::damageMultiplier),
+                    Codec.FLOAT.optionalFieldOf("armor_negation").forGetter(AttackPhaseProperties::armorNegation),
+                    Codec.FLOAT.optionalFieldOf("impact").forGetter(AttackPhaseProperties::impact),
+                    PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(AttackPhaseProperties::stunType),
+                    ResourceLocation.CODEC.optionalFieldOf("swing_sound").forGetter(AttackPhaseProperties::swingSound),
+                    ResourceLocation.CODEC.optionalFieldOf("hit_sound").forGetter(AttackPhaseProperties::hitSound),
+                    ResourceLocation.CODEC.optionalFieldOf("particle").forGetter(AttackPhaseProperties::particle)
+            ).apply(instance, AttackPhaseProperties::new)
     );
 
     public void applyTo(AttackAnimation.Phase phase) {
-        if (maxStrikes != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.adder(maxStrikes));
-        if (damageMultiplier != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(damageMultiplier));
-        if (armorNegation != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.adder(armorNegation));
-        if (impact != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(impact));
-        if (stunType != null) phase.addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, stunType);
+        maxStrikes.ifPresent(value ->
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.MAX_STRIKES_MODIFIER,
+                        ValueModifier.adder(value)
+                )
+        );
 
-        if (swingSound != null) {
-            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(swingSound);
+        damageMultiplier.ifPresent(value ->
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER,
+                        ValueModifier.multiplier(value)
+                )
+        );
+
+        armorNegation.ifPresent(value ->
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.ARMOR_NEGATION_MODIFIER,
+                        ValueModifier.adder(value)
+                )
+        );
+
+        impact.ifPresent(value ->
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.IMPACT_MODIFIER,
+                        ValueModifier.multiplier(value)
+                )
+        );
+
+        stunType.ifPresent(value ->
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.STUN_TYPE,
+                        value
+                )
+        );
+
+        swingSound.ifPresent(id -> {
+            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(id);
+
             if (sound != null) {
-                phase.addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, sound);
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.SWING_SOUND,
+                        sound
+                );
             } else {
-                ExtendedDatapacks.LOGGER.warn("[Attack Phase Properties] The attempt to assign the Swing Sound failed: {}", swingSound);
+                LogError.SWING_SOUND.logError(id);
             }
-        }
+        });
 
-        if (hitSound != null) {
-            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(hitSound);
+        hitSound.ifPresent(id -> {
+            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(id);
+
             if (sound != null) {
-                phase.addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, sound);
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.HIT_SOUND,
+                        sound
+                );
             } else {
-                ExtendedDatapacks.LOGGER.warn("[Attack Phase Properties] The attempt to assign the Hit Sound failed: {}", hitSound);
+                LogError.HIT_SOUND.logError(id);
             }
-        }
+        });
 
-        if (particle != null) {
-            DeferredHolder<ParticleType<?>, HitParticleType> hitParticle = HitParticleCache.getParticleDeferred(particle);
+        particle.ifPresent(id -> {
+            DeferredHolder<ParticleType<?>, HitParticleType> hitParticle =
+                    HitParticleCache.getParticleDeferred(id);
+
             if (hitParticle != null) {
-                phase.addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, hitParticle);
+                phase.addProperty(
+                        AnimationProperty.AttackPhaseProperty.PARTICLE,
+                        hitParticle
+                );
             } else {
-                ExtendedDatapacks.LOGGER.warn("[Attack Phase Properties] The attempt to assign the Hit Particle failed: {}", particle);
+                LogError.PARTICLE.logError(id);
             }
+        });
+    }
+
+    private enum LogError {
+        SWING_SOUND("Swing Sound"),
+        HIT_SOUND("Hit Sound"),
+        PARTICLE("Hit Particle");
+
+        private final String name;
+
+        LogError(String name) {
+            this.name = name;
+        }
+
+        private void logError(Object key) {
+            ExtendedDatapacks.LOGGER.warn(
+                    "[Attack Phase Properties] The attempt to assign the {} failed: {}",
+                    this.name,
+                    key
+            );
         }
     }
 }

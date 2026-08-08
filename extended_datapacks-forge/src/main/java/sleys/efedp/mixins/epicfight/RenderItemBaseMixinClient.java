@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrail;
+import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrailBuilder;
 import sleys.sl.epicfight.capability.AnimationRenderContext;
 import yesman.epicfight.api.client.animation.property.TrailInfo;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
@@ -33,10 +33,10 @@ public class RenderItemBaseMixinClient {
                 : InteractionHand.MAIN_HAND;
 
         ItemStack item = entity.getItemInHand(hand);
-        WeaponAdvancedSwingTrail.AdvancedSwingTrails config = WeaponAdvancedSwingTrail.getAdvancedSwingTrails(item);
+        WeaponAdvancedSwingTrailBuilder.AdvancedSwingTrails config = WeaponAdvancedSwingTrailBuilder.getAdvancedSwingTrails(item);
 
         if (config == null) return;
-        WeaponAdvancedSwingTrail.SwingTrail trail = extended_datapacks$resolveTrail(config, entityPatch);
+        WeaponAdvancedSwingTrailBuilder.SwingTrail trail = extended_datapacks$resolveTrail(config, entityPatch);
 
         if (trail == null) return;
         cir.setReturnValue(
@@ -48,8 +48,8 @@ public class RenderItemBaseMixinClient {
     }
 
     @Unique
-    private WeaponAdvancedSwingTrail.SwingTrail extended_datapacks$resolveTrail(
-            WeaponAdvancedSwingTrail.AdvancedSwingTrails config, LivingEntityPatch<?> entityPatch) {
+    private WeaponAdvancedSwingTrailBuilder.SwingTrail extended_datapacks$resolveTrail(
+            WeaponAdvancedSwingTrailBuilder.AdvancedSwingTrails config, LivingEntityPatch<?> entityPatch) {
 
         CapabilityItem capability = entityPatch.getHoldingItemCapability(InteractionHand.MAIN_HAND);
         if (capability == null) return null;
@@ -60,7 +60,7 @@ public class RenderItemBaseMixinClient {
 
     @Unique
     private TrailInfo extended_datapacks$createModifiedTrailInfo(TrailInfo original,
-                                                                 WeaponAdvancedSwingTrail.SwingTrail trail) {
+                                                                 WeaponAdvancedSwingTrailBuilder.SwingTrail trail) {
         return new TrailInfo(
                 trail.start(),
                 trail.end(),

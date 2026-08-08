@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import sleys.efedp.system.weapons.json.WeaponItemsProperties;
+import sleys.efedp.system.weapons.json.WeaponItemsPropertiesBuilder;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
@@ -24,7 +24,7 @@ public class ItemMixinCommon {
         var pachtPlayer = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
         if (pachtPlayer == null) return;
 
-        var interactionOptional = WeaponItemsProperties.getSafeEntryAsInteraction(hand, player);
+        var interactionOptional = WeaponItemsPropertiesBuilder.getSafeEntryAsInteraction(hand, player);
         if (interactionOptional.isEmpty()) return;
 
         var interaction = interactionOptional.get();
@@ -41,7 +41,7 @@ public class ItemMixinCommon {
     private void onHurtEnemy(ItemStack stack, LivingEntity entity, LivingEntity player, CallbackInfoReturnable<Boolean> cir) {
         if (!(player instanceof Player nplayer)) return;
 
-        var combatOptional = WeaponItemsProperties.getSafeEntryAsCombat(player.swingingArm, nplayer);
+        var combatOptional = WeaponItemsPropertiesBuilder.getSafeEntryAsCombat(player.swingingArm, nplayer);
         if (combatOptional.isEmpty()) return;
 
         var combat = combatOptional.get();

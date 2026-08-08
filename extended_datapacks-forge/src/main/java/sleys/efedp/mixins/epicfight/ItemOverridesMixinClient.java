@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sleys.efedp.capability.StyleWrappedBakedModel;
-import sleys.efedp.system.weapons.ExtendedDatapacksRegistryWeaponsModels;
-import sleys.efedp.system.weapons.json.WeaponPerStyleModelBaker;
+import sleys.efedp.system.weapons.WeaponsModelsRegistry;
+import sleys.efedp.system.weapons.json.WeaponPerStyleModelBakerBuilder;
 import sleys.sl.epicfight.capability.StyleInvalid;
 import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -43,7 +43,7 @@ public class ItemOverridesMixinClient {
         PlayerPatch<?> playerPatch = EpicFightCapabilities.getPlayerPatch(player);
         if (!PatchPlayerHelper.isValidPatchedPlayer(playerPatch)) return;
 
-        WeaponPerStyleModelBaker.WeaponModelPerStyle config = WeaponPerStyleModelBaker.getModelStyleItems(stack);
+        WeaponPerStyleModelBakerBuilder.WeaponModelPerStyle config = WeaponPerStyleModelBakerBuilder.getModelStyleItems(stack);
         if (!config.hasModels()) return;
 
         BakedModel modelSocket = extended_datapacks$getModelStyleSocket(config, playerPatch, stack);
@@ -56,7 +56,7 @@ public class ItemOverridesMixinClient {
     }
 
     @Unique
-    private static BakedModel extended_datapacks$getModelStyleSocket(WeaponPerStyleModelBaker.WeaponModelPerStyle config,
+    private static BakedModel extended_datapacks$getModelStyleSocket(WeaponPerStyleModelBakerBuilder.WeaponModelPerStyle config,
                                                                      PlayerPatch<?> playerPatch, ItemStack stack) {
         final boolean isMainHanded = playerPatch.getOriginal()
                 .getItemInHand(InteractionHand.MAIN_HAND)
@@ -72,7 +72,7 @@ public class ItemOverridesMixinClient {
         ResourceLocation currentModel = config.getModel(currentStyle);
         if (currentModel == null) return null;
 
-        ModelResourceLocation redirectedModel = ExtendedDatapacksRegistryWeaponsModels.getModelResourceLocation(currentModel);
+        ModelResourceLocation redirectedModel = WeaponsModelsRegistry.getModelResourceLocation(currentModel);
         if (redirectedModel == null) return null;
 
         return Minecraft.getInstance().getItemRenderer()

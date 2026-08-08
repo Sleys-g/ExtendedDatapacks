@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrail;
+import sleys.efedp.system.weapons.json.WeaponAdvancedSwingTrailBuilder;
 import yesman.epicfight.client.events.engine.RenderEngine;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 
@@ -41,7 +41,7 @@ public class RenderEngineMixinClient {
             return;
         }
 
-        for (ResourceLocation registryName : WeaponAdvancedSwingTrail.getRegisteredItems()) {
+        for (ResourceLocation registryName : WeaponAdvancedSwingTrailBuilder.getRegisteredItems()) {
             Item item = BuiltInRegistries.ITEM.get(registryName);
 
             if (item == Items.AIR) {

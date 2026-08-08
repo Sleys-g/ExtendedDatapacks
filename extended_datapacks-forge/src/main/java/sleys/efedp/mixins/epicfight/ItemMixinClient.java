@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import sleys.efedp.system.weapons.json.WeaponItemsProperties;
+import sleys.efedp.system.weapons.json.WeaponItemsPropertiesBuilder;
 
 @Mixin(Item.class)
 public class ItemMixinClient {
@@ -23,7 +23,7 @@ public class ItemMixinClient {
         var player = mc.player;
         if (player == null) return;
 
-        var interactionOptional = WeaponItemsProperties.getSafeEntryAsInteraction(InteractionHand.MAIN_HAND, player);
+        var interactionOptional = WeaponItemsPropertiesBuilder.getSafeEntryAsInteraction(InteractionHand.MAIN_HAND, player);
         if (interactionOptional.isEmpty()) return;
 
         var interaction = interactionOptional.get();
