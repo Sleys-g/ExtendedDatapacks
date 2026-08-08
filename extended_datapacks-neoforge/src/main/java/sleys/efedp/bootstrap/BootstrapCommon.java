@@ -5,14 +5,14 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.AnimationRegistryOperations;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistryConditionalInnateSkills;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistryHoldableInnateSkills;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistrySimpleInnateSkills;
-import sleys.efedp.system.innates.ExtendedDatapacksRegistryStacksConditionalInnateSkills;
-import sleys.efedp.system.skills.ExtendedDatapacksRegistryGuards;
-import sleys.efedp.system.skills.ExtendedDatapacksRegistryPassives;
-import sleys.efedp.system.weapons.ExtendedDatapacksRegistryWeaponCategories;
-import sleys.efedp.system.weapons.json.WeaponItemsProperties;
+import sleys.efedp.system.innates.ConditionalInnateSkillsRegistry;
+import sleys.efedp.system.innates.ConditionalStackInnateSkillsRegistry;
+import sleys.efedp.system.innates.HoldableInnateSkillsRegistry;
+import sleys.efedp.system.innates.SimpleInnateSkillsRegistry;
+import sleys.efedp.system.skills.ModifyGuardsApplier;
+import sleys.efedp.system.skills.ModifyPassivesApplier;
+import sleys.efedp.system.weapons.WeaponCategoriesRegistry;
+import sleys.efedp.system.weapons.json.WeaponItemsPropertiesBuilder;
 import sleys.sl.epicfight.mutator.SkillBuilderHook;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
@@ -27,33 +27,33 @@ public class BootstrapCommon {
     }
 
     private static void onReloadEvent(AddReloadListenerEvent event) {
-        event.addListener(new WeaponItemsProperties());
+        event.addListener(new WeaponItemsPropertiesBuilder());
     }
 
     private static void RegisterHookers() {
-        SkillBuilderHook.registerAssignor(ExtendedDatapacksRegistryGuards::addAnyParameterToGuards);
-        SkillBuilderHook.registerAssignor(ExtendedDatapacksRegistryPassives::addAnyParameterToSkill);
+        SkillBuilderHook.registerAssignor(ModifyGuardsApplier::addAnyParameterToGuards);
+        SkillBuilderHook.registerAssignor(ModifyPassivesApplier::addAnyParameterToSkill);
     }
 
     private static void RegistryEnumerations() {
         WeaponCategory.ENUM_MANAGER.registerEnumCls(
                 ExtendedDatapacks.MODID,
-                ExtendedDatapacksRegistryWeaponCategories.class
+                WeaponCategoriesRegistry.class
         );
     }
 
     private static void InitializeRegistries(IEventBus modBus) {
-        ExtendedDatapacksRegistrySimpleInnateSkills.initialize(modBus);
-        modBus.register(ExtendedDatapacksRegistrySimpleInnateSkills.class);
+        SimpleInnateSkillsRegistry.initialize(modBus);
+        modBus.register(SimpleInnateSkillsRegistry.class);
 
-        ExtendedDatapacksRegistryConditionalInnateSkills.initialize(modBus);
-        modBus.register(ExtendedDatapacksRegistryConditionalInnateSkills.class);
+        ConditionalInnateSkillsRegistry.initialize(modBus);
+        modBus.register(ConditionalInnateSkillsRegistry.class);
 
-        ExtendedDatapacksRegistryHoldableInnateSkills.initialize(modBus);
-        modBus.register(ExtendedDatapacksRegistryHoldableInnateSkills.class);
+        HoldableInnateSkillsRegistry.initialize(modBus);
+        modBus.register(HoldableInnateSkillsRegistry.class);
 
-        ExtendedDatapacksRegistryStacksConditionalInnateSkills.initialize(modBus);
-        modBus.register(ExtendedDatapacksRegistryStacksConditionalInnateSkills.class);
+        ConditionalStackInnateSkillsRegistry.initialize(modBus);
+        modBus.register(ConditionalStackInnateSkillsRegistry.class);
 
         modBus.register(AnimationRegistryOperations.class);
     }

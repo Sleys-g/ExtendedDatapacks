@@ -4,7 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.thirdparty.combatevolution.ExtendedDatapacksRegistryExecution;
+import sleys.efedp.system.thirdparty.combatevolution.RegistryExecutionAnimations;
 import sleys.efedp.system.thirdparty.wom.json.WoMSkillAccessorBuilder;
 import sleys.sl.library.SLLCore;
 
@@ -31,7 +31,7 @@ public class BootstrapThirdParties {
     }
 
     private static void startCombatEvolution(IEventBus modBus) {
-        modBus.register(ExtendedDatapacksRegistryExecution.class);
+        modBus.register(RegistryExecutionAnimations.class);
     }
 
     private static void startWeaponsOfMiracle(AddReloadListenerEvent event) {

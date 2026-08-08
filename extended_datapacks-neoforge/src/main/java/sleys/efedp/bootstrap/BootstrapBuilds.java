@@ -5,14 +5,14 @@ import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.AnimationsConfigBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsRegistryBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsVirtualBuilder;
-import sleys.efedp.system.innates.json.ConditionalInnateSkillBuilder;
-import sleys.efedp.system.innates.json.HoldableInnateSkillBuilder;
-import sleys.efedp.system.innates.json.SimpleInnateSkillBuilder;
-import sleys.efedp.system.innates.json.StacksConditionalInnateSkillBuilder;
-import sleys.efedp.system.skills.json.GuardSkillBuilderModifier;
-import sleys.efedp.system.skills.json.PassiveSkillBuilderModifier;
-import sleys.efedp.system.skills.json.SkillIconBuilderModifier;
-import sleys.efedp.system.weapons.json.WeaponCategoryAdder;
+import sleys.efedp.system.innates.json.builder.ConditionalInnateSkillBuilder;
+import sleys.efedp.system.innates.json.builder.ConditionalStackInnateSkillBuilder;
+import sleys.efedp.system.innates.json.builder.HoldableInnateSkillBuilder;
+import sleys.efedp.system.innates.json.builder.SimpleInnateSkillBuilder;
+import sleys.efedp.system.skills.json.GuardSkillModifierBuilder;
+import sleys.efedp.system.skills.json.PassiveSkillModifierBuilder;
+import sleys.efedp.system.skills.json.IconSkillModifierBuilder;
+import sleys.efedp.system.weapons.json.WeaponCategoryAdderBuilder;
 import sleys.sl.library.util.io.BuildPathOrFile;
 
 import java.nio.file.Path;
@@ -37,17 +37,17 @@ public class BootstrapBuilds {
     }
 
     private static void startSkillBuilds() {
-        buildConfigTracker("skill_builder", "passive_skills", PassiveSkillBuilderModifier::startToTracking);
-        buildConfigTracker("skill_builder", "guard_skills", GuardSkillBuilderModifier::startToTracking);
-        buildConfigTracker("skill_builder", "category_icon", SkillIconBuilderModifier::startToTracking);
-        buildConfigTracker("weapon_builder", "category", WeaponCategoryAdder::startToTracking);
+        buildConfigTracker("skill_builder", "passive_skills", PassiveSkillModifierBuilder::startToTracking);
+        buildConfigTracker("skill_builder", "guard_skills", GuardSkillModifierBuilder::startToTracking);
+        buildConfigTracker("skill_builder", "category_icon", IconSkillModifierBuilder::startToTracking);
+        buildConfigTracker("weapon_builder", "category", WeaponCategoryAdderBuilder::startToTracking);
     }
 
     private static void startInnateSkillsBuilds() {
         buildConfigTracker("innate_skill_builder", "simple_innate_skill", SimpleInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "conditional_innate_skill", ConditionalInnateSkillBuilder::startToTracking);
         buildConfigTracker("innate_skill_builder", "holdable_innate_skill", HoldableInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "stacks_conditional_innate_skill", StacksConditionalInnateSkillBuilder::startToTracking);
+        buildConfigTracker("innate_skill_builder", "conditional_innate_skill", ConditionalInnateSkillBuilder::startToTracking);
+        buildConfigTracker("innate_skill_builder", "stacks_conditional_innate_skill", ConditionalStackInnateSkillBuilder::startToTracking);
     }
 
     private static void startAnimationsBuilds() {

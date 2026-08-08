@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="epicfight_edp"
-version="2.4.5"
+version="2.4.6"
 displayName="Epic Fight - Extended Datapacks"
 authors="Sleys"
 logoFile = "extended_datapacks.png"
@@ -28,7 +28,7 @@ mixins = ["mixins.epicfight_edp.json", "mixins.won_edp.json"]
 [[dependencies.epicfight_edp]]
 modId="sl_library"
 mandatory=true
-versionRange="[1.5.1,)"
+versionRange="[1.5.3,)"
 ordering="AFTER"
 side="BOTH"
 
