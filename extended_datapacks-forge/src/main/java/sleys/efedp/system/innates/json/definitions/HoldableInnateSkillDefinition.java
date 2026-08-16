@@ -18,7 +18,8 @@ public record HoldableInnateSkillDefinition(
         String name, String animation, String chargeAnimation,
         boolean disableTooltipProperties,
         int maxAllowedCharging, int maxChargingTicks, int minChargingTicks,
-        boolean reduceSpeed, List<InnatePhaseProperties> properties, List<JsonComponentArgs> tooltip
+        boolean reduceSpeed, boolean playbackForCharging, boolean playbackForRelease,
+        List<InnatePhaseProperties> properties, List<JsonComponentArgs> tooltip
 ) implements IInnateSkillDefinition<WHoldableInnateSkill> {
 
     public static final MapCodec<HoldableInnateSkillDefinition> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -35,6 +36,10 @@ public record HoldableInnateSkillDefinition(
                     Codec.INT.fieldOf("minChargingTicks").forGetter(HoldableInnateSkillDefinition::minChargingTicks),
 
                     Codec.BOOL.fieldOf("reduceSpeed").forGetter(HoldableInnateSkillDefinition::reduceSpeed),
+                    Codec.BOOL.optionalFieldOf("playbackForCharging", false)
+                            .forGetter(HoldableInnateSkillDefinition::reduceSpeed),
+                    Codec.BOOL.optionalFieldOf("playbackForRelease", false)
+                            .forGetter(HoldableInnateSkillDefinition::reduceSpeed),
 
                     InnatePhaseProperties.CODEC.codec()
                             .listOf()
@@ -55,7 +60,11 @@ public record HoldableInnateSkillDefinition(
             AnimationManager.AnimationAccessor<? extends StaticAnimation> animationAccessor,
             AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimationAccessor) {
 
-        var holdableValues = new HoldableSkillValues(maxAllowedCharging, maxChargingTicks, minChargingTicks, reduceSpeed);
+        var holdableValues = new HoldableSkillValues(
+                playbackForCharging, playbackForRelease,
+                maxAllowedCharging, maxChargingTicks,
+                minChargingTicks, reduceSpeed
+        );
         var listenerValues = new ListenerSkillValues(modId, ResourceLocation.fromNamespaceAndPath(modId, name));
         return WHoldableInnateSkill
                 .createHoldableInnateSkillBuilder()

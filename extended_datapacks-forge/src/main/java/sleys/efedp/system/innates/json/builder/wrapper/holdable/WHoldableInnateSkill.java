@@ -124,10 +124,12 @@ public class WHoldableInnateSkill extends WeaponInnateSkill implements Chargeabl
     @ErrorHandled
     private void registryAnimationsData() {
         /// Add Speed Modifier in CT
-        chargingAnimation.get().addProperty(
-                AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER,
-                Animations.ReusableSources.CHARGING
-        );
+        if (holdableValues.playbackForCharging()) {
+            chargingAnimation.get().addProperty(
+                    AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER,
+                    Animations.ReusableSources.CHARGING
+            );
+        }
 
         if (!(this.animation.get() instanceof AttackAnimation attackAnimation)) return;
         AttackAnimation.Phase[] phases = attackAnimation.phases;
@@ -136,19 +138,21 @@ public class WHoldableInnateSkill extends WeaponInnateSkill implements Chargeabl
         }
 
         /// Add Speed Modifier (Attack) in CT
-        attackAnimation.addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER,
-                (self, entitypatch, speed, prevElapsedTime, elapsedTime) -> {
-            if (elapsedTime < 1.05F) {
-                int chargingPower = entitypatch
-                        .getAnimator()
-                        .getVariables()
-                        .get(SynchedAnimationVariableKeys.CHARGING_TICKS.get(), self.getRealAnimation()).orElse(0);
+        if (holdableValues.playbackForRelease()) {
+            attackAnimation.addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER,
+                    (self, entitypatch, speed, prevElapsedTime, elapsedTime) -> {
+                        if (elapsedTime < 1.05F) {
+                            int chargingPower = entitypatch
+                                    .getAnimator()
+                                    .getVariables()
+                                    .get(SynchedAnimationVariableKeys.CHARGING_TICKS.get(), self.getRealAnimation()).orElse(0);
 
-                return 0.6666F + (float)chargingPower / 20.0F;
-            } else {
-                return 1.0F;
-            }
-        });
+                            return 0.6666F + (float)chargingPower / 20.0F;
+                        } else {
+                            return 1.0F;
+                        }
+                    });
+        }
     }
 
     @OnlyIn(Dist.CLIENT) @Override
