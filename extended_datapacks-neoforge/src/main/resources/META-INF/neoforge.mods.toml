@@ -2,10 +2,9 @@ modLoader="javafml"
 loaderVersion="[4,)"
 license="All Rights Reserved"
 
-
 [[mods]]
 modId="epicfight_edp"
-version="2.4.6+1.21.1"
+version="2.4.7"
 displayName="Epic Fight - Extended Datapacks"
 authors="Sleys"
 logoFile = "extended_datapacks.png"
