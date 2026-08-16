@@ -12,22 +12,33 @@ public class ShaderPacketParsingSystem {
     public static IShaderParameters tryToGetSealedShaderPacket(JsonObject object, String value) {
         return switch ((ShaderEffectList.valueOf(value.toUpperCase(Locale.ROOT)))) {
             /// Shader I
-            case COLOR_OVERLAY -> tryToParseThisColorOverlay(object);
-            case IMPACT_FRAME -> tryToParseThisImpactFrame(object);  /// One-shot
-            case NOISE_OVERLAY -> tryToParseThisNoiseOverlay(object);  /// One-shot
-            case RADIAL_BLUR_IN -> tryToParseThisRadialBlurIn(object);
-            case RADIAL_BLUR_OUT -> tryToParseThisRadialBlurOut(object);
-            case CHROMATIC_ABERRATION -> tryToParseThisChromaticAberration(object);
             case ADVANCED_CHROMATIC_ABERRATION -> tryToParseThisAdvancedChromaticAberration(object);
+            case CHROMATIC_ABERRATION -> tryToParseThisChromaticAberration(object);
+            case RADIAL_BLUR_OUT -> tryToParseThisRadialBlurOut(object);
+            case RADIAL_BLUR_IN -> tryToParseThisRadialBlurIn(object);
+            case COLOR_OVERLAY -> tryToParseThisColorOverlay(object);
+            case NOISE_OVERLAY -> tryToParseThisNoiseOverlay(object);  /// One-shot
+            case IMPACT_FRAME -> tryToParseThisImpactFrame(object);  /// One-shot
 
             /// Shader II
-            case BI_COLOR_OVERLAY -> tryToParseThisBiColorOverlay(object);
-            case FOCUS_BLUR -> tryToParseThisFocusBlur(object);
-            case CRT_FILTER -> tryToParseThisCRTScanFilter(object);
-            case GLOW -> tryToParseThisGlow(object);
             case COLORED_IMPACT_FRAME -> tryToParseThisColoredImpactFrame(object); /// One-shot
+            case BI_COLOR_OVERLAY -> tryToParseThisBiColorOverlay(object);
+            case CRT_FILTER -> tryToParseThisCRTScanFilter(object);
             case PHASE_NOISE -> tryToParseThisPhaseNoise(object);
+            case FOCUS_BLUR -> tryToParseThisFocusBlur(object);
             case SHARPEN -> tryToParseThisSharpen(object);
+            case GLOW -> tryToParseThisGlow(object);
+
+            /// Shader III
+            case COLOR_WAVE_DISTORTION -> tryToParseThisColorWaveDistortion(object);
+            case SCREEN_DISTORTION -> tryToParseThisScreenDistortion(object);
+            case WAVE_DISTORTION -> tryToParseThisWaveDistortion(object);
+            case HUE_ROTATION -> tryToParseThisHueRotation(object);
+            case COLOR_GRADE -> tryToParseThisColorGrade(object);
+            case POSTERIZE -> tryToParseThisPosterize(object);
+            case BLOOM -> tryToParseThisBloom(object);
+
+            default -> null;
         };
     }
 
@@ -195,5 +206,88 @@ public class ShaderPacketParsingSystem {
         var threshold = GsonUtilities.getAsFloat(obj, "threshold", 0F);
 
         return new SharpenParams(time_in, time_out, time_hold, amount, radius, threshold);
+    }
+
+    /// Shaders III - Parser Methods
+    private static ColorWaveDistortionParams tryToParseThisColorWaveDistortion(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+        float amplitude = GsonUtilities.getAsFloat(obj, "amplitude", 0.01F);
+        float frequency = GsonUtilities.getAsFloat(obj, "frequency", 16F);
+        float speed = GsonUtilities.getAsFloat(obj, "speed", 0.1F);
+        RGB color = GsonUtilities.getAsRGB(obj, "color", RGB.DEFAULT);
+        float colorStrength = GsonUtilities.getAsInteger(obj, "colorStrength", 0);
+
+        return new ColorWaveDistortionParams(time_in, time_out, time_hold, amplitude, frequency, speed, color, colorStrength);
+    }
+
+    private static ScreenDistortionParams tryToParseThisScreenDistortion(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+        float amplitude = GsonUtilities.getAsFloat(obj, "amplitude", 0.01F);
+        float ringWidth = GsonUtilities.getAsFloat(obj, "ringWidth", 1F);
+        float speed = GsonUtilities.getAsFloat(obj, "speed", 1F);
+
+        return new ScreenDistortionParams(time_in, time_out, time_hold, amplitude, ringWidth, speed);
+    }
+
+    private static WaveDistortionParams tryToParseThisWaveDistortion(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+        float amplitude = GsonUtilities.getAsFloat(obj, "amplitude", 0.01F);
+        float frequency = GsonUtilities.getAsFloat(obj, "frequency", 16F);
+        float speed = GsonUtilities.getAsFloat(obj, "speed", 0.1F);
+
+        return new WaveDistortionParams(time_in, time_out, time_hold, amplitude, frequency, speed);
+    }
+
+    private static HueRotationParams tryToParseThisHueRotation(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+        float base_hue = GsonUtilities.getAsFloat(obj, "base_hue", 0F);
+        float speed = GsonUtilities.getAsFloat(obj, "speed", 0F);
+
+        return new HueRotationParams(time_in, time_out, time_hold, base_hue, speed);
+    }
+
+    private static ColorGradeParams tryToParseThisColorGrade(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+
+        float saturation = GsonUtilities.getAsFloat(obj, "saturation", 0F);
+        float temperature = GsonUtilities.getAsFloat(obj, "temperature", 0F);
+        float brightness = GsonUtilities.getAsFloat(obj, "brightness", 1F);
+        float contrast = GsonUtilities.getAsFloat(obj, "contrast", 1F);
+
+        return new ColorGradeParams(time_in, time_out, time_hold, temperature, brightness, contrast, saturation);
+    }
+
+    private static PosterizeParams tryToParseThisPosterize(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+
+        float levels = GsonUtilities.getAsFloat(obj, "levels", 12F);
+        float intensity = GsonUtilities.getAsFloat(obj, "intensity", 0.5F);
+        return new PosterizeParams(time_in, time_out, time_hold, levels, intensity);
+    }
+
+    private static BloomParams tryToParseThisBloom(JsonObject obj) {
+        int time_in = GsonUtilities.getAsInteger(obj, "time_in", 0);
+        int time_out = GsonUtilities.getAsInteger(obj, "time_out", 0);
+        int time_hold = GsonUtilities.getAsInteger(obj, "time_hold", Integer.MAX_VALUE);
+
+        float intensity = GsonUtilities.getAsFloat(obj, "intensity", 1F);
+        float threshold = GsonUtilities.getAsFloat(obj, "threshold", 0F);
+        float softness = GsonUtilities.getAsFloat(obj, "softness", 0.4F);
+        float radius = GsonUtilities.getAsFloat(obj, "radius", 2F);
+        RGB color = GsonUtilities.getAsRGB(obj, "color", RGB.DEFAULT);
+
+        return new BloomParams(time_in, time_out, time_hold, intensity, threshold, softness, radius, color);
     }
 }
