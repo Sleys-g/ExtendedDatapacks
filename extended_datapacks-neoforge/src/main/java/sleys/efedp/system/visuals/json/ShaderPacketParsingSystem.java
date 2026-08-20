@@ -217,7 +217,7 @@ public class ShaderPacketParsingSystem {
         float frequency = GsonUtilities.getAsFloat(obj, "frequency", 16F);
         float speed = GsonUtilities.getAsFloat(obj, "speed", 0.1F);
         RGB color = GsonUtilities.getAsRGB(obj, "color", RGB.DEFAULT);
-        float colorStrength = GsonUtilities.getAsInteger(obj, "colorStrength", 0);
+        float colorStrength = GsonUtilities.getAsFloat(obj, "colorStrength", 0F);
 
         return new ColorWaveDistortionParams(time_in, time_out, time_hold, amplitude, frequency, speed, color, colorStrength);
     }
