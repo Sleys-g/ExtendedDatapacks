@@ -124,7 +124,7 @@ repositories {
 dependencies {
     implementation name: 'SLM-EpicFight-1.3-1.21.1+[NeoForge]-api'
     implementation name: 'SL-Library-1.5.3-1.21.1+[NeoForge]-api'
-    implementation name: 'SLM-Shaders-2.0-1.21.1+[NeoForge]-api'
+    implementation name: 'SLM-Shaders-2.2.1-1.21.1+[NeoForge]-api'
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

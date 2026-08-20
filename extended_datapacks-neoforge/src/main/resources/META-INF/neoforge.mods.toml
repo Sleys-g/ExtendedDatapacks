@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="epicfight_edp"
-version="2.4.7"
+version="2.4.8"
 displayName="Epic Fight - Extended Datapacks"
 authors="Sleys"
 logoFile = "extended_datapacks.png"
@@ -59,7 +59,7 @@ side="BOTH"
 [[dependencies."epicfight_edp"]]
 modId="slm_shaders"
 type="required"
-versionRange="[2.0,)"
+versionRange="[2.2,)"
 ordering="AFTER"
 side="BOTH"
 
