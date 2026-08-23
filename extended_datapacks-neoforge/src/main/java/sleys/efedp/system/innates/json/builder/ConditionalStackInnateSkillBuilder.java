@@ -125,7 +125,7 @@ public class ConditionalStackInnateSkillBuilder {
                 .parse(JsonOps.INSTANCE, json)
                 .resultOrPartial(err ->
                         ExtendedDatapacks.LOGGER.error(
-                                "[Animations Registry] Failed to parse {} -> {}: {}",
+                                "[Stacks Conditional Innate Skills] Failed to parse {} -> {}: {}",
                                 modId, file.getFileName(), err
                         )
                 ).ifPresent(def ->

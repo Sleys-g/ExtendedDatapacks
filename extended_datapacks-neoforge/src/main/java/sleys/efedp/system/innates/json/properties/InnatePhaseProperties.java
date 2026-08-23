@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.capability.data.HitParticleCache;
 import sleys.efedp.system.animations.json.properties.phase.PhaseStunType;
+import sleys.sl.library.annotations.Linked;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.particle.HitParticleType;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+@Linked(range = Linked.DependentRange.LOWER, packageId = "sleys.efedp.system.animations.json.properties.phase")
 public record InnatePhaseProperties(
         Optional<Float> maxStrikes,
         Optional<Float> damageMultiplier,

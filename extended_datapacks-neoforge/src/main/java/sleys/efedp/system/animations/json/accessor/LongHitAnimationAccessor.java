@@ -39,6 +39,7 @@ public record LongHitAnimationAccessor(float transitionTime, String animationPat
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

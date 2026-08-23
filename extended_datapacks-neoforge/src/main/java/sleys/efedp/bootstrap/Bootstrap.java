@@ -2,10 +2,10 @@ package sleys.efedp.bootstrap;
 
 import net.neoforged.bus.api.IEventBus;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierLambdaList;
-import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierTypeRegistry;
-import sleys.efedp.system.animations.json.properties.functional.time.AnimationEventTypeRegistry;
-import sleys.efedp.system.animations.json.properties.functional.time.AnimationsEventsList;
+import sleys.efedp.system.animations.json.properties.functional.playback.list.PlaySpeedModifierLambda;
+import sleys.efedp.system.animations.json.properties.functional.playback.registry.PlaySpeedModifierTypeRegistry;
+import sleys.efedp.system.animations.json.properties.functional.time.list.*;
+import sleys.efedp.system.animations.json.properties.functional.time.registry.AnimationEventTypeRegistry;
 import sleys.sl.library.contract.ExpectedContracts;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -27,8 +27,9 @@ public class Bootstrap {
         Bootstrap.changes();
         if (STATE.equals(SystemState.CLOSED)) return;
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing...");
-        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, AnimationsEventsList.class);
-        PlaySpeedModifierTypeRegistry.register(ExtendedDatapacks.MODID, PlaySpeedModifierLambdaList.class);
+
+        Bootstrap.registryAnimationsEvents();
+        Bootstrap.registrySpeedModifiers();
 
         BootstrapBuilds.Initialize();
         BootstrapCommon.Initialize(modBus);
@@ -40,6 +41,19 @@ public class Bootstrap {
         );
 
         STATE = SystemState.CLOSED;
+    }
+
+    private static void registryAnimationsEvents() {
+        AnimationEventTypeRegistry.registerAsMain(DataAnimationsEvents.class);
+        AnimationEventTypeRegistry.registerAsMain(EntityAnimationsEvents.class);
+        AnimationEventTypeRegistry.registerAsMain(GameplayAnimationsEvents.class);
+        AnimationEventTypeRegistry.registerAsMain(ParticleAnimationsEvents.class);
+        AnimationEventTypeRegistry.registerAsMain(SummonAnimationsEvents.class);
+        AnimationEventTypeRegistry.registerAsMain(VisualAnimationsEvents.class);
+    }
+
+    private static void registrySpeedModifiers() {
+        PlaySpeedModifierTypeRegistry.registerAsMain(PlaySpeedModifierLambda.class);
     }
 
     private static void changes() {

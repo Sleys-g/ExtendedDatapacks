@@ -55,6 +55,7 @@ public record AimAnimationAccessor(float transitionTime, boolean isRepeat, Strin
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

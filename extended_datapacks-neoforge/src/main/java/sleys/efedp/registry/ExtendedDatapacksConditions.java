@@ -11,7 +11,7 @@ import yesman.epicfight.registry.EpicFightRegistries;
 
 import java.util.function.Supplier;
 
-public class ExtendedDatapacksConditions {
+public final class ExtendedDatapacksConditions {
     public static final DeferredRegister<Supplier<Condition<?>>> CONDITIONS  = DeferredRegister.create(EpicFightRegistries.CONDITION, EpicFight.MODID);
 
     public static final DeferredHolder<Supplier<Condition<?>>, Supplier<Condition<?>>> PASSIVE_SKILL_DATA_KEY_BOOLEAN  = CONDITIONS.register(

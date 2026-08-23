@@ -50,6 +50,7 @@ public record DashAttackAnimationAccessor(float transitionTime, String animation
                             .toArray(AttackAnimation.Phase[]::new)
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

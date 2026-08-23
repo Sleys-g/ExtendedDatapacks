@@ -4,6 +4,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +13,7 @@ import sleys.efedp.capability.data.SkillDataKeyCache;
 import sleys.efedp.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.bootstrap.Bootstrap;
 import sleys.efedp.client.config.EpicFightEDPClientConfig;
-import sleys.efedp.registry.ExtendedDatapacksConditions;
-import sleys.efedp.registry.ExtendedDatapacksRegistrySkills;
+import sleys.efedp.registry.*;
 import sleys.efedp.system.combat.ExtendedSkillCategory;
 import sleys.efedp.system.combat.MechanicsAssignerEvent;
 import sleys.efedp.system.combat.ExtendedSkillSlot;
@@ -24,6 +24,8 @@ import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.LogicalTasks;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
+import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
+import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -46,9 +48,15 @@ public class ExtendedDatapacks {
         NeoForge.EVENT_BUS.register(MechanicsAssignerEvent.class);
         modBus.register(SkillDataKeyCache.class);
         modBus.register(HitParticleCache.class);
-        ExtendedDatapacksRegistrySkills.REGISTRY.register(modBus);
+        modBus.register(ExtendedDatapacksAttributes.class);
+        ExtendedDatapacksSkills.REGISTRY.register(modBus);
+        ExtendedDatapacksEntities.REGISTRY.register(modBus);
         ExtendedDatapacksConditions.CONDITIONS.register(modBus);
         modContainer.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EDP, CONFIG_PATH);
+        modBus.addListener(FMLCommonSetupEvent.class, ExtendedDatapacksEntitiesArmatures::registerEntitiesArmatures);
+        EpicFightEventHooks.Registry.ENTITY_PATCH.registerEvent(
+                ExtendedDatapacksPatchesEntities::registerPatchesEntities, ExtendedDatapacks.MODID
+        );
 
         LogicalTasks.run(
                 LogicalPolicy.LOGICAL_CLIENT, ErrorPolicy.DEPURATE,
@@ -62,5 +70,10 @@ public class ExtendedDatapacks {
         modContainer.registerConfig(ModConfig.Type.CLIENT, EpicFightEDPClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
         NeoForge.EVENT_BUS.register(ExtendedDatapacksClientCommands.class);
         modBus.register(EDPCombatKeyBinding.class);
+        modBus.register(ExtendedDatapacksRenders.class);
+
+        EpicFightClientEventHooks.Registry.ADD_PATCHED_ENTITY.registerEvent(
+                ExtendedDatapacksPatchesRenders::registerPatchesRenders, ExtendedDatapacks.MODID
+        );
     }
 }

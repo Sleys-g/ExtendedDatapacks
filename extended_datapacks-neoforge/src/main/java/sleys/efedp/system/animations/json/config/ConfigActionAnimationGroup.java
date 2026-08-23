@@ -16,13 +16,15 @@ public record ConfigActionAnimationGroup(ResourceLocation animation) implements 
     );
 
     @Override
-    public AnimationGroupType virtualGroupType() {
+    public AnimationGroupType configGroupType() {
         return AnimationGroupType.ACTION_GROUP;
     }
 
     @Override
     public void applyConfig(IAnimationProperty<ActionAnimation> property) {
+        if (this.isInvalidAccessor()) return;
         var animation = getAccessor().get();
         property.applyTo(animation);
+        this.isSuccessful();
     }
 }

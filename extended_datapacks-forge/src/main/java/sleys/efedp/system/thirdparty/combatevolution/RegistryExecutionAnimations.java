@@ -2,10 +2,12 @@ package sleys.efedp.system.thirdparty.combatevolution;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.shelmarow.combat_evolution.api.event.RegisterCustomExecutionEvent;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.thirdparty.combatevolution.json.ExecutionAnimationBuilder;
+import sleys.efedp.system.thirdparty.combatevolution.json.RegistryCombatEvolutionErrorHelper;
+import sleys.sl.library.exceptions.RegistryObjectException;
 import yesman.epicfight.api.animation.AnimationManager;
 
 import java.util.ArrayList;
@@ -33,11 +35,9 @@ public class RegistryExecutionAnimations {
             var item = entry.getParseItem();
             if (itemCategory != null && item != null) {
                 RUNTIME_ERRORS.add(
-                        RegistryErrorHelper.getError(
-                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
-                                "Execution Registry Animation", "null",
-                                null,
-                                "A registration attempt can only be made for categories or objects, never for both."
+                        RegistryCombatEvolutionErrorHelper.getError(
+                                RegistryCombatEvolutionErrorHelper.ErrorsCombatEvolutionType.REGISTRY_BUILDER,
+                                null, "A registration attempt can only be made for categories or objects, never for both."
                         )
                 );
                 continue;
@@ -45,23 +45,21 @@ public class RegistryExecutionAnimations {
 
             String executionName = entry.executionAnimation();
             String executedName = entry.executedAnimation();
-            
+
             ResourceLocation executionId = ResourceLocation.tryParse(executionName);
             ResourceLocation executedId = ResourceLocation.tryParse(executedName);
 
             if (executionId == null) {
-                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                        "Execution Animation Registry", "null",
+                RUNTIME_ERRORS.add(RegistryCombatEvolutionErrorHelper.getError(
+                        RegistryCombatEvolutionErrorHelper.ErrorsCombatEvolutionType.UNPARSEABLE,
                         executionName, null
                 ));
                 continue;
             }
-            
+
             if (executedId == null) {
-                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                        "Executed Animation Registry", "null",
+                RUNTIME_ERRORS.add(RegistryCombatEvolutionErrorHelper.getError(
+                        RegistryCombatEvolutionErrorHelper.ErrorsCombatEvolutionType.UNPARSEABLE,
                         executionName, null
                 ));
                 continue;
@@ -72,20 +70,20 @@ public class RegistryExecutionAnimations {
                 var executedKey = AnimationManager.byKey(executedId);
                 if (executionKey == null) {
                     RUNTIME_ERRORS.add(
-                            RegistryErrorHelper.getError(
-                                    RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
-                                    "Execution Animation Registry", "null"
-                                    , executionId, null)
+                            RegistryCombatEvolutionErrorHelper.getError(
+                                    RegistryCombatEvolutionErrorHelper.ErrorsCombatEvolutionType.NULL_ANIMATION_KEY,
+                                    executionId, null
+                            )
                     );
                     continue;
                 }
-                
+
                 if (executedKey == null) {
                     RUNTIME_ERRORS.add(
-                            RegistryErrorHelper.getError(
-                                    RegistryErrorHelper.ErrorsType.NULL_ANIMATION_KEY,
-                                    "Executed Animation Registry", "null"
-                                    , executionId, null)
+                            RegistryCombatEvolutionErrorHelper.getError(
+                                    RegistryCombatEvolutionErrorHelper.ErrorsCombatEvolutionType.NULL_ANIMATION_KEY,
+                                    executionId, null
+                            )
                     );
                     continue;
                 }
@@ -108,13 +106,22 @@ public class RegistryExecutionAnimations {
                 }
             } catch (Exception e) {
                 RUNTIME_ERRORS.add(
-                        RegistryErrorHelper.getError(
-                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
-                                "Execution Registry Animation", "null",
+                        RegistryCombatEvolutionErrorHelper.getError(
+                                RegistryCombatEvolutionErrorHelper.ErrorsCombatEvolutionType.REGISTRY_BUILDER,
                                 executionId, e.getCause()
                         )
                 );
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onClientModBusEvent(final FMLLoadCompleteEvent event) {
+        if (!RUNTIME_ERRORS.isEmpty()) {
+            throw new RegistryObjectException(
+                    "Failure during the operation to create a Execution Animation...\n" +
+                            "Total number of registry failures: " + RUNTIME_ERRORS.size() +
+                            "\n\nProblematic Execution Animation\n\n" + String.join("\n", RUNTIME_ERRORS));
         }
     }
 }

@@ -32,23 +32,53 @@ Take a look at what is currently implemented and what is coming next!
 
 - [x] **Advanced Animation JSON Registry v2.3** ✔️
 - [x] **Weapons Passive Particles v2.4** ✔️
-- [ ] **Innate Skills II - Payloads v2.5** ️❌
-  - [ ] **Data Packets** 🛠️
-  - [ ] **More Conditional Types** ️❌
-    - [ ] **Left, Right, Forward, Back** ️❌
-    - [ ] **Read Data** ️❌
-    - [ ] **Read & Consume Data** ️❌
-  - [ ] **Additional Innate Skills** ❌
-    - [ ] **Sequential Innate Skill** ❌
-    - [ ] **Per Combo Innate Skill** ❌
-    - [ ] **Combable Innate Skill** ❌
-    - [ ] **Conditional Holdable Innate Skill** ❌
-    - [ ] **Conditional Stack Holdable Innate Skill** ❌
-    - [ ] **Timed Innate Skill** ❌
-      - [ ] **Controlable Events & Listeners** ❌
-  - [ ] **More Animation Events** ❌
-    - [ ] **Write Data** ❌
- 
+- [x] **Innate Skills II - Payloads v2.5** ✔️
+  - [x] **Data Packets** ✔️
+    - [x] **Write Packets** ✔️
+      - [x] **Arithmetic Instruction** ✔️
+      - [x] **Logical Instruction** ✔️
+      - [x] **String Instruction** ✔️
+    - [x] **Read Packets** ✔️
+      - [x] **Numeric Comparator** ✔️
+      - [x] **String Comparator** ✔️
+  - [x] **Additional Innate Skills** ✔️
+    - [x] **Conditional Data Innate Skill** ✔️
+    - [x] **Sequential Innate Skill** ✔️
+    - [x] **Per Combo Innate Skill** ✔️
+    - [x] **Combo Innate Skill** ✔️
+    - [x] **Conditional Holdable Innate Skill** ✔️
+  - [x] **More Animation Events** ✔️
+    - [x] **Whiter Ghost Entity Event** ✔️
+    - [x] **Laser Damage Event** ✔️
+      - [x] **Laser Target Event** ✔️
+      - [x] **Laser Vertical Target Event** ✔️
+      - [x] **Laser Joint Target Event** ✔️
+      - [x] **Laser Vertical Event** ✔️
+      - [x] **Laser Joint Vertical Event** ✔️
+      - [x] **Laser Line World Event** ✔️
+      - [x] **Laser Floor World Event** ✔️
+    - [x] **Summon Entity Event** ✔️
+    - [x] **Write Data** ✔️
+      - [x] **Synced Data Write Event** ✔️
+      - [x] **Data Write Event** ✔️
+    - [x] **Read Data** ✔️
+        - [x] **Synced Direct Read Write Event** ✔️
+        - [x] **Synced Branched Read Write Event** ✔️
+        - [x] **Direct Read Write Event** ✔️
+        - [x] **Branched Read Write Event** ✔️
+    - [x] **Entity Pairing Event** ✔️
+      - [x] **Flash White Pair Event** ✔️
+      - [x] **Scape Emergence Pair Event** ✔️
+      - [x] **Entity Pairing Event** ✔️
+    - [x] **Item Data Read Event** ✔️
+      - [x] **Item String Data Read Event** ✔️
+      - [x] **Item Number Data Read Event** ✔️
+  - [x] **More Animation Static Property** ✔️
+    - [x] **Animation Process Events** ✔️
+      - [x] **On Tick Events** ✔️
+      - [x] **On Begin Events** ✔️
+      - [x] **On End Events** ✔️
+
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates
@@ -58,6 +88,8 @@ Take a look at what is currently implemented and what is coming next!
 | Weapons Passive Skill                     | 🔻 Low   | v2.7    |
 | Skill Books (Dodge / Guard / Passive)     | 🔻 Low   | v2.8    |
 | Custom Skill Slots, Slots, Modified Slots | 🔻 Low   | v2.9    |
+
+> The release disposition can vary based on priority, if the entire table has a low priority and then one goes to medium or high, it will become the next update
 
 ## 📌 Project Status
 

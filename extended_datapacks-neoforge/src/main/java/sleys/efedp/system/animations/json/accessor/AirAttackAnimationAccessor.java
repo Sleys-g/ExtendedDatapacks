@@ -51,6 +51,7 @@ public record AirAttackAnimationAccessor(float transitionTime, String animationP
                             .toArray(AttackAnimation.Phase[]::new)
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

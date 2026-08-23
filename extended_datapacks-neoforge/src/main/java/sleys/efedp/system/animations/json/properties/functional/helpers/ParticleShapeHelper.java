@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParticleShapeHelper {
+public final class ParticleShapeHelper {
 
     public static List<Vec3> circle(double radius, int points) {
         List<Vec3> result = new ArrayList<>(points);

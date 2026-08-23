@@ -55,17 +55,19 @@ public final class RegistryErrorHelper {
         };
     }
 
+    /// Fix Trying to access unbound value
     public static Skill handleRegistrationError(DeferredRegister<Skill> registry,
                                                  String modId, String name,
                                                  Object animationId,
                                                  List<String> errors,
                                                  Exception e) {
-        boolean isDupe = registry
+        long matches = registry
                 .getEntries()
                 .stream()
-                .anyMatch(entry ->
-                        ResourceLocation.fromNamespaceAndPath(modId, name).equals(entry.get().getRegistryName())
-                );
+                .filter(entry -> ResourceLocation.fromNamespaceAndPath(modId, name).equals(entry.getId()))
+                .count();
+
+        boolean isDupe = matches > 1;
 
         errors.add(RegistryErrorHelper.getError(
                 isDupe ? RegistryErrorHelper.ErrorsType.DUPE : RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,

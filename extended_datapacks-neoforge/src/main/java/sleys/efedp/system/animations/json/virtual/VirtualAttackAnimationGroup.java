@@ -34,7 +34,8 @@ public record VirtualAttackAnimationGroup(ResourceLocation realAnimation, Resour
 
     @Override
     public void configProtocol(IAnimationProperty<AttackAnimation> property) {
-        var animation = getAnimation().get();
+        if (this.isInvalidAccessor()) return;
+        var animation = getAccessor().get();
         var phases = animation.phases;
         int phasesSize = phases.length;
         int propertiesSize = properties.size();
@@ -50,5 +51,6 @@ public record VirtualAttackAnimationGroup(ResourceLocation realAnimation, Resour
         }
 
         property.applyTo(animation);
+        this.isSuccessful();
     }
 }

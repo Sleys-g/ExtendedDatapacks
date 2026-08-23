@@ -1,9 +1,6 @@
 package sleys.efedp.system.thirdparty.combatevolution.json;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
@@ -17,6 +14,7 @@ import sleys.sl.datadriven.api.SLDataDrivenAPI;
 import sleys.sl.epicfight.capability.StyleInvalid;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.util.io.GsonUtilities;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -119,131 +117,30 @@ public class ExecutionAnimationBuilder {
                 file.getFileName()
         );
 
-        startToProcessExecutions(root, file.getFileName().toString());
+        EXECUTION_BUILDER_DATA.add(startToParse(root));
         return file;
     }
 
-    private static void startToProcessExecutions(JsonObject root, String fileName) {
-        if (!root.has("execution_animation_builder") || !root.get("execution_animation_builder").isJsonArray()) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Execution to Build] File without 'execution_animation_builder': {}",
-                    fileName
-            );
-            return;
-        }
 
-        JsonArray array = root.getAsJsonArray("execution_animation_builder");
+    private static RawExecutionBuilderData startToParse(JsonObject json) {
+        String category = GsonUtilities.getAsString(json, "category", null);
+        String item = GsonUtilities.getAsString(json, "item", "null");
+        String style = GsonUtilities.getAsString(json, "style", "null");
+        String executionAnimation = GsonUtilities.getAsString(json, "executionAnimation", null);
+        String executedAnimation = GsonUtilities.getAsString(json, "executedAnimation", null);
 
-        for (JsonElement element : array) {
+        float xOffset = GsonUtilities.getAsFloat(json, "xOffset", 0F);
+        float yOffset = GsonUtilities.getAsFloat(json, "yOffset", 0F);
+        float zOffset = GsonUtilities.getAsFloat(json, "zOffset", 0F);
+        float rotationOffset = GsonUtilities.getAsFloat(json, "rotationOffset", 0F);
+        int totalTick = GsonUtilities.getAsInteger(json, "totalTick", 0);
 
-            if (!element.isJsonObject()) continue;
-            List<RawExecutionBuilderData> dataList = startToParse(element.getAsJsonObject(), fileName);
-            EXECUTION_BUILDER_DATA.addAll(dataList);
-        }
-    }
-
-    private static List<RawExecutionBuilderData> startToParse(JsonObject json, String fileName) {
-
-        List<RawExecutionBuilderData> result = new ArrayList<>();
-
-        if (!json.has("category")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'category' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("item")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'item' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("style")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'style' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("executionAnimation")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'executionAnimation' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("executedAnimation")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'executedAnimation' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("xOffset")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'xOffset' in: {}",
-                    fileName
-            );
-            return result;
-        }
-        if (!json.has("yOffset")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'yOffset' in: {}",
-                    fileName
-            );
-            return result;
-        }
-        if (!json.has("zOffset")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'zOffset' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("rotationOffset")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'rotationOffset' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-        if (!json.has("totalTick")) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[Add Category to Build] missing 'totalTick' in: {}",
-                    fileName
-            );
-            return result;
-        }
-
-
-        JsonElement category = json.get("category");
-        JsonElement item = json.get("item");
-        JsonElement style = json.get("style");
-        JsonElement executionAnimation = json.get("executionAnimation");
-        JsonElement executedAnimation = json.get("executedAnimation");
-
-        JsonElement xOffset = json.get("xOffset");
-        JsonElement yOffset = json.get("yOffset");
-        JsonElement zOffset = json.get("zOffset");
-        JsonElement rotationOffset = json.get("rotationOffset");
-        JsonElement totalTick = json.get("totalTick");
-        result.add(new RawExecutionBuilderData(
-                category.getAsString(), item.getAsString(), style.getAsString(),
-                executionAnimation.getAsString(), executedAnimation.getAsString(),
-                xOffset.getAsFloat(), yOffset.getAsFloat(), zOffset.getAsFloat(),
-                rotationOffset.getAsFloat(), totalTick.getAsInt()
-        ));
-
-        return result;
+        return new RawExecutionBuilderData(
+                category, item, style,
+                executionAnimation, executedAnimation,
+                xOffset, yOffset, zOffset,
+                rotationOffset, totalTick
+        );
     }
 
     public static List<RawExecutionBuilderData> getExecutionData() {

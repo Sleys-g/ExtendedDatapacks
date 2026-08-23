@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.system.innates.json.builder.wrapper.holdable.WHoldableInnateSkill;
-import sleys.efedp.system.innates.json.data.HoldableSkillValues;
-import sleys.efedp.system.innates.json.data.ListenerSkillValues;
+import sleys.efedp.system.innates.json.builder.values.HoldableSkillValues;
+import sleys.efedp.system.innates.json.builder.values.ListenerSkillValues;
 import sleys.efedp.system.innates.json.properties.InnatePhaseProperties;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.api.animation.AnimationManager;
@@ -37,9 +37,9 @@ public record HoldableInnateSkillDefinition(
 
                     Codec.BOOL.fieldOf("reduceSpeed").forGetter(HoldableInnateSkillDefinition::reduceSpeed),
                     Codec.BOOL.optionalFieldOf("playbackForCharging", false)
-                            .forGetter(HoldableInnateSkillDefinition::reduceSpeed),
+                            .forGetter(HoldableInnateSkillDefinition::playbackForCharging),
                     Codec.BOOL.optionalFieldOf("playbackForRelease", false)
-                            .forGetter(HoldableInnateSkillDefinition::reduceSpeed),
+                            .forGetter(HoldableInnateSkillDefinition::playbackForRelease),
 
                     InnatePhaseProperties.CODEC.codec()
                             .listOf()

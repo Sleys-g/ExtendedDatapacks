@@ -1,5 +1,6 @@
 package sleys.efedp.system.animations.json.accessor;
 
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.AnimationRegistryType;
 import sleys.efedp.system.animations.json.properties.IAnimationProperty;
 import yesman.epicfight.api.animation.AnimationManager;
@@ -10,4 +11,11 @@ public sealed interface IAnimationAccessor<T extends DynamicAnimation> permits A
     AnimationRegistryType accessorType();
 
     AnimationManager.AnimationAccessor<T> register(AnimationManager.AnimationBuilder builder, IAnimationProperty<T> property);
+
+    default void isSuccessful(AnimationManager.AnimationAccessor<T> accessor) {
+        ExtendedDatapacks.LOGGER.info(
+                "[<I> - Animation Accessor] Successfully registered animation '{}' for accessor type '{}'",
+                accessor, this.accessorType()
+        );
+    }
 }

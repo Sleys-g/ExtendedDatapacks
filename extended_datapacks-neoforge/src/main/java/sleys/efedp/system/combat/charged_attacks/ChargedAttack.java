@@ -18,7 +18,7 @@ import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.config.EpicFightEDPConfig;
 import sleys.efedp.system.combat.ExtendedSkillCategory;
-import sleys.efedp.registry.ExtendedDatapacksRegistrySkills;
+import sleys.efedp.registry.ExtendedDatapacksSkills;
 import sleys.sl.epicfight.events.EFPlayerAnimationEvent;
 import sleys.sl.epicfight.events.EFPlayerAttackSpeedEvent;
 import sleys.sl.epicfight.skills.extender.ExtendedPassiveSkill;
@@ -71,7 +71,7 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
 
     @Override
     public ResourceLocation putSkill() {
-        return ExtendedDatapacksRegistrySkills.CHARGED_ATTACK.getId();
+        return ExtendedDatapacksSkills.CHARGED_ATTACK.getId();
     }
 
     @Override

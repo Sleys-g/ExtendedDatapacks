@@ -44,6 +44,7 @@ public record DodgeAnimationAccessor(float transitionTime,
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

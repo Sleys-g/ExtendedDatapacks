@@ -42,6 +42,7 @@ public record MovementAnimationAccessor(float transitionTime, boolean isRepeat, 
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

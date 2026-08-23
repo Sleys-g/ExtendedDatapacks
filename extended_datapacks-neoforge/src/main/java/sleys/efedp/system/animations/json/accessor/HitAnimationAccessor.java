@@ -39,6 +39,7 @@ public record HitAnimationAccessor(float transitionTime, String animationPath,
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

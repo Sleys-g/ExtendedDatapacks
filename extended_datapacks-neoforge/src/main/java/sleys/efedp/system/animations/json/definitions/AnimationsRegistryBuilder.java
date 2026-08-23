@@ -98,14 +98,16 @@ public class AnimationsRegistryBuilder {
         JsonElement json = JsonParser.parseReader(reader);
 
         if (modId.equals("config") && json.isJsonObject()) {
-            ExtendedDatapacks.LOGGER.info(
-                    "[Animations Registry] Loading from configuration folder... Registering under the namespaces: {}", modId
-            );
-
             JsonObject object = json.getAsJsonObject();
             if (object.has("mod_id")) {
+                var modKey = object.get("mod_id").getAsString();
+
+                ExtendedDatapacks.LOGGER.info(
+                        "[Animations Registry] Loading from configuration folder... Registering under the namespaces: {}", modKey
+                );
+
                 AnimationsRegistryBuilder.startToRegisterEntry(
-                        file, object.get("mod_id").getAsString(), json
+                        file, modKey, json
                 );
             }
 

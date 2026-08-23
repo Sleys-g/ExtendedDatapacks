@@ -43,6 +43,7 @@ public record ActionAnimationAccessor(
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

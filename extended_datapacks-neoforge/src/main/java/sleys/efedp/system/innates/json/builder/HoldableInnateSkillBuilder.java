@@ -125,7 +125,7 @@ public class HoldableInnateSkillBuilder {
                 .parse(JsonOps.INSTANCE, json)
                 .resultOrPartial(err ->
                         ExtendedDatapacks.LOGGER.error(
-                                "[Animations Registry] Failed to parse {} -> {}: {}",
+                                "[Holdable Innate Skills] Failed to parse {} -> {}: {}",
                                 modId, file.getFileName(), err
                         )
                 ).ifPresent(def ->

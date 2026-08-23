@@ -42,6 +42,7 @@ public record StaticAnimationAccessor(float transitionTime, boolean isRepeat, St
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

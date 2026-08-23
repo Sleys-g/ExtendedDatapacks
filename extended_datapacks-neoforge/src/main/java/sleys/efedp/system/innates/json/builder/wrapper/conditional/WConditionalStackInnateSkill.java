@@ -7,8 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.innates.json.data.ConditionalSkillValues;
-import sleys.efedp.system.innates.json.data.ConditionalType;
+import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
+import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.efedp.system.innates.json.builder.helper.SkillTooltipHelper;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class WConditionalStackInnateSkill extends WeaponInnateSkill {
-    protected Map<ConditionalType, ConditionalSkillValues> conditionMap;
+    protected Map<ConditionalType, AnimationSkillValues> conditionMap;
     protected Map<ConditionalType, Integer> stackMap;
     protected List<JsonComponentArgs> tooltipComponents;
     protected boolean disableTooltipProperties;
@@ -67,7 +67,7 @@ public class WConditionalStackInnateSkill extends WeaponInnateSkill {
     }
 
     @ErrorHandled
-    private ConditionalSkillValues registryAnimationsData(ConditionalSkillValues entry) {
+    private AnimationSkillValues registryAnimationsData(AnimationSkillValues entry) {
         var animation = entry.animationAccessor().get();
         if (!(animation instanceof AttackAnimation attack)) {
             ExtendedDatapacks.LOGGER.warn("[Conditional Stack - Innate Skill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animation);
@@ -151,7 +151,7 @@ public class WConditionalStackInnateSkill extends WeaponInnateSkill {
     }
 
     public static class Builder extends WeaponInnateSkill.Builder<WConditionalStackInnateSkill.Builder> {
-        private final Map<ConditionalType, ConditionalSkillValues> conditionMap = new EnumMap<>(ConditionalType.class);
+        private final Map<ConditionalType, AnimationSkillValues> conditionMap = new EnumMap<>(ConditionalType.class);
         private final Map<ConditionalType, Integer> stackMap = new EnumMap<>(ConditionalType.class);
         private List<JsonComponentArgs> tooltipComponents;
         private boolean disableTooltipProperties;
@@ -160,7 +160,7 @@ public class WConditionalStackInnateSkill extends WeaponInnateSkill {
             super(constructor);
         }
 
-        public void putConditionData(ConditionalType type, ConditionalSkillValues data) {
+        public void putConditionData(ConditionalType type, AnimationSkillValues data) {
             this.conditionMap.put(type, data);
         }
 
