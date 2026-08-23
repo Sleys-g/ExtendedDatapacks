@@ -29,7 +29,10 @@ public enum AnimationsEventsList implements IAnimationEventType {
     COLUMN_LINE(ColumnLineEvent.CODEC),
     DIRECTIONAL_BURST(DirectionalBurstEvent.CODEC),
     CIRCLE_PARTICLES(CircleParticleEvent.CODEC),
-    SHAPE_PARTICLES(ShapeParticleEvent.CODEC)
+    SHAPE_PARTICLES(ShapeParticleEvent.CODEC),
+
+    /// Data
+    WRITE_SYNC_DATA(WriteSyncDataEvent.CODEC),
     ;private final MapCodec<? extends IAnimationEventParams> codec;
 
     AnimationsEventsList(MapCodec<? extends IAnimationEventParams> codec) {
