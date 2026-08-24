@@ -1,19 +1,22 @@
 package sleys.efedp.system.animations.json.properties.functional.datapackets.read;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.DataPacketType;
-import sleys.sl.library.SLLibrary;
 
 public sealed interface IDataRead permits ReadArithmeticData, ReadLogicalData, ReadStringData {
     DataPacketType type();
     String dataId();
     boolean delete();
-    boolean evaluate(Player player);
 
-    default boolean isValid(Player player) {
-        if (player == null) {
-            SLLibrary.LOGGER.warn(
+    boolean readSyncData(Player player);
+    boolean readData(LivingEntity livingEntity);
+
+    default boolean isValid(LivingEntity livingEntity) {
+        if (livingEntity == null) {
+            ExtendedDatapacks.LOGGER.warn(
                     "An attempt was made to send data through the Sync Sender; However,the operation cannot proceed since the signature is null."
             );
             return false;
@@ -21,8 +24,8 @@ public sealed interface IDataRead permits ReadArithmeticData, ReadLogicalData, R
         return true;
     }
 
-    default boolean isntValid(Player player) {
-        return !this.isValid(player);
+    default boolean isntValid(LivingEntity livingEntity) {
+        return !this.isValid(livingEntity);
     }
 
     MapCodec<IDataRead> CODEC = DataPacketType.CODEC.dispatchMap(

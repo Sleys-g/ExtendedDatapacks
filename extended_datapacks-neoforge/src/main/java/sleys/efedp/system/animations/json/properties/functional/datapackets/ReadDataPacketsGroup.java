@@ -2,6 +2,7 @@ package sleys.efedp.system.animations.json.properties.functional.datapackets;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.read.IDataRead;
 
@@ -21,11 +22,19 @@ public record ReadDataPacketsGroup(List<IDataRead> and, List<IDataRead> or, List
                             .forGetter(ReadDataPacketsGroup::not)
             ).apply(instance, ReadDataPacketsGroup::new));
 
-    public boolean evaluate(Player player) {
-        boolean andOk = and.stream().allMatch(r -> r.evaluate(player));
-        boolean orOk  = or.isEmpty()  || or.stream().anyMatch(r -> r.evaluate(player));
-        boolean xorOk = xor.isEmpty() || xor.stream().filter(r -> r.evaluate(player)).count() == 1;
-        boolean notOk = not.stream().noneMatch(r -> r.evaluate(player));
+    public boolean syncedEvaluate(Player player) {
+        boolean andOk = and.stream().allMatch(r -> r.readSyncData(player));
+        boolean orOk  = or.isEmpty()  || or.stream().anyMatch(r -> r.readSyncData(player));
+        boolean xorOk = xor.isEmpty() || xor.stream().filter(r -> r.readSyncData(player)).count() == 1;
+        boolean notOk = not.stream().noneMatch(r -> r.readSyncData(player));
+        return andOk && orOk && xorOk && notOk;
+    }
+
+    public boolean evaluate(LivingEntity livingEntity) {
+        boolean andOk = and.stream().allMatch(r -> r.readData(livingEntity));
+        boolean orOk  = or.isEmpty()  || or.stream().anyMatch(r -> r.readData(livingEntity));
+        boolean xorOk = xor.isEmpty() || xor.stream().filter(r -> r.readData(livingEntity)).count() == 1;
+        boolean notOk = not.stream().noneMatch(r -> r.readData(livingEntity));
         return andOk && orOk && xorOk && notOk;
     }
 }

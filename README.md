@@ -54,8 +54,14 @@ Take a look at what is currently implemented and what is coming next!
       - [ ] **Controlable Events & Listeners** ❌
   - [ ] **More Animation Events** ❌
     - [x] **Write Data** ✔️
-    - [ ] **Read Data** ❌
- 
+      - [x] **Synced Data Write Event** ✔️
+      - [x] **Data Write Event** ✔️
+    - [x] **Read Data** ✔️
+        - [x] **Synced Direct Read Write Event** ✔️
+        - [x] **Synced Branched Read Write Event** ✔️
+        - [x] **Direct Read Write Event** ✔️
+        - [x] **Branched Read Write Event** ✔️ 
+
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates

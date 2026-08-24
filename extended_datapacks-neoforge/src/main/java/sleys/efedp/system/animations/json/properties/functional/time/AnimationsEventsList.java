@@ -32,7 +32,12 @@ public enum AnimationsEventsList implements IAnimationEventType {
     SHAPE_PARTICLES(ShapeParticleEvent.CODEC),
 
     /// Data
-    WRITE_SYNC_DATA(WriteSyncDataEvent.CODEC),
+    SYNCED_DATA_WRITE(SyncedDataWriteEvent.CODEC), /// Only Players
+    SYNCED_DIRECT_DATA_READ(SyncedDirectDataReadEvent.CODEC), /// Only Players
+    SYNCED_BRANCHED_DATA_READ(SyncedBranchedDataReadEvent.CODEC), /// Only Players
+    DATA_WRITE(DataWriteEvent.CODEC),
+    DIRECT_DATA_READ(DirectDataReadEvent.CODEC),
+    BRANCHED_DATA_READ(BranchedDataReadEvent.CODEC)
     ;private final MapCodec<? extends IAnimationEventParams> codec;
 
     AnimationsEventsList(MapCodec<? extends IAnimationEventParams> codec) {

@@ -38,7 +38,7 @@ side="BOTH"
 [[dependencies."epicfight_edp"]]
 modId="sl_library"
 type="required"
-versionRange="[1.5.3,)"
+versionRange="[1.6.2,)"
 ordering="AFTER"
 side="BOTH"
 

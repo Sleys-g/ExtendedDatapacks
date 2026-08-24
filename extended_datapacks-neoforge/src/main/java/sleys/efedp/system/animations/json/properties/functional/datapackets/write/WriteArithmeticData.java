@@ -3,6 +3,7 @@ package sleys.efedp.system.animations.json.properties.functional.datapackets.wri
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.DataPacketType;
@@ -24,7 +25,7 @@ public record WriteArithmeticData(DataPacketType type, String dataId,
     }
 
     @Override
-    public void resolve(Player player) {
+    public void writeSyncData(Player player) {
         if (this.isntValid(player)) return;
         var level = player.level();
         var data = player.getPersistentData();
@@ -42,5 +43,20 @@ public record WriteArithmeticData(DataPacketType type, String dataId,
     private void sendSenderSync(Level level, Player player, Object value) {
         if (level.isClientSide) type.write(TagSyncSender.SyncMethod.SAVE_AND_CTS, player, dataId, value);
         if (!level.isClientSide) type.write(TagSyncSender.SyncMethod.SAVE_AND_STC, player, dataId, value);
+    }
+
+    @Override
+    public void writeData(LivingEntity livingEntity) {
+        if (this.isntValid(livingEntity)) return;
+        var data = livingEntity.getPersistentData();
+
+        switch (value) {
+            case Byte b -> data.putByte(dataId, instruction.apply(data.getByte(dataId), b, dataId));
+            case Integer i -> data.putInt(dataId, instruction.apply(data.getInt(dataId), i, dataId));
+            case Float f -> data.putFloat(dataId, instruction.apply(data.getFloat(dataId), f, dataId));
+            case Double d -> data.putDouble(dataId, instruction.apply(data.getDouble(dataId), d, dataId));
+            case Long l -> data.putLong(dataId, instruction.apply(data.getLong(dataId), l, dataId));
+            default -> {}
+        }
     }
 }

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.read.IDataRead;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.read.ReadArithmeticData;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.read.ReadLogicalData;

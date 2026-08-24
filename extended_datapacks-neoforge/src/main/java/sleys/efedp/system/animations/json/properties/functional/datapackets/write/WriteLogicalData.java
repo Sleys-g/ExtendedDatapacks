@@ -3,6 +3,7 @@ package sleys.efedp.system.animations.json.properties.functional.datapackets.wri
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.DataPacketType;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.instruction.LogicalInstruction;
@@ -23,7 +24,7 @@ public record WriteLogicalData(DataPacketType type, String dataId,
     }
 
     @Override
-    public void resolve(Player player) {
+    public void writeSyncData(Player player) {
         if (this.isntValid(player)) return;
         var level = player.level();
 
@@ -32,5 +33,15 @@ public record WriteLogicalData(DataPacketType type, String dataId,
 
         if (level.isClientSide) type.write(TagSyncSender.SyncMethod.SAVE_AND_CTS, player, dataId, outputValue);
         if (!level.isClientSide) type.write(TagSyncSender.SyncMethod.SAVE_AND_STC, player, dataId, outputValue);
+    }
+
+    @Override
+    public void writeData(LivingEntity livingEntity) {
+        if (this.isntValid(livingEntity)) return;
+
+        var data = livingEntity.getPersistentData();
+        var currentValue = data.getBoolean(dataId);
+        var outputValue = instruction.apply(currentValue, value);
+        data.putBoolean(dataId, outputValue);
     }
 }
