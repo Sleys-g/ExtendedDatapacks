@@ -7,9 +7,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
 import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.efedp.system.innates.json.builder.helper.SkillTooltipHelper;
+import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
+import sleys.efedp.system.innates.json.builder.values.ConditionalDataSkillValues;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
@@ -23,42 +24,37 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
-public class WConditionalStackInnateSkill extends WeaponInnateSkill {
-    protected Map<ConditionalType, AnimationSkillValues> conditionMap;
-    protected Map<ConditionalType, Integer> stackMap;
+public class WConditionalDataInnateSkill extends WeaponInnateSkill {
+    protected Map<AnimationSkillValues, ConditionalDataSkillValues> dataPacketSkillValues;
     protected List<JsonComponentArgs> tooltipComponents;
     protected boolean disableTooltipProperties;
 
-    public static WConditionalStackInnateSkill.Builder createConditionalBuilder(
-            Function<WConditionalStackInnateSkill.Builder, ? extends WConditionalStackInnateSkill> constructor) {
-        return new WConditionalStackInnateSkill.Builder(constructor)
+    public static WConditionalDataInnateSkill.Builder createConditionalBuilder(
+            Function<WConditionalDataInnateSkill.Builder, ? extends WConditionalDataInnateSkill> constructor) {
+        return new WConditionalDataInnateSkill.Builder(constructor)
                 .setCategory(SkillCategories.WEAPON_INNATE)
                 .setResource(Resource.WEAPON_CHARGE);
     }
 
-    public WConditionalStackInnateSkill(WConditionalStackInnateSkill.Builder builder) {
+    public WConditionalDataInnateSkill(WConditionalDataInnateSkill.Builder builder) {
         super(builder);
-        this.conditionMap = builder.conditionMap;
-        this.stackMap = builder.stackMap;
+        this.dataPacketSkillValues = builder.dataPacketSkillValues;
         this.tooltipComponents = builder.tooltipComponents;
         this.disableTooltipProperties = builder.disableTooltipProperties;
     }
 
     @Override
     public WeaponInnateSkill registerPropertiesToAnimation() {
-        for (var entry : this.conditionMap.values()) {
+        for (var entry : this.dataPacketSkillValues.entrySet()) {
             ExecutionTasks.operateAndGetResult(
                     ExecutionPolicy.RESIST,
-                    entry, this::registryAnimationsData
+                    entry.getKey(), this::registryAnimationsData
             ).ifFailure(e ->
                     ExtendedDatapacks.LOGGER.error(
-                            "[Conditional Stack - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
+                            "[Data Packet - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
                             this.registryName.getPath(), this.registryName.getNamespace()
                     )
             );
@@ -70,7 +66,7 @@ public class WConditionalStackInnateSkill extends WeaponInnateSkill {
     private AnimationSkillValues registryAnimationsData(AnimationSkillValues entry) {
         var animation = entry.animationAccessor().get();
         if (!(animation instanceof AttackAnimation attack)) {
-            ExtendedDatapacks.LOGGER.warn("[Conditional Stack - Innate Skill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animation);
+            ExtendedDatapacks.LOGGER.warn("[Data Packet - Innate Skill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animation);
             return null;
         }
 
@@ -88,21 +84,18 @@ public class WConditionalStackInnateSkill extends WeaponInnateSkill {
 
     protected void playSkillAnimation(ServerPlayerPatch executor) {
         var player = executor.getOriginal();
-        for (var entry : this.conditionMap.entrySet()) {
-            var condition = entry.getKey();
-            var predicate = condition.predicate;
-            var values = entry.getValue();
+        for (var entry : this.dataPacketSkillValues.entrySet()) {
+            var dataPacketValues = entry.getValue();
+            var dataReadable = dataPacketValues.readData();
+            var dataResult = dataReadable.isEmpty() || dataReadable.get().syncedEvaluate(player);
+            var predicate = dataPacketValues.physicalCondition().predicate;
+            var keys = entry.getKey();
 
-            if (predicate.test(player) && values != null) {
-                var stacksToPlay = this.stackMap.get(condition);
-                var skillContainer = executor.getSkill(this);
-                var skillStacks = skillContainer.getStack();
-                var isCreative = player.isCreative();
-
-                if (skillStacks >= stacksToPlay || isCreative) {
-                    executor.playAnimationSynchronized(values.animationAccessor().get().getRealAnimation(), 0.0F);
-                    if (!isCreative) this.setStackSynchronize(skillContainer, (skillStacks - stacksToPlay));
-                }
+            if ( keys != null && predicate.test(player) && dataResult) {
+                executor.playAnimationSynchronized(
+                        keys.animationAccessor().get().getRealAnimation(),
+                        0.0F
+                );
                 break;
             }
         }
@@ -134,47 +127,57 @@ public class WConditionalStackInnateSkill extends WeaponInnateSkill {
     private void applyPhaseProperties(List<Component> list, ItemStack itemStack,
                                       CapabilityItem cap, PlayerPatch<?> playerCap) {
 
-        this.conditionMap.forEach((conditions, values) -> {
-            if (values.animationAccessor().get() instanceof AttackAnimation attackAnimation) {
+        this.dataPacketSkillValues.forEach((animationSkillValues, dataPacketSkillValues) -> {
+            if (animationSkillValues.animationAccessor().get() instanceof AttackAnimation attackAnimation) {
                 AttackAnimation.Phase[] phases = attackAnimation.phases;
-                var properties = values.properties();
+                var physicalCondition = dataPacketSkillValues.physicalCondition();
+                var conditions = physicalCondition == null ? ConditionalType.NORMAL : physicalCondition;
+                var properties = animationSkillValues.properties();
                 var phaseLength = phases.length;
                 var propertiesSize = properties.size();
                 for (int i = 0; i < Math.min(phaseLength, propertiesSize); i++) {
-                    this.generateTooltipforPhase(
-                            list, itemStack, cap, playerCap, properties.get(i),
-                            SkillTooltipHelper.intToOrdinalString(i, phaseLength - 1, conditions)
-                    );
+                    var tooltipHead = dataPacketSkillValues.tooltipHead();
+                    if (tooltipHead.isPresent()) {
+                        this.generateTooltipforPhase(
+                                list, itemStack, cap, playerCap, properties.get(i),
+                                SkillTooltipHelper.intToOrdinalString(
+                                        i, phaseLength - 1,
+                                        tooltipHead.get(), conditions
+                                )
+                        );
+                    } else {
+                        this.generateTooltipforPhase(
+                                list, itemStack, cap, playerCap, properties.get(i),
+                                SkillTooltipHelper.intToOrdinalString(
+                                        i, phaseLength - 1,
+                                        conditions
+                                )
+                        );
+                    }
                 }
             }
         });
     }
 
-    public static class Builder extends WeaponInnateSkill.Builder<WConditionalStackInnateSkill.Builder> {
-        private final Map<ConditionalType, AnimationSkillValues> conditionMap = new EnumMap<>(ConditionalType.class);
-        private final Map<ConditionalType, Integer> stackMap = new EnumMap<>(ConditionalType.class);
+    public static class Builder extends WeaponInnateSkill.Builder<WConditionalDataInnateSkill.Builder> {
+        private final Map<AnimationSkillValues, ConditionalDataSkillValues> dataPacketSkillValues = new HashMap<>();
         private List<JsonComponentArgs> tooltipComponents;
         private boolean disableTooltipProperties;
 
-        public Builder(Function<WConditionalStackInnateSkill.Builder, ? extends Skill> constructor) {
+        public Builder(Function<WConditionalDataInnateSkill.Builder, ? extends Skill> constructor) {
             super(constructor);
         }
 
-        public void putConditionData(ConditionalType type, AnimationSkillValues data) {
-            this.conditionMap.put(type, data);
+        public void putDatapacketData(AnimationSkillValues animationValues, ConditionalDataSkillValues packetValues) {
+            this.dataPacketSkillValues.put(animationValues, packetValues);
         }
 
-        public void putStackData(ConditionalType type, Integer stack) {
-            this.stackMap.put(type, stack);
-        }
-
-
-        public WConditionalStackInnateSkill.Builder setTooltipArray(List<JsonComponentArgs> tooltipComponents) {
+        public WConditionalDataInnateSkill.Builder setTooltipArray(List<JsonComponentArgs> tooltipComponents) {
             this.tooltipComponents = tooltipComponents;
             return this;
         }
 
-        public WConditionalStackInnateSkill.Builder setDisableTooltipProperties(boolean disableTooltipProperties) {
+        public WConditionalDataInnateSkill.Builder setDisableTooltipProperties(boolean disableTooltipProperties) {
             this.disableTooltipProperties = disableTooltipProperties;
             return this;
         }

@@ -1,4 +1,4 @@
-package sleys.efedp.system.innates.json.data;
+package sleys.efedp.system.innates.json.builder.values;
 
 import net.minecraft.resources.ResourceLocation;
 

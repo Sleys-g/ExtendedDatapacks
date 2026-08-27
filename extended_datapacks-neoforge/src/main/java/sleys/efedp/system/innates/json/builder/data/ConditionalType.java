@@ -1,4 +1,4 @@
-package sleys.efedp.system.innates.json.data;
+package sleys.efedp.system.innates.json.builder.data;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.entity.player.Player;

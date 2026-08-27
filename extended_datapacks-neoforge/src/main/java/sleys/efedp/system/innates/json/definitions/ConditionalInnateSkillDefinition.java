@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalInnateSkill;
-import sleys.efedp.system.innates.json.data.ConditionalAnimationData;
-import sleys.efedp.system.innates.json.data.ConditionalType;
+import sleys.efedp.system.innates.json.builder.data.ConditionalAnimationData;
+import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.sl.library.util.io.JsonComponentArgs;
 
 import javax.annotation.Nullable;

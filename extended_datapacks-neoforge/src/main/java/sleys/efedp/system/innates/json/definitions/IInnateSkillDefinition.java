@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public sealed interface IInnateSkillDefinition<T extends SkillBuilder<T>> permits ConditionalInnateSkillDefinition,
-        ConditionalStackInnateSkillDefinition, HoldableInnateSkillDefinition, SimpleInnateSkillDefinition {
+public sealed interface IInnateSkillDefinition<T extends SkillBuilder<T>> permits ConditionalInnateSkillDefinition, ConditionalStackInnateSkillDefinition, ConditionalDataInnateSkillDefinition, HoldableInnateSkillDefinition, SimpleInnateSkillDefinition {
 
     default void applyProperties(T builder) {}
 

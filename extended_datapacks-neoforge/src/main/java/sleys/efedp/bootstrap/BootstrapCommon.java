@@ -5,10 +5,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.AnimationRegistryOperations;
-import sleys.efedp.system.innates.ConditionalInnateSkillsRegistry;
-import sleys.efedp.system.innates.ConditionalStackInnateSkillsRegistry;
-import sleys.efedp.system.innates.HoldableInnateSkillsRegistry;
-import sleys.efedp.system.innates.SimpleInnateSkillsRegistry;
+import sleys.efedp.system.innates.*;
 import sleys.efedp.system.skills.ModifyGuardsApplier;
 import sleys.efedp.system.skills.ModifyPassivesApplier;
 import sleys.efedp.system.weapons.WeaponCategoriesRegistry;
@@ -56,5 +53,9 @@ public class BootstrapCommon {
         modBus.register(ConditionalStackInnateSkillsRegistry.class);
 
         modBus.register(AnimationRegistryOperations.class);
+
+        /// V2 Innate
+        ConditionalDataInnateSkillsRegistry.initialize(modBus);
+        modBus.register(ConditionalDataInnateSkillsRegistry.class);
     }
 }

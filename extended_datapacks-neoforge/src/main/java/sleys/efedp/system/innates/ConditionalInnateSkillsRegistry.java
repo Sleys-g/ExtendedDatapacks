@@ -7,8 +7,8 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalInnateSkill;
-import sleys.efedp.system.innates.json.data.ConditionalSkillValues;
-import sleys.efedp.system.innates.json.data.ConditionalType;
+import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
+import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.efedp.system.innates.json.builder.ConditionalInnateSkillBuilder;
 import sleys.efedp.system.innates.json.builder.helper.AnimationBuilderHelper;
 import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
@@ -91,7 +91,7 @@ public class ConditionalInnateSkillsRegistry {
                 if (conditionalTypes == ConditionalType.NORMAL) hasNormalCondition = true;
 
                 var conditionalProperties = skillData.saveProperties(conditionalAnimationData.properties());
-                var conditionalValues =new ConditionalSkillValues(attackAnimationKey, conditionalProperties);
+                var conditionalValues =new AnimationSkillValues(attackAnimationKey, conditionalProperties);
                 builder.putConditionData(conditionalTypes, conditionalValues);
             }
 

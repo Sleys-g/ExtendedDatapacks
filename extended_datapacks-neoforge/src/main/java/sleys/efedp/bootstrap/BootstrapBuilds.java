@@ -5,10 +5,7 @@ import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.AnimationsConfigBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsRegistryBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsVirtualBuilder;
-import sleys.efedp.system.innates.json.builder.ConditionalInnateSkillBuilder;
-import sleys.efedp.system.innates.json.builder.ConditionalStackInnateSkillBuilder;
-import sleys.efedp.system.innates.json.builder.HoldableInnateSkillBuilder;
-import sleys.efedp.system.innates.json.builder.SimpleInnateSkillBuilder;
+import sleys.efedp.system.innates.json.builder.*;
 import sleys.efedp.system.skills.json.GuardSkillModifierBuilder;
 import sleys.efedp.system.skills.json.PassiveSkillModifierBuilder;
 import sleys.efedp.system.skills.json.IconSkillModifierBuilder;
@@ -48,6 +45,9 @@ public class BootstrapBuilds {
         buildConfigTracker("innate_skill_builder", "holdable_innate_skill", HoldableInnateSkillBuilder::startToTracking);
         buildConfigTracker("innate_skill_builder", "conditional_innate_skill", ConditionalInnateSkillBuilder::startToTracking);
         buildConfigTracker("innate_skill_builder", "stacks_conditional_innate_skill", ConditionalStackInnateSkillBuilder::startToTracking);
+
+        /// V2
+        buildConfigTracker("innate_skill_builder", "data_conditional_innate_skill", ConditionalDataInnateSkillBuilder::startToTracking);
     }
 
     private static void startAnimationsBuilds() {
