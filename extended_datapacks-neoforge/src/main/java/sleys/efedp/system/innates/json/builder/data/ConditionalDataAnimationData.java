@@ -5,10 +5,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.ReadDataPacketsGroup;
 import sleys.efedp.system.innates.json.properties.InnatePhaseProperties;
+import sleys.sl.library.annotations.Linked;
 
 import java.util.List;
 import java.util.Optional;
 
+@Linked(range = Linked.DependentRange.HIGH, packageId = "sleys.efedp.system.animations.json.properties.functional.datapackets")
 public record ConditionalDataAnimationData(String animation,
                                            ConditionalType physicalCondition,
                                            Optional<ReadDataPacketsGroup> readData,

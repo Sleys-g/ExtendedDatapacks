@@ -43,15 +43,16 @@ Take a look at what is currently implemented and what is coming next!
       - [x] **String Comparator** ✔️
   - [ ] **More Conditional Types** ️❌
     - [ ] **Left, Right, Forward, Back** ️❌
-    - [ ] **Read Data** ️❌
-  - [ ] **Additional Innate Skills** ❌
-    - [ ] **Sequential Innate Skill** ❌
+    - [x] **~~Read Data~~** ️✔️ _(Delegate to Conditional Data Innate Skill)_
+  - [ ] **Additional Innate Skills** 🛠️
+    - [x] **Conditional Data Innate Skill** ✔️
+    - [x] **Sequential Innate Skill** ✔️
     - [ ] **Per Combo Innate Skill** ❌
     - [ ] **Combable Innate Skill** ❌
     - [ ] **Conditional Holdable Innate Skill** ❌
     - [ ] **Conditional Stack Holdable Innate Skill** ❌
     - [ ] **Timed Innate Skill** ❌
-      - [ ] **Controlable Events & Listeners** ❌
+    - [ ] **Controlable Events & Listeners** ❌
   - [ ] **More Animation Events** ❌
     - [x] **Write Data** ✔️
       - [x] **Synced Data Write Event** ✔️

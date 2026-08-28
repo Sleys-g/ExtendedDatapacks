@@ -57,5 +57,8 @@ public class BootstrapCommon {
         /// V2 Innate
         ConditionalDataInnateSkillsRegistry.initialize(modBus);
         modBus.register(ConditionalDataInnateSkillsRegistry.class);
+
+        SequentialInnateSkillsRegistry.initialize(modBus);
+        modBus.register(SequentialInnateSkillsRegistry.class);
     }
 }

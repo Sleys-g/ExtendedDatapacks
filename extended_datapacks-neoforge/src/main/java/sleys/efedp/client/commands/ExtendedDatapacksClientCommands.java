@@ -40,7 +40,7 @@ public class ExtendedDatapacksClientCommands {
                                                         .executes(ExtendedDatapacksClientCommands::reloadOverlayConfigClient)
                                                 )
                                         )
-                                        .then(Commands.literal("get")
+                                        .then(Commands.literal("as")
                                                 .then(Commands.literal("weapon-category")
                                                         .executes(ExtendedDatapacksClientCommands::getActuallyCategory)
                                                 )

@@ -9,6 +9,7 @@ import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.innates.json.builder.ConditionalDataInnateSkillBuilder;
 import sleys.efedp.system.innates.json.builder.data.ConditionalDataAnimationData;
 import sleys.efedp.system.innates.json.builder.helper.AnimationBuilderHelper;
+import sleys.efedp.system.innates.json.builder.helper.FriendlyCountConverter;
 import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
 import sleys.efedp.system.innates.json.builder.data.ConditionalType;
@@ -68,7 +69,6 @@ public class ConditionalDataInnateSkillsRegistry {
 
         boolean hasNormalCondition = false;
         try {
-            /// I hate this shit
             List<ConditionalDataAnimationData> sortedConditionalAnimationData = skillData
                     .conditionalAnimationData()
                     .stream()
@@ -95,7 +95,7 @@ public class ConditionalDataInnateSkillsRegistry {
                 }
 
                 int occurrence = occurrenceCount.merge(physicalCondition, 1, Integer::sum) - 1;
-                String postFix = occurrence == 0 ? physicalCondition.id : physicalCondition.id + "_" + occurrence;
+                String postFix = FriendlyCountConverter.as(occurrence);
 
                 var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
                         modId, name, postFix, physicalCondition, animationId, RUNTIME_ERRORS
