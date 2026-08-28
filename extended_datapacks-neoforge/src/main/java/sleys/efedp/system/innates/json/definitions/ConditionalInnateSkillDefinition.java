@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalInnateSkill;
-import sleys.efedp.system.innates.json.builder.data.ConditionalAnimationData;
+import sleys.efedp.system.innates.json.builder.data.AnimationData;
 import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.sl.library.util.io.JsonComponentArgs;
 
@@ -15,7 +15,7 @@ public record ConditionalInnateSkillDefinition(
         String name,
         boolean disableTooltipProperties,
         @Nullable List<JsonComponentArgs> tooltip,
-        Map<ConditionalType, ConditionalAnimationData> conditionalAnimationData
+        Map<ConditionalType, AnimationData> conditionalAnimationData
 ) implements IInnateSkillDefinition<WConditionalInnateSkill.Builder> {
 
     public static final MapCodec<ConditionalInnateSkillDefinition> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -30,7 +30,7 @@ public record ConditionalInnateSkillDefinition(
                             .optionalFieldOf("tooltip", List.of())
                             .forGetter(skillDefinitions -> skillDefinitions.tooltip),
 
-                    Codec.unboundedMap(ConditionalType.CODEC, ConditionalAnimationData.CODEC.codec())
+                    Codec.unboundedMap(ConditionalType.CODEC, AnimationData.CODEC.codec())
                             .fieldOf("conditions")
                             .forGetter(ConditionalInnateSkillDefinition::conditionalAnimationData)
 

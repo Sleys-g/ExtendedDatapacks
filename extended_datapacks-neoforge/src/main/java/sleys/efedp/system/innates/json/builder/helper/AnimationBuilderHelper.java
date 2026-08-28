@@ -10,7 +10,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import java.util.List;
 import java.util.Locale;
 
-public final class AnimationBuilderHelper extends AnimationHelper{
+public final class AnimationBuilderHelper extends AnimationHelper {
 
     public static AnimationManager.AnimationAccessor<? extends StaticAnimation> resolveAnimation(
             String modId, String name, String postfix, ResourceLocation animationId, List<String> errors) {

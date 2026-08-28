@@ -1,4 +1,4 @@
-package sleys.efedp.system.innates.json.builder.wrapper.sequential;
+package sleys.efedp.system.innates.json.builder.wrapper.combo;
 
 import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
@@ -24,54 +24,52 @@ import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
-public class WSequentialInnateSkill extends WeaponInnateSkill {
-    private static final String COMBO_COUNT = "sequential_innate.skill.combo";
-            
-    private final List<AnimationSkillValues> animationSkillValues = new ArrayList<>();
+public class WPerComboInnateSkill extends WeaponInnateSkill {
+    private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues = new HashMap<>();
     protected List<JsonComponentArgs> tooltipComponents;
     protected boolean disableTooltipProperties;
 
-    public static WSequentialInnateSkill.Builder createSequentialBuilder() {
-        return new Builder(WSequentialInnateSkill::new)
+    public static WPerComboInnateSkill.Builder createPerComboBuilder() {
+        return new WPerComboInnateSkill.Builder(WPerComboInnateSkill::new)
                 .setCategory(SkillCategories.WEAPON_INNATE)
                 .setResource(Resource.WEAPON_CHARGE);
     }
 
-    public WSequentialInnateSkill(WSequentialInnateSkill.Builder builder) {
+    public WPerComboInnateSkill(WPerComboInnateSkill.Builder builder) {
         super(builder);
-        animationSkillValues.addAll(builder.animationSkillValues);
+        perComboSkillValues.putAll(builder.perComboSkillValues);
         this.tooltipComponents = builder.tooltipComponents;
         this.disableTooltipProperties = builder.disableTooltipProperties;
     }
 
-    public void executeOnServer(SkillContainer container, CompoundTag arguments) {
+    public boolean checkExecuteCondition(SkillContainer container) {
         var playerPatch = container.getExecutor();
-        var player = playerPatch.getOriginal();
-        var data = player.getPersistentData();
-        var counter = data.getInt(COMBO_COUNT);
-        var listSize = this.animationSkillValues.size();
-        var skillValues = listSize <= counter ?
-                this.animationSkillValues.getLast() :
-                this.animationSkillValues.get(counter);
+        var playerAnimator = playerPatch.getAnimator().getPlayerFor(null);
+        if (playerAnimator == null) return false;
+        var playerState = playerPatch.getEntityState();
 
-        var animation = skillValues.animationAccessor().get().getRealAnimation();
-        var actuallyCombo = (counter + 1) % listSize;
-        data.putInt(COMBO_COUNT, actuallyCombo);
-        playerPatch.playAnimationSynchronized(animation, 0.0F);
-        super.executeOnServer(container, arguments);
+        return this.perComboSkillValues.containsKey(playerAnimator.getAnimation().get().getAccessor()) &&
+                playerState.inaction() &&
+                playerState.canUseSkill();
     }
 
-    @Override
-    public void onRemoved(SkillContainer container) {
-        super.onRemoved(container);
+    public void executeOnServer(SkillContainer container, CompoundTag arguments) {
         var playerPatch = container.getExecutor();
-        var player = playerPatch.getOriginal();
-        var data = player.getPersistentData();
-        data.remove(COMBO_COUNT);
+        var animator = playerPatch.getServerAnimator().animationPlayer;
+        var combo = this.perComboSkillValues.get(animator.getAnimation().get().getAccessor());
+        if (combo == null) return;
+
+        playerPatch.playAnimationSynchronized(
+                combo.animationAccessor().get().getRealAnimation(),
+                0.0F
+        );
+
+        super.executeOnServer(container, arguments);
     }
 
     @OnlyIn(Dist.CLIENT) @Override
@@ -105,7 +103,7 @@ public class WSequentialInnateSkill extends WeaponInnateSkill {
 
     private void applyPhaseProperties(List<Component> list, ItemStack itemStack,
                                       CapabilityItem cap, PlayerPatch<?> playerCap) {
-        this.animationSkillValues.forEach(skillValues ->  {
+        this.perComboSkillValues.forEach((targetAccessor, skillValues) ->  {
                     var animationAccessor = skillValues.animationAccessor();
                     if (animationAccessor.get() instanceof AttackAnimation attackAnimation) {
                         AttackAnimation.Phase[] phases = attackAnimation.phases;
@@ -125,16 +123,16 @@ public class WSequentialInnateSkill extends WeaponInnateSkill {
 
     @Override
     public WeaponInnateSkill registerPropertiesToAnimation() {
-        this.animationSkillValues.forEach(skillValues ->
+        this.perComboSkillValues.forEach((targetAccessor, skillValues) ->
                 ExecutionTasks.operateAndGetResult(
                         ExecutionPolicy.RESIST,
                         skillValues.animationAccessor(), this::registryAnimationsData
                 ).ifFailure(e ->
                         ExtendedDatapacks.LOGGER.error(
-                                "[Sequential - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
+                                "[Per Combo - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
                                 this.registryName.getPath(), this.registryName.getNamespace()
                         )
-        ));
+                ));
         return this;
     }
 
@@ -143,7 +141,7 @@ public class WSequentialInnateSkill extends WeaponInnateSkill {
             AnimationManager.AnimationAccessor<? extends DynamicAnimation> animationAccessor) {
 
         if (!(animationAccessor.get() instanceof AttackAnimation attack)) {
-            ExtendedDatapacks.LOGGER.warn("[Sequential - Innate Skill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animationAccessor);
+            ExtendedDatapacks.LOGGER.warn("[Per Combo - Innate Skill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animationAccessor);
             return null;
         }
 
@@ -154,25 +152,25 @@ public class WSequentialInnateSkill extends WeaponInnateSkill {
         return animationAccessor;
     }
 
-    public static final class Builder extends WeaponInnateSkill.Builder<WSequentialInnateSkill.Builder> {
-        private final List<AnimationSkillValues> animationSkillValues = new ArrayList<>();
+    public static final class Builder extends WeaponInnateSkill.Builder<WPerComboInnateSkill.Builder> {
+        private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues = new HashMap<>();
         private List<JsonComponentArgs> tooltipComponents;
         private boolean disableTooltipProperties;
 
-        public Builder(Function<WSequentialInnateSkill.Builder, ? extends Skill> constructor) {
+        public Builder(Function<WPerComboInnateSkill.Builder, ? extends Skill> constructor) {
             super(constructor);
         }
 
-        public void putAnimationData(AnimationSkillValues animationData) {
-            this.animationSkillValues.add(animationData);
+        public void putPerComboAnimationData(AnimationManager.AnimationAccessor<? extends DynamicAnimation> targetAnimation, AnimationSkillValues animationData) {
+            this.perComboSkillValues.put(targetAnimation, animationData);
         }
 
-        public WSequentialInnateSkill.Builder setTooltipArray(List<JsonComponentArgs> tooltipComponents) {
+        public WPerComboInnateSkill.Builder setTooltipArray(List<JsonComponentArgs> tooltipComponents) {
             this.tooltipComponents = tooltipComponents;
             return this;
         }
 
-        public WSequentialInnateSkill.Builder setDisableTooltipProperties(boolean disableTooltipProperties) {
+        public WPerComboInnateSkill.Builder setDisableTooltipProperties(boolean disableTooltipProperties) {
             this.disableTooltipProperties = disableTooltipProperties;
             return this;
         }

@@ -3,7 +3,7 @@ package sleys.efedp.system.innates.json.definitions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.system.innates.json.builder.data.SequentialAnimationData;
+import sleys.efedp.system.innates.json.builder.data.AnimationData;
 import sleys.efedp.system.innates.json.builder.wrapper.sequential.WSequentialInnateSkill;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.skill.SkillCategories;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public record SequentialInnateSkillDefinition(
         String name, boolean disableTooltipProperties,
-        List<SequentialAnimationData> sequentialAnimationData,
+        List<AnimationData> sequentialAnimationData,
         List<JsonComponentArgs> tooltip
 ) implements IInnateSkillDefinition<WSequentialInnateSkill.Builder> {
 
@@ -23,7 +23,7 @@ public record SequentialInnateSkillDefinition(
                     Codec.BOOL.optionalFieldOf("disableTooltipProperties", false)
                             .forGetter(SequentialInnateSkillDefinition::disableTooltipProperties),
 
-                    SequentialAnimationData.CODEC.codec()
+                    AnimationData.CODEC.codec()
                             .listOf()
                             .optionalFieldOf("sequential_list", List.of())
                             .forGetter(skillDefinitions -> skillDefinitions.sequentialAnimationData),

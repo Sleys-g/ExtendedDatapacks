@@ -47,12 +47,12 @@ Take a look at what is currently implemented and what is coming next!
   - [ ] **Additional Innate Skills** 🛠️
     - [x] **Conditional Data Innate Skill** ✔️
     - [x] **Sequential Innate Skill** ✔️
-    - [ ] **Per Combo Innate Skill** ❌
+    - [x] **Per Combo Innate Skill** ✔️
     - [ ] **Combable Innate Skill** ❌
     - [ ] **Conditional Holdable Innate Skill** ❌
     - [ ] **Conditional Stack Holdable Innate Skill** ❌
     - [ ] **Timed Innate Skill** ❌
-    - [ ] **Controlable Events & Listeners** ❌
+      - [ ] **Controlable Events & Listeners** ❌
   - [ ] **More Animation Events** ❌
     - [x] **Write Data** ✔️
       - [x] **Synced Data Write Event** ✔️
