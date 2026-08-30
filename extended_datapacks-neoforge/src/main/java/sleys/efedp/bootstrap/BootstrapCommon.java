@@ -63,5 +63,8 @@ public class BootstrapCommon {
 
         PerComboInnateSkillsRegistry.initialize(modBus);
         modBus.register(PerComboInnateSkillsRegistry.class);
+
+        ComboInnateSkillsRegistry.initialize(modBus);
+        modBus.register(ComboInnateSkillsRegistry.class);
     }
 }

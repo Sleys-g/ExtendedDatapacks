@@ -111,6 +111,7 @@ public class PerComboInnateSkillsRegistry {
 
             return builder.build(key);
         } catch (Exception e) {
+            ExtendedDatapacks.LOGGER.fatal("[Per Combo Innate Skill Registry] Error Stack: ", e);
             return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.perComboAnimationData(), RUNTIME_ERRORS, e);
         }
     }

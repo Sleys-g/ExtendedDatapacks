@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class WPerComboInnateSkill extends WeaponInnateSkill {
-    private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues = new HashMap<>();
+    private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues;
     protected List<JsonComponentArgs> tooltipComponents;
     protected boolean disableTooltipProperties;
 
@@ -42,7 +42,7 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
 
     public WPerComboInnateSkill(WPerComboInnateSkill.Builder builder) {
         super(builder);
-        perComboSkillValues.putAll(builder.perComboSkillValues);
+        this.perComboSkillValues = builder.perComboSkillValues;
         this.tooltipComponents = builder.tooltipComponents;
         this.disableTooltipProperties = builder.disableTooltipProperties;
     }
@@ -132,7 +132,8 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
                                 "[Per Combo - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
                                 this.registryName.getPath(), this.registryName.getNamespace()
                         )
-                ));
+                )
+        );
         return this;
     }
 

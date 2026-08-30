@@ -99,6 +99,7 @@ public class SequentialInnateSkillsRegistry {
 
             return builder.build(key);
         } catch (Exception e) {
+            ExtendedDatapacks.LOGGER.fatal("[Sequential Innate Skill Registry] Error Stack: ", e);
             return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.sequentialAnimationData(), RUNTIME_ERRORS, e);
         }
     }

@@ -114,6 +114,7 @@ public class ConditionalStackInnateSkillsRegistry {
 
             return builder.build(key);
         } catch (Exception e) {
+            ExtendedDatapacks.LOGGER.fatal("[Conditional Stack Innate Skill Registry] Error Stack: ", e);
             return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, e);
         }
     }

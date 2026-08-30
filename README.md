@@ -48,7 +48,7 @@ Take a look at what is currently implemented and what is coming next!
     - [x] **Conditional Data Innate Skill** ✔️
     - [x] **Sequential Innate Skill** ✔️
     - [x] **Per Combo Innate Skill** ✔️
-    - [ ] **Combable Innate Skill** ❌
+    - [x] **Combo Innate Skill** ✔️
     - [ ] **Conditional Holdable Innate Skill** ❌
     - [ ] **Conditional Stack Holdable Innate Skill** ❌
     - [ ] **Timed Innate Skill** ❌
@@ -62,7 +62,11 @@ Take a look at what is currently implemented and what is coming next!
         - [x] **Synced Branched Read Write Event** ✔️
         - [x] **Direct Read Write Event** ✔️
         - [x] **Branched Read Write Event** ✔️ 
-
+    - [x] **Taskable Events** ❌
+        - [ ] **Taskable Entity** ❌
+        - [ ] **Taskable Player Entity** ❌
+    - [x] **Tickable Events** ❌
+ 
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates

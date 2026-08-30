@@ -31,7 +31,7 @@ import java.util.function.Function;
 public class WSequentialInnateSkill extends WeaponInnateSkill {
     private static final String COMBO_COUNT = "sequential_innate.skill.combo";
             
-    private final List<AnimationSkillValues> animationSkillValues = new ArrayList<>();
+    private final List<AnimationSkillValues> animationSkillValues;
     protected List<JsonComponentArgs> tooltipComponents;
     protected boolean disableTooltipProperties;
 
@@ -43,7 +43,7 @@ public class WSequentialInnateSkill extends WeaponInnateSkill {
 
     public WSequentialInnateSkill(WSequentialInnateSkill.Builder builder) {
         super(builder);
-        animationSkillValues.addAll(builder.animationSkillValues);
+        animationSkillValues = builder.animationSkillValues;
         this.tooltipComponents = builder.tooltipComponents;
         this.disableTooltipProperties = builder.disableTooltipProperties;
     }
