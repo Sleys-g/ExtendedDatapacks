@@ -26,23 +26,11 @@ public class BootstrapBuilds {
         startSkillBuilds();
         startInnateSkillsBuilds();
         startAnimationsBuilds();
-        startThirdPartyBuilds();
     }
 
     private static void buildConfigTracker(String category, String subfolder, Consumer<Path> tracker) {
         Path dir = FMLPaths.CONFIGDIR.get()
                 .resolve("epicfight_edp")
-                .resolve(category)
-                .resolve(subfolder);
-        BuildPathOrFile.buildPathFolder(dir);
-        tracker.accept(dir);
-    }
-
-    @SuppressWarnings("all")
-    private static void buildThirdPartyConfigTracker(String category, String subfolder, Consumer<Path> tracker) {
-        Path dir = FMLPaths.CONFIGDIR.get()
-                .resolve("epicfight_edp")
-                .resolve("third_party")
                 .resolve(category)
                 .resolve(subfolder);
         BuildPathOrFile.buildPathFolder(dir);
@@ -67,9 +55,5 @@ public class BootstrapBuilds {
         buildConfigTracker("animations", "registry", AnimationsRegistryBuilder::startToTracking);
         buildConfigTracker("animations", "config", AnimationsConfigBuilder::startToTracking);
         buildConfigTracker("animations", "virtualization", AnimationsVirtualBuilder::startToTracking);
-    }
-
-    private static void startThirdPartyBuilds() {
-        buildThirdPartyConfigTracker("combat_evolution", "execution", ExecutionAnimationBuilder::startToTracking);
     }
 }

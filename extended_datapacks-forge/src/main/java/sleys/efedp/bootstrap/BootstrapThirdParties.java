@@ -13,17 +13,22 @@ public class BootstrapThirdParties {
     public static boolean WEAPONS_OF_MIRACLE = false;
 
     protected static void Initialize(IEventBus modBus) {
+        startToSearching();
+        BootstrapThirdPartiesBuilds.Initialize();
         startThirdParties(modBus);
     }
 
-    private static void startThirdParties(IEventBus modBus) {
+    private static void startToSearching() {
         COMBAT_EVOLUTION = SLLCore.getIfExist("combat_evolution");
+        WEAPONS_OF_MIRACLE = SLLCore.getIfExist("wom");
+    }
+
+    private static void startThirdParties(IEventBus modBus) {
         if (COMBAT_EVOLUTION) {
             ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing registry for Combat Evolution");
             startCombatEvolution(modBus);
         }
 
-        WEAPONS_OF_MIRACLE = SLLCore.getIfExist("wom");
         if (WEAPONS_OF_MIRACLE) {
             ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing capabilities for Weapons Of Miracles");
             MinecraftForge.EVENT_BUS.addListener(BootstrapThirdParties::startWeaponsOfMiracle);
