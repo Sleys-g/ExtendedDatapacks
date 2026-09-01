@@ -22,6 +22,7 @@ import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -34,6 +35,7 @@ import java.util.function.Function;
 
 public class WComboInnateSkill extends WeaponInnateSkill {
     private static final String COMBO_NODE = "combo_innate.skill.node";
+    private final boolean alwaysAllow;
     private final Map<String, ComboNodeValues> nodes;
     private final List<ComboEntryPointValues> entryPoints;
     private final List<JsonComponentArgs> tooltipComponents;
@@ -49,9 +51,12 @@ public class WComboInnateSkill extends WeaponInnateSkill {
         this.nodes = builder.nodes;
         this.entryPoints = builder.entryPoints;
         this.tooltipComponents = builder.tooltipComponents;
+        this.alwaysAllow = builder.alwaysAllow;
     }
 
     public void executeOnServer(SkillContainer container, CompoundTag arguments) {
+        this.setConsumptionSynchronize(container, container.getMaxResource());
+
         var playerPatch = container.getExecutor();
         var player = playerPatch.getOriginal();
         var data = player.getPersistentData();
@@ -159,10 +164,23 @@ public class WComboInnateSkill extends WeaponInnateSkill {
         container.getExecutor().getOriginal().getPersistentData().remove(COMBO_NODE);
     }
 
+    @Override
+    public void updateContainer(SkillContainer container) {
+        super.updateContainer(container);
+        if (alwaysAllow && !container.getExecutor().getOriginal().level().isClientSide()) {
+            var resource = container.getResource();
+            var maxResource = container.getMaxResource();
+            if (resource != maxResource) {
+                this.setConsumptionSynchronize(container, container.getMaxResource());
+            }
+        }
+    }
+
     public static final class Builder extends WeaponInnateSkill.Builder<WComboInnateSkill.Builder> {
         private final Map<String, ComboNodeValues> nodes = new HashMap<>();
         private final List<ComboEntryPointValues> entryPoints = new ArrayList<>();
         private List<JsonComponentArgs> tooltipComponents;
+        private boolean alwaysAllow;
 
         public Builder(Function<WComboInnateSkill.Builder, ? extends Skill> constructor) {
             super(constructor);
@@ -174,6 +192,11 @@ public class WComboInnateSkill extends WeaponInnateSkill {
 
         public void putEntryPoints(ComboEntryPointValues comboEntryPointValues) {
             this.entryPoints.add(comboEntryPointValues);
+        }
+
+        public WComboInnateSkill.Builder setAlwaysAllow(Boolean alwaysAllow) {
+            this.alwaysAllow = alwaysAllow;
+            return this;
         }
 
         public WComboInnateSkill.Builder setTooltipArray(List<JsonComponentArgs> tooltipComponents) {

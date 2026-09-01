@@ -40,6 +40,9 @@ public class BootstrapCommon {
     }
 
     private static void InitializeRegistries(IEventBus modBus) {
+        modBus.register(AnimationRegistryOperations.class);
+
+        /// V1 Innate
         SimpleInnateSkillsRegistry.initialize(modBus);
         modBus.register(SimpleInnateSkillsRegistry.class);
 
@@ -51,8 +54,6 @@ public class BootstrapCommon {
 
         ConditionalStackInnateSkillsRegistry.initialize(modBus);
         modBus.register(ConditionalStackInnateSkillsRegistry.class);
-
-        modBus.register(AnimationRegistryOperations.class);
 
         /// V2 Innate
         ConditionalDataInnateSkillsRegistry.initialize(modBus);
@@ -66,5 +67,8 @@ public class BootstrapCommon {
 
         ComboInnateSkillsRegistry.initialize(modBus);
         modBus.register(ComboInnateSkillsRegistry.class);
+
+        HoldableConditionalInnateSkillsRegistry.initialize(modBus);
+        modBus.register(HoldableConditionalInnateSkillsRegistry.class);
     }
 }

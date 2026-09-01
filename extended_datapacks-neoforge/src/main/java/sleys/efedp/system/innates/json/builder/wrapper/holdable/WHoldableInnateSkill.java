@@ -92,7 +92,7 @@ public class WHoldableInnateSkill extends WeaponInnateSkill implements Chargeabl
         return holdableValues.MinChargingTicks();
     }
 
-    @Override @OnlyIn(Dist.CLIENT) @ClientOnly
+    @Override @OnlyIn(Dist.CLIENT)
     public void onMovementInputEvent(EFMovementInputEvent.InputEvent movementInput, SkillContainer container) {
         if (container.getExecutor().isHoldingSkill(this) && holdableValues.reduceSpeed()) {
             movementInput.getPlayer().setSprinting(false);

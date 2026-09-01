@@ -37,9 +37,9 @@ public record HoldableInnateSkillDefinition(
 
                     Codec.BOOL.fieldOf("reduceSpeed").forGetter(HoldableInnateSkillDefinition::reduceSpeed),
                     Codec.BOOL.optionalFieldOf("playbackForCharging", false)
-                            .forGetter(HoldableInnateSkillDefinition::reduceSpeed),
+                            .forGetter(HoldableInnateSkillDefinition::playbackForCharging),
                     Codec.BOOL.optionalFieldOf("playbackForRelease", false)
-                            .forGetter(HoldableInnateSkillDefinition::reduceSpeed),
+                            .forGetter(HoldableInnateSkillDefinition::playbackForRelease),
 
                     InnatePhaseProperties.CODEC.codec()
                             .listOf()

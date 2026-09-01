@@ -14,6 +14,7 @@ import java.util.Map;
 
 public record ComboInnateSkillDefinition(
         String name,
+        boolean alwaysAllow,
         List<JsonComponentArgs> tooltip,
         List<ComboEntryPointData> entryPoints,
         Map<String, ComboNodeData> nodes
@@ -22,6 +23,8 @@ public record ComboInnateSkillDefinition(
     public static final MapCodec<ComboInnateSkillDefinition> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.STRING.fieldOf("name").forGetter(ComboInnateSkillDefinition::name),
+                    Codec.BOOL.optionalFieldOf("alwaysAllow", false)
+                            .forGetter(ComboInnateSkillDefinition::alwaysAllow),
                     JsonComponentArgs.CODEC.listOf().optionalFieldOf("tooltip", List.of())
                             .forGetter(ComboInnateSkillDefinition::tooltip),
                     ComboEntryPointData.CODEC.listOf().fieldOf("entry_points")
@@ -34,6 +37,7 @@ public record ComboInnateSkillDefinition(
         return WComboInnateSkill
                 .createComboBuilder()
                 .setTooltipArray(tooltip)
+                .setAlwaysAllow(alwaysAllow)
                 .setCategory(SkillCategories.WEAPON_INNATE);
     }
 }
