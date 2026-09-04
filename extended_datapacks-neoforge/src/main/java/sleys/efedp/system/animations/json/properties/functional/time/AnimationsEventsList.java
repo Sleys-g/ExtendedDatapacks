@@ -19,7 +19,8 @@ public enum AnimationsEventsList implements IAnimationEventType {
     TELEPORT(TeleportEvent.CODEC),
     WEAPON_SHAPE_PARTICLES(WeaponShapeParticleEvent.CODEC),
     SHOOT_PROJECTILE(JointShootProjectileEvent.CODEC), /// BETA
-    SUMMON_OWNED_ENTITY(SummonEntityOnTargetEvent.CODEC), /// BETA
+    SUMMON_OWNED_ENTITY(SummonOwnedEntityOnTargetEvent.CODEC), /// BETA
+    SUMMON_ENTITY(SummonEntityOnTargetEvent.CODEC), /// BETA
 
     /// Particle Events
     SMALL_EXPLOSION(SmallExplosionEvent.CODEC),
