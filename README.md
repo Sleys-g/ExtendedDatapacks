@@ -49,10 +49,10 @@ Take a look at what is currently implemented and what is coming next!
     - [x] **Sequential Innate Skill** ✔️
     - [x] **Per Combo Innate Skill** ✔️
     - [x] **Combo Innate Skill** ✔️
-    - [ ] **Conditional Holdable Innate Skill** ❌
+    - [x] **Conditional Holdable Innate Skill** ✔️
     - [ ] **Timed Innate Skill** ❌
       - [ ] **Controlable Events & Listeners** ❌
-  - [ ] **More Animation Events** ❌
+  - [ ] **More Animation Events** 🛠️
     - [x] **Write Data** ✔️
       - [x] **Synced Data Write Event** ✔️
       - [x] **Data Write Event** ✔️
@@ -60,12 +60,21 @@ Take a look at what is currently implemented and what is coming next!
         - [x] **Synced Direct Read Write Event** ✔️
         - [x] **Synced Branched Read Write Event** ✔️
         - [x] **Direct Read Write Event** ✔️
-        - [x] **Branched Read Write Event** ✔️ 
+        - [x] **Branched Read Write Event** ✔️
+    - [x] **Entity Pairing Event** ✔️
+      - [x] **Flash White Pair Event** ✔️
+      - [x] **Scape Emergence Pair Event** ✔️
+      - [x] **Entity Pairing Event** ✔️
+    - [ ] **Read NBT Data** ❌
     - [ ] **Taskable Events** ❌
-        - [ ] **Taskable Entity** ❌
-        - [ ] **Taskable Player Entity** ❌
+      - [ ] **Taskable Entity** ❌
+      - [ ] **Taskable Player Entity** ❌
     - [ ] **Tickable Events** ❌
- 
+  - [ ] **More Animation Static Property** 🛠️ 
+    - [ ] **On Tick Events** ❌
+    - [ ] **On Begin Events** ❌
+    - [ ] **On End Events** ❌
+
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates
@@ -75,6 +84,8 @@ Take a look at what is currently implemented and what is coming next!
 | Weapons Passive Skill                     | 🔻 Low   | v2.7    |
 | Skill Books (Dodge / Guard / Passive)     | 🔻 Low   | v2.8    |
 | Custom Skill Slots, Slots, Modified Slots | 🔻 Low   | v2.9    |
+
+> The release disposition can vary based on priority, if the entire table has a low priority and then one goes to medium or high, it will become the next update
 
 ## 📌 Project Status
 

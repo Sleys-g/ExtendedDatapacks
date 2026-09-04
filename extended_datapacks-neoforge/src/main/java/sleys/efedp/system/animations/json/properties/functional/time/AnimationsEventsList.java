@@ -31,13 +31,19 @@ public enum AnimationsEventsList implements IAnimationEventType {
     CIRCLE_PARTICLES(CircleParticleEvent.CODEC),
     SHAPE_PARTICLES(ShapeParticleEvent.CODEC),
 
+    /// Nuevos 2.5
     /// Data
     SYNCED_DATA_WRITE(SyncedDataWriteEvent.CODEC), /// Only Players
     SYNCED_DIRECT_DATA_READ(SyncedDirectDataReadEvent.CODEC), /// Only Players
     SYNCED_BRANCHED_DATA_READ(SyncedBranchedDataReadEvent.CODEC), /// Only Players
     DATA_WRITE(DataWriteEvent.CODEC),
     DIRECT_DATA_READ(DirectDataReadEvent.CODEC),
-    BRANCHED_DATA_READ(BranchedDataReadEvent.CODEC)
+    BRANCHED_DATA_READ(BranchedDataReadEvent.CODEC),
+
+    /// Pairs
+    FLASH_WHITE_PAIR(FlashWhitePairEvent.CODEC),
+    SCAPE_EMERGENCE_PAIR(ScapeEmergencePairEvent.CODEC),
+    ENTITY_PAIRING(EntityPairingEvent.CODEC)
     ;private final MapCodec<? extends IAnimationEventParams> codec;
 
     AnimationsEventsList(MapCodec<? extends IAnimationEventParams> codec) {
