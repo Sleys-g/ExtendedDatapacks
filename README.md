@@ -70,10 +70,11 @@ Take a look at what is currently implemented and what is coming next!
       - [ ] **Taskable Entity** ❌
       - [ ] **Taskable Player Entity** ❌
     - [ ] **Tickable Events** ❌
-  - [ ] **More Animation Static Property** 🛠️ 
-    - [ ] **On Tick Events** ❌
-    - [ ] **On Begin Events** ❌
-    - [ ] **On End Events** ❌
+  - [x] **More Animation Static Property** ✔️
+    - [x] **Animation Process Events** ✔️
+      - [x] **On Tick Events** ✔️
+      - [x] **On Begin Events** ✔️
+      - [x] **On End Events** ✔️
 
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
