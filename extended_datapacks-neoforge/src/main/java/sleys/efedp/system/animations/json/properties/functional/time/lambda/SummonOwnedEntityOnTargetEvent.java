@@ -41,7 +41,7 @@ public record SummonOwnedEntityOnTargetEvent(ResourceLocation entityType,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.SERVER, "Summon Owned Entity On Target")) return;
+        if (this.isInvalid(caster.level(), AnimationEvent.Side.SERVER, "Summon Owned Entity On Target Event")) return;
         if (!(caster.level() instanceof ServerLevel serverLevel)) return;
 
         EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(entityType);

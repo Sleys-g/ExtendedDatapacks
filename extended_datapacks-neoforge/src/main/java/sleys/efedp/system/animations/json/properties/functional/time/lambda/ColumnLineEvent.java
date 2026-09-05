@@ -30,7 +30,7 @@ public record ColumnLineEvent(ParticleOptions particle, double length, double co
     
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Column Line Event")) return;
+        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Column Line Particle Event")) return;
 
         Vec3 forward = caster.getLookAngle().multiply(1, 0, 1).normalize(); 
         Vec3 from = caster.position();

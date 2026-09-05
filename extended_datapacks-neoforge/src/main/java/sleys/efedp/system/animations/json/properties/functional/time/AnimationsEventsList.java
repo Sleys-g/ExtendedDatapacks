@@ -40,6 +40,8 @@ public enum AnimationsEventsList implements IAnimationEventType {
     DATA_WRITE(DataWriteEvent.CODEC),
     DIRECT_DATA_READ(DirectDataReadEvent.CODEC),
     BRANCHED_DATA_READ(BranchedDataReadEvent.CODEC),
+    ITEM_STRING_DATA_READ(ItemStringDataReadEvent.CODEC),
+    ITEM_NUMBER_DATA_READ(ItemNumberDataReadEvent.CODEC),
 
     /// Pairs
     FLASH_WHITE_PAIR(FlashWhitePairEvent.CODEC),

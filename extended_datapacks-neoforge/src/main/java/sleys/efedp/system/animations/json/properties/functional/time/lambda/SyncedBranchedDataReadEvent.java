@@ -29,7 +29,7 @@ public record SyncedBranchedDataReadEvent(ReadDataPacketsGroup readData,
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
         if (!(livingEntity instanceof Player player)) return;
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Branched Read Data")) return;
+        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Branched Read Data Event")) return;
 
         boolean result = readData.syncedEvaluate(player);
         var branch = result ? then : otherwise;

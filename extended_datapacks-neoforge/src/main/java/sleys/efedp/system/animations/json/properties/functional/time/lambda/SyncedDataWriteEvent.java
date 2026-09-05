@@ -24,7 +24,7 @@ public record SyncedDataWriteEvent(List<IDataWriter> writers) implements IAnimat
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
         if (!(livingEntity instanceof Player player)) return;
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Write Data")) return;
+        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Write Data Event")) return;
         writers.forEach(iDataWriter -> iDataWriter.writeSyncData(player));
     }
 }

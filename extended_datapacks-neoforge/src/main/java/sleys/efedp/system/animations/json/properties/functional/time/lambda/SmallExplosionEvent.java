@@ -29,7 +29,7 @@ public record SmallExplosionEvent(ParticleOptions particle, int points,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Small Explosion Event")) return;
+        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Small Explosion Particle Event")) return;
 
         List<Vec3> dirs = ParticleShapeHelper.sphereFibonacci(spread, points);
         Vec3 origin = caster.position().add(0, caster.getBbHeight() / 2, 0);

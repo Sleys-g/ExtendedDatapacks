@@ -91,7 +91,7 @@ public class WConditionalDataInnateSkill extends WeaponInnateSkill {
             var predicate = dataPacketValues.physicalCondition().predicate;
             var keys = entry.getKey();
 
-            if ( keys != null && predicate.test(player) && dataResult) {
+            if (keys != null && predicate.test(player) && dataResult) {
                 executor.playAnimationSynchronized(
                         keys.animationAccessor().get().getRealAnimation(),
                         0.0F
@@ -160,7 +160,7 @@ public class WConditionalDataInnateSkill extends WeaponInnateSkill {
     }
 
     public static class Builder extends WeaponInnateSkill.Builder<WConditionalDataInnateSkill.Builder> {
-        private final Map<AnimationSkillValues, ConditionalDataSkillValues> dataPacketSkillValues = new HashMap<>();
+        private final Map<AnimationSkillValues, ConditionalDataSkillValues> dataPacketSkillValues = new LinkedHashMap<>();
         private List<JsonComponentArgs> tooltipComponents;
         private boolean disableTooltipProperties;
 

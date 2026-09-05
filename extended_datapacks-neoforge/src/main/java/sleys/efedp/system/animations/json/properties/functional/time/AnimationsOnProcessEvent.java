@@ -125,7 +125,7 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
     @Override
     public void applyTo(T animation) {
         if (side == null || type == null || processType == null) {
-            ExtendedDatapacks.LOGGER.error("[Animation On Begin Event] Some of your statements are not valid, looking... Side: {}, Type: {}, Process Type: {}",
+            ExtendedDatapacks.LOGGER.error("[Animation On Process Event] Some of your statements are not valid, looking... Side: {}, Type: {}, Process Type: {}",
                     this.isValid(side), this.isValid(type), this.isValid(processType)
             );
             return;

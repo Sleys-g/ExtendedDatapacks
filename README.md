@@ -53,6 +53,7 @@ Take a look at what is currently implemented and what is coming next!
     - [ ] **Timed Innate Skill** ❌
       - [ ] **Controlable Events & Listeners** ❌
   - [ ] **More Animation Events** 🛠️
+    - [x] **Summon Entity Event** ✔️
     - [x] **Write Data** ✔️
       - [x] **Synced Data Write Event** ✔️
       - [x] **Data Write Event** ✔️
@@ -65,7 +66,9 @@ Take a look at what is currently implemented and what is coming next!
       - [x] **Flash White Pair Event** ✔️
       - [x] **Scape Emergence Pair Event** ✔️
       - [x] **Entity Pairing Event** ✔️
-    - [ ] **Read NBT Data** ❌
+    - [x] **Item Data Read Event** ✔️
+      - [x] **Item String Data Read Event** ✔️
+      - [x] **Item Number Data Read Event** ✔️
     - [ ] **Taskable Events** ❌
       - [ ] **Taskable Entity** ❌
       - [ ] **Taskable Player Entity** ❌

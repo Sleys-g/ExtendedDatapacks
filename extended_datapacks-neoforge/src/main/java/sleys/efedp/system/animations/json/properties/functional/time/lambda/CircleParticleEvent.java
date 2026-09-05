@@ -26,7 +26,7 @@ public record CircleParticleEvent(ParticleOptions particle, double radius, int p
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Circle Event")) return;
+        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Circle Particle Event")) return;
 
         List<Vec3> shape = ParticleShapeHelper.circle(radius, points);
         ParticleShapeHelper.spawnAtPoints(caster.level(), particle, caster.position(), shape, 0, false);

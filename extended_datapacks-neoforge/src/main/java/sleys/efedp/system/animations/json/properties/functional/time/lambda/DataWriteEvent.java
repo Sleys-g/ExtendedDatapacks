@@ -22,7 +22,7 @@ public record DataWriteEvent(List<IDataWriter> writers) implements IAnimationEve
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Data Write")) return;
+        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Data Write Event")) return;
         writers.forEach(iDataWriter -> iDataWriter.writeData(livingEntity));
     }
 }

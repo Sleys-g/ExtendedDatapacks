@@ -27,7 +27,7 @@ public record SyncedDirectDataReadEvent(ReadDataPacketsGroup readData,
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
         if (!(livingEntity instanceof Player player)) return;
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Direct Data Read")) return;
+        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Direct Data Read Event")) return;
 
         boolean result = readData.syncedEvaluate(player);
         if (result) doEvents.forEach(events -> events.execute(accessor, patch));

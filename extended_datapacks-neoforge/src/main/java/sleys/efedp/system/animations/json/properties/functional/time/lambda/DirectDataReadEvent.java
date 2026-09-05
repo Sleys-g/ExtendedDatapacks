@@ -25,7 +25,7 @@ public record DirectDataReadEvent(ReadDataPacketsGroup readData,
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Direct Data Read")) return;
+        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Direct Data Read Event")) return;
 
         boolean result = readData.evaluate(livingEntity);
         if (result) doEvents.forEach(events -> events.execute(accessor, patch));

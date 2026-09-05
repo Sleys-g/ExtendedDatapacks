@@ -15,7 +15,7 @@ public record EntityAfterImageEvent() implements IAnimationEventParams {
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.CLIENT, "Whiter AfterImage")) {
+        if (this.isInvalid(level, AnimationEvent.Side.CLIENT, "Whiter After Image Event")) {
             return;
         }
 

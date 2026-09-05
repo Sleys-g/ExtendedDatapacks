@@ -40,7 +40,7 @@ public record DirectionalBurstEvent(ParticleOptions particle, int points, double
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Directional Burst Event")) return;
+        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Directional Burst Particle Event")) return;
 
         Vec3 axis = caster.getLookAngle();
         List<Vec3> dirs = switch (shape) {

@@ -34,7 +34,7 @@ public record FractureGroundEvent(Vec3 edge, String jointName, Double radius, Fl
         var level = livingEntity.level();
         Vec3 position = livingEntity.position();
 
-        if (this.isInvalid(level, AnimationEvent.Side.CLIENT, "Fracture Ground")) {
+        if (this.isInvalid(level, AnimationEvent.Side.CLIENT, "Fracture Ground Event")) {
             return;
         }
 

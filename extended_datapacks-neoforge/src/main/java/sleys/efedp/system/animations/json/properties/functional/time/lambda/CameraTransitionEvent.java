@@ -47,7 +47,7 @@ public record CameraTransitionEvent(
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
-        if (this.isInvalid(patch.getOriginal().level(), AnimationEvent.Side.CLIENT, "Camera Transition")) {
+        if (this.isInvalid(patch.getOriginal().level(), AnimationEvent.Side.CLIENT, "Camera Transition Event")) {
             return;
         }
 

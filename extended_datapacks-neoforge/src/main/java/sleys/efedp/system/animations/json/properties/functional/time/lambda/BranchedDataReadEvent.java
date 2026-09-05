@@ -27,7 +27,7 @@ public record BranchedDataReadEvent(ReadDataPacketsGroup readData,
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Branched Data Read")) return;
+        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Branched Data Read Event")) return;
 
         boolean result = readData.evaluate(livingEntity);
         var branch = result ? then : otherwise;
