@@ -53,6 +53,9 @@ Take a look at what is currently implemented and what is coming next!
     - [ ] **Timed Innate Skill** ❌
       - [ ] **Controlable Events & Listeners** ❌
   - [ ] **More Animation Events** 🛠️
+    - [ ] **Whiter Ghost Entity Event** ❌
+    - [ ] **Lazer Particle Event** ❌
+    - [ ] **Lazer Damage Event** ❌
     - [x] **Summon Entity Event** ✔️
     - [x] **Write Data** ✔️
       - [x] **Synced Data Write Event** ✔️

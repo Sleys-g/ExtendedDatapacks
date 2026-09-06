@@ -1,5 +1,6 @@
-package sleys.efedp.system.animations.json.properties.functional.time;
+package sleys.efedp.system.animations.json.properties.functional.time.registry;
 
+import sleys.efedp.system.animations.json.properties.functional.time.IAnimationEventType;
 import sleys.sl.library.util.io.FriendlyErrorBuilder;
 
 import java.util.*;

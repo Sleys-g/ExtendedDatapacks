@@ -3,6 +3,7 @@ package sleys.efedp.system.animations.json.properties.functional.time;
 import com.mojang.serialization.*;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.IAnimationEventParams;
+import sleys.efedp.system.animations.json.properties.functional.time.registry.AnimationEventTypeRegistry;
 import sleys.sl.library.annotations.Experimental;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;

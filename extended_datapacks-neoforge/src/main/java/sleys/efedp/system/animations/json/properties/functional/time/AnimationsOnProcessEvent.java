@@ -4,6 +4,7 @@ import com.mojang.serialization.*;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.AnimationEventSideCodec;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.IAnimationEventParams;
+import sleys.efedp.system.animations.json.properties.functional.time.registry.AnimationEventTypeRegistry;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty;

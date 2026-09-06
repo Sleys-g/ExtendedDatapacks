@@ -1,8 +1,9 @@
-package sleys.efedp.system.animations.json.properties.functional.time;
+package sleys.efedp.system.animations.json.properties.functional.time.registry;
 
 import com.mojang.serialization.Codec;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.bootstrap.Bootstrap;
+import sleys.efedp.system.animations.json.properties.functional.time.IAnimationEventType;
 import sleys.sl.library.exceptions.RegistryObjectException;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public final class AnimationEventTypeRegistry {
         );
 
 
-        ExtendedDatapacks.LOGGER.info("[Animation Event - Registry] Attempting to register the event class: {} for: {}", enumClass.getName(), modId);
+        ExtendedDatapacks.LOGGER.info("[Animation Event - Registry] Attempting to register the event class: {} for: {}", enumClass.getSimpleName(), modId);
         for (Enum<?> constant : enumClass.getEnumConstants()) {
             IAnimationEventType type = (IAnimationEventType) constant;
             String key = modId + ":" + constant.name().toLowerCase(Locale.ROOT);

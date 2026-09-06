@@ -5,14 +5,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.datapackets.comparator.NumericComparator;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationsEventInvocation;
-import sleys.sl.library.annotations.Linked;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -90,9 +91,8 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
             return false;
         }
 
-        JsonElement json = encodeComponent(codec, component);
+        JsonElement json = encodeComponent(codec, component, entity.level().registryAccess());
         if (json == null) {
-            ExtendedDatapacks.LOGGER.warn("[Item Number Data Read Event] Could not serialize data component: {}", componentId);
             return false;
         }
 
@@ -132,9 +132,19 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
     }
 
     @SuppressWarnings("unchecked")
-    private static JsonElement encodeComponent(Codec<?> codec, Object component) {
+    private static JsonElement encodeComponent(Codec<?> codec, Object component, HolderLookup.Provider registries) {
+        RegistryOps<JsonElement> ops = registries.createSerializationContext(JsonOps.INSTANCE);
         Codec<Object> objectCodec = (Codec<Object>) codec;
-        return objectCodec.encodeStart(JsonOps.INSTANCE, component).result().orElse(null);
+
+        var result = objectCodec.encodeStart(ops, component);
+
+        result.error().ifPresent(error ->
+                ExtendedDatapacks.LOGGER.warn(
+                        "[Item Number Data Read Event] Failed to encode data component: {}", error.message()
+                )
+        );
+
+        return result.result().orElse(null);
     }
 
     private static JsonElement resolvePath(JsonElement root, String path) {

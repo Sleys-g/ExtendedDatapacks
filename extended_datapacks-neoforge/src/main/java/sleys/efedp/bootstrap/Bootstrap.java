@@ -4,8 +4,8 @@ import net.neoforged.bus.api.IEventBus;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierLambdaList;
 import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifierTypeRegistry;
-import sleys.efedp.system.animations.json.properties.functional.time.AnimationEventTypeRegistry;
-import sleys.efedp.system.animations.json.properties.functional.time.AnimationsEventsList;
+import sleys.efedp.system.animations.json.properties.functional.time.list.*;
+import sleys.efedp.system.animations.json.properties.functional.time.registry.AnimationEventTypeRegistry;
 import sleys.sl.library.contract.ExpectedContracts;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -27,7 +27,8 @@ public class Bootstrap {
         Bootstrap.changes();
         if (STATE.equals(SystemState.CLOSED)) return;
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing...");
-        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, AnimationsEventsList.class);
+        Bootstrap.registryAnimationsEvents();
+
         PlaySpeedModifierTypeRegistry.register(ExtendedDatapacks.MODID, PlaySpeedModifierLambdaList.class);
 
         BootstrapBuilds.Initialize();
@@ -40,6 +41,15 @@ public class Bootstrap {
         );
 
         STATE = SystemState.CLOSED;
+    }
+
+    private static void registryAnimationsEvents() {
+        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, DataAnimationsEvents.class);
+        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, EntityAnimationsEvents.class);
+        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, GameplayAnimationsEvents.class);
+        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, ParticleAnimationsEvents.class);
+        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, SummonAnimationsEvents.class);
+        AnimationEventTypeRegistry.register(ExtendedDatapacks.MODID, VisualAnimationsEvents.class);
     }
 
     private static void changes() {

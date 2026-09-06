@@ -23,6 +23,8 @@ public enum NumericComparator {
     }
 
     public <N extends Number> boolean comparate(Object actual, N upper, @Nullable N lower) {
+        if (upper == null) return false;
+
         var cmpUpper = switch (actual) {
             case Byte b -> Byte.compare(b, upper.byteValue());
             case Integer i -> Integer.compare(i, upper.intValue());
