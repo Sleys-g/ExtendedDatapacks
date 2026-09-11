@@ -2,7 +2,6 @@ package sleys.efedp.system.innates.json.builder.helper;
 
 import net.minecraft.resources.ResourceLocation;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
-import yesman.epicfight.skill.Skill;
 
 import javax.annotation.Nullable;
 import java.util.List;

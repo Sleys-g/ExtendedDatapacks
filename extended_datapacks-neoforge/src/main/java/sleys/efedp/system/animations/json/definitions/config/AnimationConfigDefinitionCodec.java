@@ -19,7 +19,7 @@ public record AnimationConfigDefinitionCodec<T extends StaticAnimation>(
         MapCodec<? extends IConfigAnimation<T>> configCodec,
         MapCodec<? extends IAnimationProperty<T>> propertyCodec) {
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unchecked", "RedundantCast"})
     public MapCodec<AnimationConfigDefinition<T>> combined() {
         MapCodec<IConfigAnimation<T>> castedConfig = (MapCodec<IConfigAnimation<T>>) (MapCodec<?>) configCodec;
         MapCodec<IAnimationProperty<T>> castedProperty = (MapCodec<IAnimationProperty<T>>) (MapCodec<?>) propertyCodec;

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.function.Function;
 
 public class WSimpleInnateSkill extends WeaponInnateSkill {
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
     public static WSimpleInnateSkill.Builder createSimpleWeaponInnateBuilder(
             Function<WSimpleInnateSkill.Builder, ? extends WSimpleInnateSkill> constructor) {

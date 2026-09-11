@@ -17,6 +17,9 @@ import sleys.efedp.system.innates.json.builder.values.ConditionalDataSkillValues
 import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalDataInnateSkill;
 import sleys.efedp.system.innates.json.definitions.ConditionalDataInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -58,79 +61,93 @@ public class ConditionalDataInnateSkillsRegistry {
     private static void registerSkill(DeferredRegister<Skill> registry, String modId, ConditionalDataInnateSkillDefinition skillData) {
         var name = skillData.name();
         var skillBuilder = skillData.createBuilder();
-        registry.register(name, key -> buildSkill(registry, skillBuilder, modId, name, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, skillBuilder, modId, name, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry,
-                                    WConditionalDataInnateSkill.Builder builder,
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry,
+                                          WConditionalDataInnateSkill.Builder builder,
+                                          String modId, String name,
+                                          ConditionalDataInnateSkillDefinition skillData,
+                                          ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Data Conditional Innate Skills Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(builder, modId, name, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Data Conditional Innate Skills Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Data Conditional Innate Skills Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, exception
+                        )
+                );
+    }
+
+    private static Skill buildSkill(WConditionalDataInnateSkill.Builder builder,
                                     String modId, String name,
                                     ConditionalDataInnateSkillDefinition skillData,
                                     ResourceLocation key) {
 
         boolean hasNormalCondition = false;
-        try {
-            List<ConditionalDataAnimationData> sortedConditionalAnimationData = skillData
-                    .conditionalAnimationData()
-                    .stream()
-                    .sorted(Comparator.comparingInt(data -> data.physicalCondition().ordinal()))
-                    .toList();
+        List<ConditionalDataAnimationData> sortedConditionalAnimationData = skillData
+                .conditionalAnimationData()
+                .stream()
+                .sorted(Comparator.comparingInt(data -> data.physicalCondition().ordinal()))
+                .toList();
 
-            Map<ConditionalType, Integer> occurrenceCount = new HashMap<>();
+        Map<ConditionalType, Integer> occurrenceCount = new HashMap<>();
 
-            for (var animationData : sortedConditionalAnimationData) {
-                var physicalCondition = animationData.physicalCondition();
-                var readDataGroups = animationData.readData();
-                var properties = animationData.properties();
-                var animation = animationData.animation();
-                var tooltipHead = animationData.tooltipHead();
+        for (var animationData : sortedConditionalAnimationData) {
+            var physicalCondition = animationData.physicalCondition();
+            var readDataGroups = animationData.readData();
+            var properties = animationData.properties();
+            var animation = animationData.animation();
+            var tooltipHead = animationData.tooltipHead();
 
-                var animationId = ResourceLocation.tryParse(animation);
-                if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                            name, modId, animation, null)
-                    );
-
-                    return Skill.EMPTY;
-                }
-
-                int occurrence = occurrenceCount.merge(physicalCondition, 1, Integer::sum) - 1;
-                String postFix = FriendlyCountConverter.as(occurrence);
-
-                var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
-                        modId, name, postFix, physicalCondition, animationId, RUNTIME_ERRORS
+            var animationId = ResourceLocation.tryParse(animation);
+            if (animationId == null) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
+                        name, modId, animation, null)
                 );
 
-                if (attackAnimationKey == null) return Skill.EMPTY;
-                if (physicalCondition == ConditionalType.NORMAL) hasNormalCondition = true;
-
-                var conditionalProperties = skillData.saveProperties(properties);
-                var animationSkillValues = new AnimationSkillValues(attackAnimationKey, conditionalProperties);
-                var datapacketSkillValues = new ConditionalDataSkillValues(physicalCondition, tooltipHead, readDataGroups);
-                builder.putDatapacketData(animationSkillValues, datapacketSkillValues);
-            }
-
-            if (!hasNormalCondition) {
-                RUNTIME_ERRORS.add(
-                        RegistryErrorHelper.getError(
-                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
-                                name, modId, null,
-                                "Missing NORMAL predicate."
-                        )
-                );
                 return Skill.EMPTY;
             }
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Data Conditional Innate Skills Registry] Registered Skill: {} under modID: {}",
-                    name, modId
+            int occurrence = occurrenceCount.merge(physicalCondition, 1, Integer::sum) - 1;
+            String postFix = FriendlyCountConverter.as(occurrence);
+
+            var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
+                    modId, name, postFix, physicalCondition, animationId, RUNTIME_ERRORS
             );
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Data Conditional Innate Skills Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, e);
+            if (attackAnimationKey == null) return Skill.EMPTY;
+            if (physicalCondition == ConditionalType.NORMAL) hasNormalCondition = true;
+
+            var conditionalProperties = skillData.saveProperties(properties);
+            var animationSkillValues = new AnimationSkillValues(attackAnimationKey, conditionalProperties);
+            var datapacketSkillValues = new ConditionalDataSkillValues(physicalCondition, tooltipHead, readDataGroups);
+            builder.putDatapacketData(animationSkillValues, datapacketSkillValues);
         }
+
+        if (!hasNormalCondition) {
+            RUNTIME_ERRORS.add(
+                    RegistryErrorHelper.getError(
+                            RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
+                            name, modId, null,
+                            "Missing NORMAL predicate."
+                    )
+            );
+            return Skill.EMPTY;
+        }
+
+        return builder.build(key);
     }
 
     @SubscribeEvent

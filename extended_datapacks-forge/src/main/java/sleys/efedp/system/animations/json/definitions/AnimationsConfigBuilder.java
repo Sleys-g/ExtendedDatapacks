@@ -43,6 +43,7 @@ public class AnimationsConfigBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -65,6 +66,7 @@ public class AnimationsConfigBuilder {
             fileError("In-Jar Folder");
             return;
         }
+
         for (var entry : advancedAnimationsBuilders.entrySet()) {
 
             String modId = entry.getKey();

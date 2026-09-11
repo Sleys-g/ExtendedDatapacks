@@ -30,10 +30,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class WConditionalStackInnateSkill extends WeaponInnateSkill {
-    protected Map<ConditionalType, AnimationSkillValues> conditionMap;
-    protected Map<ConditionalType, Integer> stackMap;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final Map<ConditionalType, AnimationSkillValues> conditionMap;
+    protected final Map<ConditionalType, Integer> stackMap;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
     public static WConditionalStackInnateSkill.Builder createConditionalBuilder(
             Function<WConditionalStackInnateSkill.Builder, ? extends WConditionalStackInnateSkill> constructor) {

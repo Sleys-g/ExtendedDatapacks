@@ -4,6 +4,7 @@ import com.mojang.serialization.*;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.AnimationEventSideCodec;
 import sleys.efedp.system.animations.json.properties.functional.time.lambda.IAnimationEventParams;
+import sleys.efedp.system.animations.json.properties.functional.time.registry.AnimationEventTypeRegistry;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
@@ -110,7 +111,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
 
     @Override
     public void applyTo(T animation) {
-       if (side == null || start == null || interval == null || end == null || type == null) {
+        if (side == null || start == null || interval == null || end == null || type == null) {
             ExtendedDatapacks.LOGGER.error("[Animation In Internal Time Event] Some of your statements are not valid, looking... Side: {}, start: {}, Interval: {}, End: {}, Type: {}",
                     this.isValid(side), this.isValid(start), this.isValid(interval), this.isValid(end), this.isValid(type)
             );

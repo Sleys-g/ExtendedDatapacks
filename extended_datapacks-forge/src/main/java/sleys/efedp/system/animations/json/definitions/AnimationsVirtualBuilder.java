@@ -43,6 +43,7 @@ public class AnimationsVirtualBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -86,6 +87,7 @@ public class AnimationsVirtualBuilder {
                 ));
             }
         }
+
     }
 
     private static void fileError(String side) {

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 public class WeaponCategoriesRegistry implements WeaponCategory {
 
-
     private static boolean INITIALIZED = false;
     public static final WeaponCategoriesRegistry INSTANCE = new WeaponCategoriesRegistry();
 

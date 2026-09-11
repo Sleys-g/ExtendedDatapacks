@@ -63,7 +63,6 @@ public class OverlayPacketCoroutine extends CoroutineTask implements IEventListe
             return true;
         }
 
-
         this.onClientAnimator(playerPatch);
         this.onClientSkill(playerPatch);
         this.startToMatching(player, playerPatch);

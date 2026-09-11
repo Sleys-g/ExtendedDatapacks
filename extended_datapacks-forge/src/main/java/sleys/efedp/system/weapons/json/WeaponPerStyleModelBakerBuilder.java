@@ -40,7 +40,7 @@ public class WeaponPerStyleModelBakerBuilder {
         initialize();
     }
 
-    public static void reinitialize() {
+    public static void reinitializeWeaponPerStyle() {
         initialize();
     }
 
@@ -78,7 +78,10 @@ public class WeaponPerStyleModelBakerBuilder {
             );
         }
 
-        ExtendedDatapacks.LOGGER.info("[Weapon Model Properties] Weapon Models configuration loaded successfully: {} records", MODELS_ITEMS_DATA.size());
+        ExtendedDatapacks.LOGGER.info(
+                "[Weapon Model Properties] Weapon Models configuration loaded successfully: {} records",
+                MODELS_ITEMS_DATA.size()
+        );
     }
 
     private static void startToLoad(Resource resource, ResourceLocation resourceLocation) throws IOException {

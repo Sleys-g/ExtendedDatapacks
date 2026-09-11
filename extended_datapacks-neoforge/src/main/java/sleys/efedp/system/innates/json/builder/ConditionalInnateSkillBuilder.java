@@ -44,6 +44,7 @@ public class ConditionalInnateSkillBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))

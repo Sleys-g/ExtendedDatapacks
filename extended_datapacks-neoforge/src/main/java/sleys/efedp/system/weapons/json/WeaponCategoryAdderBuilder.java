@@ -50,6 +50,7 @@ public class WeaponCategoryAdderBuilder {
                         modId,
                         file.getFileName()
                 );
+
                 ExecutionTasks.runAndGetResult(
                         ExecutionPolicy.RESIST,
                         () -> startToLoad(file, modId)
@@ -65,7 +66,7 @@ public class WeaponCategoryAdderBuilder {
         );
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("resource")
     private static void startToLoadFromConfig(Path configDir) throws IOException {
         Files.list(configDir).filter(p -> p.toString().endsWith(".json"))
                 .forEach(p ->

@@ -17,13 +17,15 @@ public record ConfigStaticAnimationGroup(ResourceLocation animation) implements 
     );
 
     @Override
-    public AnimationGroupType virtualGroupType() {
+    public AnimationGroupType configGroupType() {
         return AnimationGroupType.STATIC_GROUP;
     }
 
     @Override
     public void applyConfig(IAnimationProperty<StaticAnimation> property) {
+        if (this.isInvalidAccessor()) return;
         var animation = getAccessor().get();
         property.applyTo(animation);
+        this.isSuccessful();
     }
 }

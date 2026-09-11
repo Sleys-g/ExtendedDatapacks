@@ -28,7 +28,7 @@ public record RadialFloorExpandEvent(ParticleOptions particle, int points,
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Radial Floor Event")) return;
+        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Radial Floor Particle Event")) return;
         List<Vec3> ringDirs = ParticleShapeHelper.circle(1.0, points);
         Vec3 origin = caster.position();
         for (Vec3 dir : ringDirs) {

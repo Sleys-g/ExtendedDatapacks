@@ -6,17 +6,16 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.ExtendedDatapacks;
-import sleys.efedp.system.innates.json.builder.ConditionalInnateSkillBuilder;
 import sleys.efedp.system.innates.json.builder.HoldableConditionalInnateSkillBuilder;
 import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.efedp.system.innates.json.builder.helper.AnimationBuilderHelper;
 import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
-import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalInnateSkill;
-import sleys.efedp.system.innates.json.definitions.ConditionalInnateSkillDefinition;
 import sleys.efedp.system.innates.json.definitions.HoldableConditionalInnateSkillDefinition;
-import sleys.efedp.system.innates.json.definitions.HoldableInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -66,74 +65,89 @@ public class HoldableConditionalInnateSkillsRegistry {
             ));
             return;
         }
-        registry.register(name, key -> buildSkill(registry, modId, name, chargedAnimationId, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, modId, name, chargedAnimationId, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry,
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry,
                                     String modId, String name,
+                                    ResourceLocation chargeAnimationId,
+                                    HoldableConditionalInnateSkillDefinition skillData,
+                                    ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Holdable Conditional Innate Skill Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(modId, name, chargeAnimationId, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Holdable Conditional Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Holdable Conditional Innate Skill Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, exception
+                        )
+                );
+    }
+
+    private static Skill buildSkill(String modId, String name,
                                     ResourceLocation chargeAnimationId,
                                     HoldableConditionalInnateSkillDefinition skillData,
                                     ResourceLocation key) {
 
         boolean hasNormalCondition = false;
-        try {
-            var chargeAnimationKey = AnimationBuilderHelper.resolveChargingAnimation(
-                    modId, name, chargeAnimationId, RUNTIME_ERRORS
-            );
 
-            if (chargeAnimationKey == null) return Skill.EMPTY;
-            var builder = skillData.createBuilder(modId, chargeAnimationKey);
+        var chargeAnimationKey = AnimationBuilderHelper.resolveChargingAnimation(
+                modId, name, chargeAnimationId, RUNTIME_ERRORS
+        );
 
-            for (var conditionEntry : skillData.conditionalAnimationData().entrySet()) {
-                var conditionalTypes = conditionEntry.getKey();
-                var conditionalAnimationData = conditionEntry.getValue();
-                var animation = conditionalAnimationData.animation();
+        if (chargeAnimationKey == null) return Skill.EMPTY;
+        var builder = skillData.createBuilder(modId, chargeAnimationKey);
+
+        for (var conditionEntry : skillData.conditionalAnimationData().entrySet()) {
+            var conditionalTypes = conditionEntry.getKey();
+            var conditionalAnimationData = conditionEntry.getValue();
+            var animation = conditionalAnimationData.animation();
 
 
-                var animationId = ResourceLocation.tryParse(animation);
-                if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                            name, modId, animation, null)
-                    );
-
-                    return Skill.EMPTY;
-                }
-
-                var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
-                        modId, name, conditionalTypes, animationId, RUNTIME_ERRORS
+            var animationId = ResourceLocation.tryParse(animation);
+            if (animationId == null) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
+                        name, modId, animation, null)
                 );
-                if (attackAnimationKey == null) return Skill.EMPTY;
 
-
-                if (conditionalTypes == ConditionalType.NORMAL) hasNormalCondition = true;
-
-                var conditionalProperties = skillData.saveProperties(conditionalAnimationData.properties());
-                var conditionalValues =new AnimationSkillValues(attackAnimationKey, conditionalProperties);
-                builder.putConditionData(conditionalTypes, conditionalValues);
-            }
-
-            if (!hasNormalCondition) {
-                RUNTIME_ERRORS.add(
-                        RegistryErrorHelper.getError(
-                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
-                                name, modId, null,
-                                "Missing NORMAL predicate."
-                        )
-                );
                 return Skill.EMPTY;
             }
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Holdable Conditional Innate Skill Registry] Registered Skill: {} under modID: {}",
-                    name, modId
+            var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
+                    modId, name, conditionalTypes, animationId, RUNTIME_ERRORS
             );
+            if (attackAnimationKey == null) return Skill.EMPTY;
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Holdable Conditional Innate Skill Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, e);
+
+            if (conditionalTypes == ConditionalType.NORMAL) hasNormalCondition = true;
+
+            var conditionalProperties = skillData.saveProperties(conditionalAnimationData.properties());
+            var conditionalValues =new AnimationSkillValues(attackAnimationKey, conditionalProperties);
+            builder.putConditionData(conditionalTypes, conditionalValues);
         }
+
+        if (!hasNormalCondition) {
+            RUNTIME_ERRORS.add(
+                    RegistryErrorHelper.getError(
+                            RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
+                            name, modId, null,
+                            "Missing NORMAL predicate."
+                    )
+            );
+            return Skill.EMPTY;
+        }
+
+        return builder.build(key);
     }
 
     @SubscribeEvent

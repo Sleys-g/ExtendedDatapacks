@@ -31,7 +31,7 @@ public class CommonUtilities {
         };
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("RedundantCast")
     public static SkillDataKey<?> getSkillDataKey(String name) {
         IForgeRegistry<SkillDataKey<?>> skillDataKey = SkillDataKeys.REGISTRY.get();
         ResourceLocation rl;

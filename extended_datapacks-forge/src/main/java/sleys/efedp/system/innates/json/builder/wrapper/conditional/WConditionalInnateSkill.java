@@ -7,12 +7,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
+import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.efedp.system.innates.json.builder.helper.SkillTooltipHelper;
-import sleys.efedp.system.innates.json.data.ConditionalSkillValues;
-import sleys.efedp.system.innates.json.data.ConditionalType;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.skill.SkillBuilder;
@@ -29,17 +29,17 @@ import java.util.List;
 import java.util.Map;
 
 public class WConditionalInnateSkill extends WeaponInnateSkill {
-    protected Map<ConditionalType, ConditionalSkillValues> conditionMap;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final Map<ConditionalType, AnimationSkillValues> conditionMap;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
-    public static Builder createConditionalBuilder() {
+    public static WConditionalInnateSkill.Builder createConditionalBuilder() {
         return new WConditionalInnateSkill.Builder()
                 .setCategory(SkillCategories.WEAPON_INNATE)
                 .setResource(Resource.WEAPON_CHARGE);
     }
 
-    public WConditionalInnateSkill(Builder builder) {
+    public WConditionalInnateSkill(WConditionalInnateSkill.Builder builder) {
         super(builder);
         this.conditionMap = builder.conditionMap;
         this.tooltipComponents = builder.tooltipComponents;
@@ -63,7 +63,7 @@ public class WConditionalInnateSkill extends WeaponInnateSkill {
     }
 
     @ErrorHandled
-    private ConditionalSkillValues registryAnimationsData(ConditionalSkillValues entry) {
+    private AnimationSkillValues registryAnimationsData(AnimationSkillValues entry) {
         var animation = entry.animationAccessor().get();
         if (!(animation instanceof AttackAnimation attack)) {
             ExtendedDatapacks.LOGGER.warn("[Conditional - Innate Skill] The animation: {}, It is NOT an attack animation or one that inherits from it; it will proceed, however, the attempt to apply properties is suppressed....", animation);
@@ -141,11 +141,11 @@ public class WConditionalInnateSkill extends WeaponInnateSkill {
     }
 
     public static class Builder extends SkillBuilder<WConditionalInnateSkill> {
-        private final Map<ConditionalType, ConditionalSkillValues> conditionMap = new EnumMap<>(ConditionalType.class);
+        private final Map<ConditionalType, AnimationSkillValues> conditionMap = new EnumMap<>(ConditionalType.class);
         private List<JsonComponentArgs> tooltipComponents;
         private boolean disableTooltipProperties;
 
-        public void putConditionData(ConditionalType type, ConditionalSkillValues data) {
+        public void putConditionData(ConditionalType type, AnimationSkillValues data) {
             this.conditionMap.put(type, data);
         }
 

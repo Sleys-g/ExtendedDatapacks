@@ -1,12 +1,12 @@
 package sleys.efedp.system.animations.json.properties.groups;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifier;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationsInIntervalTimeEvent;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationsInPeriodTimeEvent;
 import sleys.efedp.system.animations.json.properties.functional.time.AnimationsInTimeEvent;
+import sleys.efedp.system.animations.json.properties.functional.playback.PlaySpeedModifier;
+import sleys.efedp.system.animations.json.properties.functional.time.AnimationsOnProcessEvent;
 import sleys.efedp.system.animations.json.properties.state.AnimationEntityState;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -17,6 +17,7 @@ import java.util.Optional;
 public record StaticPropertyGroup<T extends StaticAnimation>(
         Optional<Boolean> noPhysics,
         Optional<Boolean> fixedHeadRotation,
+        List<AnimationsOnProcessEvent<T>> onProcessEvents,
         List<AnimationsInTimeEvent<T>> inTimeEvents,
         List<AnimationsInPeriodTimeEvent<T>> inPeriodEvents,
         List<AnimationsInIntervalTimeEvent<T>> inIntervalTimeEvents,
@@ -32,6 +33,10 @@ public record StaticPropertyGroup<T extends StaticAnimation>(
 
                         Codec.BOOL.optionalFieldOf("fixed_head_rotation")
                                 .forGetter(StaticPropertyGroup::fixedHeadRotation),
+
+                        AnimationsOnProcessEvent.<T>codec()
+                                        .listOf().optionalFieldOf("on_process_events", List.of())
+                                        .forGetter(StaticPropertyGroup::onProcessEvents),
 
                         AnimationsInTimeEvent.<T>codec()
                                 .listOf()
@@ -64,6 +69,7 @@ public record StaticPropertyGroup<T extends StaticAnimation>(
     public void applyTo(T animation) {
         noPhysics.ifPresent(noPhysics ->  animation.addProperty(AnimationProperty.StaticAnimationProperty.NO_PHYSICS, noPhysics));
         fixedHeadRotation.ifPresent(fixedHeadRotation -> animation.addProperty(AnimationProperty.StaticAnimationProperty.FIXED_HEAD_ROTATION, fixedHeadRotation));
+        onProcessEvents.forEach(events -> events.applyTo(animation));
         inTimeEvents.forEach(events -> events.applyTo(animation));
         inPeriodEvents.forEach(events -> events.applyTo(animation));
         inIntervalTimeEvents.forEach(events -> events.applyTo(animation));

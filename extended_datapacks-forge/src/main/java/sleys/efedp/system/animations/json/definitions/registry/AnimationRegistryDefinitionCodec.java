@@ -15,7 +15,7 @@ public record AnimationRegistryDefinitionCodec<T extends DynamicAnimation>(
         MapCodec<? extends IAnimationAccessor<T>> accessorCodec,
         MapCodec<? extends IAnimationProperty<T>> propertyCodec) {
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unchecked", "RedundantCast"})
     public MapCodec<AnimationRegistryDefinition<T>> combined() {
         MapCodec<IAnimationAccessor<T>> castedAccessor = (MapCodec<IAnimationAccessor<T>>) (MapCodec<?>) accessorCodec;
         MapCodec<IAnimationProperty<T>> castedProperty = (MapCodec<IAnimationProperty<T>>) (MapCodec<?>) propertyCodec;
@@ -62,5 +62,4 @@ public record AnimationRegistryDefinitionCodec<T extends DynamicAnimation>(
                     Map.entry(AnimationRegistryType.KNOCKDOWN,
                             new AnimationRegistryDefinitionCodec<>(KnockdownAnimationAccessor.CODEC, KnockdownAnimationProperties.CODEC))
             );
-
 }

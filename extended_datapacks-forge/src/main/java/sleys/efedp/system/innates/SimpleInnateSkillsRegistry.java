@@ -10,6 +10,9 @@ import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.builder.wrapper.simple.WSimpleInnateSkill;
 import sleys.efedp.system.innates.json.definitions.SimpleInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 
 import java.util.*;
@@ -46,11 +49,21 @@ public class SimpleInnateSkillsRegistry {
             return;
         }
 
-        try {
-            buildSkill(modRegistry, modId, name, animationId, skillData);
-        } catch (Exception e) {
-            RegistryErrorHelper.handleRegistrationError(build, modId, name, animationId, RUNTIME_ERRORS, e);
-        }
+        ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Simple Innate Skill Registry] Registering Skill '{" + name  +"}'",
+                        () -> buildSkill(modRegistry, modId, name, animationId, skillData)
+                )
+                .peek(process ->  ExtendedDatapacks.LOGGER.info(
+                        "[Simple Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId
+                ))
+                .peekError(exception -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Simple Innate Skill Registry] Error Stack: ", exception
+                ))
+                .ifFailure(exception -> RegistryErrorHelper.handleRegistrationError(
+                        build, modId, name, animationId, RUNTIME_ERRORS, exception
+                ));
     }
 
     private static void buildSkill(SkillBuildEvent.ModRegistryWorker modRegistry,

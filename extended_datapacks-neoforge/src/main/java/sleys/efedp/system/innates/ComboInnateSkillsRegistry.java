@@ -17,6 +17,9 @@ import sleys.efedp.system.innates.json.builder.values.ComboTransitionValues;
 import sleys.efedp.system.innates.json.builder.wrapper.combo.WComboInnateSkill;
 import sleys.efedp.system.innates.json.definitions.ComboInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -32,9 +35,13 @@ public class ComboInnateSkillsRegistry {
     public static void initialize(IEventBus modBus) {
         if (initialized) return;
         initialized = true;
+        ExtendedDatapacks.LOGGER.info("[Combo Innate Skills Registry] Registering JSON skills");
 
         var data = ComboInnateSkillBuilder.getComboInnateSkillBuildData();
-        if (data.isEmpty()) return;
+        if (data.isEmpty()) {
+            ExtendedDatapacks.LOGGER.info("[Combo Innate Skills Registry] No JSON skills found");
+            return;
+        }
 
         data.forEach((modId, skills) ->
                 skills.forEach(skillData ->
@@ -54,92 +61,110 @@ public class ComboInnateSkillsRegistry {
     private static void registerSkill(DeferredRegister<Skill> registry, String modId, ComboInnateSkillDefinition skillData) {
         var name = skillData.name();
         var skillBuilder = skillData.createBuilder();
-        registry.register(name, key -> buildSkill(registry, skillBuilder, modId, name, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, skillBuilder, modId, name, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry,
-                                    WComboInnateSkill.Builder builder,
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry,
+                                          WComboInnateSkill.Builder builder,
+                                          String modId, String name,
+                                          ComboInnateSkillDefinition skillData,
+                                          ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Combo Innate Skills Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(builder, modId, name, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Combo Innate Skills Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Combo Innate Skills Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, skillData.nodes(), RUNTIME_ERRORS, exception
+                        )
+                );
+    }
+
+    private static Skill buildSkill(WComboInnateSkill.Builder builder,
                                     String modId, String name,
                                     ComboInnateSkillDefinition skillData,
                                     ResourceLocation key) {
-        try {
-            Map<String, ComboNodeValues> resolvedNodes = new HashMap<>();
-            for (var entryNodes : skillData.nodes().entrySet()) {
-                var nodeId = entryNodes.getKey();
-                var nodeDef = entryNodes.getValue();
-                var nodeProperties = nodeDef.properties();
 
-                var animationId = ResourceLocation.tryParse(nodeDef.animation());
-                if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE, name,
-                            modId, nodeDef.animation(), null)
-                    );
-                    return Skill.EMPTY;
-                }
+        Map<String, ComboNodeValues> resolvedNodes = new HashMap<>();
+        for (var entryNodes : skillData.nodes().entrySet()) {
+            var nodeId = entryNodes.getKey();
+            var nodeDef = entryNodes.getValue();
+            var nodeProperties = nodeDef.properties();
 
-                var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
-                        modId, name, nodeId.toLowerCase(Locale.ROOT), animationId, RUNTIME_ERRORS
-                );
-
-                if (attackAnimationKey == null) return Skill.EMPTY;
-
-                var animationValues = new AnimationSkillValues(attackAnimationKey, skillData.saveProperties(nodeProperties));
-                var transitions = nodeDef
-                        .next()
-                        .stream()
-                        .map(transition -> new ComboTransitionValues(
-                                transition.node(), transition.physicalCondition().orElse(null))
-                        )
-                        .toList();
-
-                resolvedNodes.put(nodeId, new ComboNodeValues(nodeId, animationValues, transitions));
-            }
-
-            for (var node : resolvedNodes.values()) {
-                for (var t : node.next()) {
-                    if (!resolvedNodes.containsKey(t.targetId())) {
-                        RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, node.id(),
-                                "[Combo Innate Skills Registry] The node '" + node.id() + "' references a non-existent node: '" + t.targetId() + "'"));
-                        return Skill.EMPTY;
-                    }
-                }
-            }
-
-            boolean hasNormalEntry = false;
-            List<ComboEntryPointValues> entryPoints = new ArrayList<>();
-            var sortedEntries = skillData.entryPoints().stream()
-                    .sorted(Comparator.comparingInt(e -> e.physicalCondition().ordinal()))
-                    .toList();
-
-            for (var entryDef : sortedEntries) {
-                if (!resolvedNodes.containsKey(entryDef.node())) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, entryDef.node(),
-                            "[Combo Innate Skills Registry] 'entry_points' reference a non-existent node: '" + entryDef.node() + "'"));
-                    return Skill.EMPTY;
-                }
-                if (entryDef.physicalCondition() == ConditionalType.NORMAL) hasNormalEntry = true;
-                entryPoints.add(new ComboEntryPointValues(entryDef.node(), entryDef.global(), entryDef.physicalCondition()));
-            }
-
-            if (!hasNormalEntry) {
+            var animationId = ResourceLocation.tryParse(nodeDef.animation());
+            if (animationId == null) {
                 RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                        RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, null,
-                        "Missing NORMAL entry point."));
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE, name,
+                        modId, nodeDef.animation(), null)
+                );
                 return Skill.EMPTY;
             }
 
-            resolvedNodes.forEach(builder::putNodes);
-            entryPoints.forEach(builder::putEntryPoints);
+            var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
+                    modId, name, nodeId.toLowerCase(Locale.ROOT), animationId, RUNTIME_ERRORS
+            );
 
-            ExtendedDatapacks.LOGGER.info("[Combo Innate Skills Registry] Registered Skill: {} under modID: {}", name, modId);
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Combo Innate Skills Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.nodes(), RUNTIME_ERRORS, e);
+            if (attackAnimationKey == null) return Skill.EMPTY;
+
+            var animationValues = new AnimationSkillValues(attackAnimationKey, skillData.saveProperties(nodeProperties));
+            var transitions = nodeDef
+                    .next()
+                    .stream()
+                    .map(transition -> new ComboTransitionValues(
+                            transition.node(), transition.physicalCondition().orElse(null))
+                    )
+                    .toList();
+
+            resolvedNodes.put(nodeId, new ComboNodeValues(nodeId, animationValues, transitions));
         }
+
+        for (var node : resolvedNodes.values()) {
+            for (var t : node.next()) {
+                if (!resolvedNodes.containsKey(t.targetId())) {
+                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                            RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, node.id(),
+                            "[Combo Innate Skills Registry] The node '" + node.id() + "' references a non-existent node: '" + t.targetId() + "'"));
+                    return Skill.EMPTY;
+                }
+            }
+        }
+
+        boolean hasNormalEntry = false;
+        List<ComboEntryPointValues> entryPoints = new ArrayList<>();
+        var sortedEntries = skillData.entryPoints().stream()
+                .sorted(Comparator.comparingInt(e -> e.physicalCondition().ordinal()))
+                .toList();
+
+        for (var entryDef : sortedEntries) {
+            if (!resolvedNodes.containsKey(entryDef.node())) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, entryDef.node(),
+                        "[Combo Innate Skills Registry] 'entry_points' reference a non-existent node: '" + entryDef.node() + "'"));
+                return Skill.EMPTY;
+            }
+            if (entryDef.physicalCondition() == ConditionalType.NORMAL) hasNormalEntry = true;
+            entryPoints.add(new ComboEntryPointValues(entryDef.node(), entryDef.global(), entryDef.physicalCondition()));
+        }
+
+        if (!hasNormalEntry) {
+            RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                    RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER, name, modId, null,
+                    "Missing NORMAL entry point."));
+            return Skill.EMPTY;
+        }
+
+        resolvedNodes.forEach(builder::putNodes);
+        entryPoints.forEach(builder::putEntryPoints);
+        return builder.build(key);
     }
 
     @SubscribeEvent

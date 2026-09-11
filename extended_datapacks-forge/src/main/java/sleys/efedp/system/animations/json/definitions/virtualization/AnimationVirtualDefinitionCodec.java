@@ -4,10 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationGroupType;
-import sleys.efedp.system.animations.json.properties.ActionAnimationProperties;
-import sleys.efedp.system.animations.json.properties.AttackAnimationProperties;
-import sleys.efedp.system.animations.json.properties.IAnimationProperty;
-import sleys.efedp.system.animations.json.properties.StaticAnimationProperties;
+import sleys.efedp.system.animations.json.properties.*;
 import sleys.efedp.system.animations.json.virtual.IVirtualAnimation;
 import sleys.efedp.system.animations.json.virtual.VirtualActionAnimationGroup;
 import sleys.efedp.system.animations.json.virtual.VirtualAttackAnimationGroup;
@@ -21,7 +18,7 @@ public record AnimationVirtualDefinitionCodec<T extends StaticAnimation>(
         MapCodec<? extends IVirtualAnimation<T>> virtualCodec,
         MapCodec<? extends IAnimationProperty<T>> propertyCodec) {
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unchecked", "RedundantCast"})
     public MapCodec<AnimationVirtualDefinition<T>> combined() {
         MapCodec<IVirtualAnimation<T>> castedVirtual = (MapCodec<IVirtualAnimation<T>>) (MapCodec<?>) virtualCodec;
         MapCodec<IAnimationProperty<T>> castedProperty = (MapCodec<IAnimationProperty<T>>) (MapCodec<?>) propertyCodec;

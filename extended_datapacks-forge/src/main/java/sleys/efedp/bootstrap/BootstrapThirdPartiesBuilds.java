@@ -12,7 +12,8 @@ public class BootstrapThirdPartiesBuilds {
         startThirdPartyBuilds();
     }
 
-    @SuppressWarnings("all")
+    
+    @SuppressWarnings("SameParameterValue")
     private static void buildThirdPartyConfigTracker(String category, String subfolder, Consumer<Path> tracker) {
         Path dir = FMLPaths.CONFIGDIR.get()
                 .resolve("epicfight_edp")

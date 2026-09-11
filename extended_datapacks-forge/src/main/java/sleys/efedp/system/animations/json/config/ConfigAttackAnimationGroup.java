@@ -24,12 +24,13 @@ public record ConfigAttackAnimationGroup(ResourceLocation animation, List<Attack
 
 
     @Override
-    public AnimationGroupType virtualGroupType() {
+    public AnimationGroupType configGroupType() {
         return AnimationGroupType.ATTACK_GROUP;
     }
 
     @Override
     public void applyConfig(IAnimationProperty<AttackAnimation> property) {
+        if (this.isInvalidAccessor()) return;
         var animation = getAccessor().get();
         var phases = animation.phases;
         int phasesSize = phases.length;
@@ -46,5 +47,6 @@ public record ConfigAttackAnimationGroup(ResourceLocation animation, List<Attack
         }
 
         property.applyTo(animation);
+        this.isSuccessful();
     }
 }

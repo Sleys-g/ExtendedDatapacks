@@ -31,8 +31,8 @@ import java.util.function.Function;
 
 public class WPerComboInnateSkill extends WeaponInnateSkill {
     private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
     public static WPerComboInnateSkill.Builder createPerComboBuilder() {
         return new WPerComboInnateSkill.Builder(WPerComboInnateSkill::new)

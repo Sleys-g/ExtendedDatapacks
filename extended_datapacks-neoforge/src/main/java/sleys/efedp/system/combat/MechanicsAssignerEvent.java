@@ -26,7 +26,9 @@ public class MechanicsAssignerEvent {
         var chargedSlot = playerPatch.getSkill(ExtendedSkillSlot.CHARGED_ATTACK);
         var chargedSkill = ExtendedDatapacksSkills.CHARGED_ATTACK;
         var chargedSlotSkill = chargedSlot.getSkill();
-        if (chargedSlotSkill == null && !chargedSlot.hasSkill(chargedSkill.get())) chargedSlot.setSkill(chargedSkill.get());
+        if (chargedSlotSkill == null && !chargedSlot.hasSkill(chargedSkill.get())) {
+            chargedSlot.setSkill(chargedSkill.get());
+        }
         return playerPatch;
     }
 }

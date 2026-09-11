@@ -2,6 +2,7 @@ package sleys.efedp.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 
 public class EpicFightEDPConfig {
 
@@ -26,7 +27,6 @@ public class EpicFightEDPConfig {
 
 
         builder.pop();
-
         builder.push("Extended Datapacks (Epic Fight Combat -/- Charged Attacks)");
 
         USE_STAMINA_IN_CHARGED_ATTACKS = builder
@@ -52,30 +52,30 @@ public class EpicFightEDPConfig {
     }
 
     public static boolean getUseStaminaInChargedAttacks() {
-        try {
-            return USE_STAMINA_IN_CHARGED_ATTACKS.get();
-        } catch (Exception ignored) {
-            return true;
-        }
+        return ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
+                USE_STAMINA_IN_CHARGED_ATTACKS::get,
+                true
+        );
     }
 
     public static boolean getUseWeightInChargedAttacks() {
-        try {
-            return USE_WEIGHT_IN_CHARGED_ATTACKS.get();
-        } catch (Exception ignored) {
-            return true;
-        }
+        return ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
+                USE_WEIGHT_IN_CHARGED_ATTACKS::get,
+                true
+        );
     }
 
     public static float getWeightValueInChargedAttacks() {
-        try {
-            return SET_WEIGHT_IN_CHARGED_ATTACKS.get().floatValue();
-        } catch (Exception ignored) {
-            return 2.3f;
-        }
+        return ExecutionTasks.getAndFallback(
+                ExecutionPolicy.RESIST,
+                SET_WEIGHT_IN_CHARGED_ATTACKS::get,
+                2.3
+        ).floatValue();
     }
 
-    public static ExecutionPolicy getErrorHandlerEDP() {
+    public static ExecutionPolicy getErrorHandlerEpicFightEDP() {
         return RUNNER_TYPE_ENUM_VALUE.get();
     }
 }

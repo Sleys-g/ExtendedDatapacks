@@ -55,7 +55,6 @@ public class OwnableWitherGhost extends WitherGhostClone implements OwnableEntit
         this.setTarget(target);
     }
 
-
     @Override
     public boolean hurt(DamageSource damagesource, float damage) {
         if (!damagesource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
@@ -74,6 +73,7 @@ public class OwnableWitherGhost extends WitherGhostClone implements OwnableEntit
         return true;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @ErrorHandled
     private float getEntityDamage() {
         return this.getDamage() == -1F ?

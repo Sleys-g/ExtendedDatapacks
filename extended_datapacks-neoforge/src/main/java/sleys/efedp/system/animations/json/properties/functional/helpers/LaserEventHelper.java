@@ -67,6 +67,7 @@ public final class LaserEventHelper {
         return grounded;
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     public static OBBCollider buildBeamCollider(Vec3 from, Vec3 to, float halfWidth) {
         var xLength = to.x - from.x;
         var yLength = to.y - from.y;

@@ -12,8 +12,6 @@ import yesman.epicfight.registry.entries.EpicFightSounds;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSources;
 
-import java.util.Optional;
-
 public record LaserVerticalTargetDamageEvent(Float damage) implements IAnimationEventParams {
 
     public static final MapCodec<LaserVerticalTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->

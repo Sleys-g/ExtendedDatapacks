@@ -42,6 +42,7 @@ public class AnimationsRegistryBuilder {
         ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn("[Animations Registry] Error reading Animation Registry Config", e));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -60,29 +61,29 @@ public class AnimationsRegistryBuilder {
 
     private static void startToTrackingFromAPI() {
         var advancedAnimationsBuilders = SLDataDrivenAPI.collectResources(SL_FOLDER_KEY);
-        if (!advancedAnimationsBuilders.isEmpty()) {
-            for (var entry : advancedAnimationsBuilders.entrySet()) {
-
-                String modId = entry.getKey();
-                for (Path file : entry.getValue()) {
-                    if (!file.toString().endsWith(".json")) continue;
-
-                    ExtendedDatapacks.LOGGER.info(
-                            "[Animations Registry] Parameterization file detected In-Jar, operating for {} -> {}",
-                            modId,
-                            file.getFileName()
-                    );
-
-                    ExecutionTasks.runAndGetResult(
-                            ExecutionPolicy.RESIST,
-                            () -> startToLoad(file, modId)
-                    ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
-                            "[Animations Registry] Error reading: {}", file, e
-                    ));
-                }
-            }
-        } else {
+        if (advancedAnimationsBuilders.isEmpty()) {
             fileError("In-Jar Folder");
+            return;
+        }
+        for (var entry : advancedAnimationsBuilders.entrySet()) {
+
+            String modId = entry.getKey();
+            for (Path file : entry.getValue()) {
+                if (!file.toString().endsWith(".json")) continue;
+
+                ExtendedDatapacks.LOGGER.info(
+                        "[Animations Registry] Parameterization file detected In-Jar, operating for {} -> {}",
+                        modId,
+                        file.getFileName()
+                );
+
+                ExecutionTasks.runAndGetResult(
+                        ExecutionPolicy.RESIST,
+                        () -> startToLoad(file, modId)
+                ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
+                        "[Animations Registry] Error reading: {}", file, e
+                ));
+            }
         }
     }
 
@@ -101,14 +102,14 @@ public class AnimationsRegistryBuilder {
             JsonObject object = json.getAsJsonObject();
             if (object.has("mod_id")) {
                 var modKey = object.get("mod_id").getAsString();
-                AnimationsRegistryBuilder.startToRegisterEntry(
-                        file, modKey, json
-                );
 
                 ExtendedDatapacks.LOGGER.info(
                         "[Animations Registry] Loading from configuration folder... Registering under the namespaces: {}", modKey
                 );
 
+                AnimationsRegistryBuilder.startToRegisterEntry(
+                        file, modKey, json
+                );
             }
 
             return;

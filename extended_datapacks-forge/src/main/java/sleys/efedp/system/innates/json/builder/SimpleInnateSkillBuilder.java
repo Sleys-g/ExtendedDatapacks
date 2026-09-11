@@ -44,6 +44,7 @@ public class SimpleInnateSkillBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -125,7 +126,7 @@ public class SimpleInnateSkillBuilder {
                 .parse(JsonOps.INSTANCE, json)
                 .resultOrPartial(err ->
                         ExtendedDatapacks.LOGGER.error(
-                                "[Animations Registry] Failed to parse {} -> {}: {}",
+                                "[Simple Innate Skills] Failed to parse {} -> {}: {}",
                                 modId, file.getFileName(), err
                         )
                 ).ifPresent(def ->

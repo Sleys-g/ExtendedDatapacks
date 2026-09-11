@@ -72,7 +72,6 @@ public class WeaponItemsPropertiesBuilder extends SimplePreparableReloadListener
     private void startToRegistry(Map<ResourceLocation, WeaponItemPropertyData> newEntries,
                                  ResourceLocation location, JsonElement element) {
 
-
         WeaponItemPropertyData entry = GSON.fromJson(element, WeaponItemPropertyData.class);
         newEntries.put(location, entry);
         ExtendedDatapacks.LOGGER.info("[Weapons Item Properties] Weapon Property {} added!", location);

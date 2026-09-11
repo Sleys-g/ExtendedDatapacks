@@ -42,6 +42,7 @@ public class ExtendedDatapacks {
 
     public ExtendedDatapacks(IEventBus modBus, ModContainer modContainer) {
         Bootstrap.start(modBus);
+
         Style.ENUM_MANAGER.registerEnumCls(MODID, ChargedAttackStyles.class);
         SkillCategory.ENUM_MANAGER.registerEnumCls(MODID, ExtendedSkillCategory.class);
         SkillSlot.ENUM_MANAGER.registerEnumCls(MODID, ExtendedSkillSlot.class);

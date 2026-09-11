@@ -3,6 +3,7 @@ package sleys.efedp.system.animations.json.properties.functional.playback;
 import com.mojang.serialization.*;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.properties.functional.playback.lambda.IPlaySpeedModifierParams;
+import sleys.efedp.system.animations.json.properties.functional.playback.registry.PlaySpeedModifierTypeRegistry;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 

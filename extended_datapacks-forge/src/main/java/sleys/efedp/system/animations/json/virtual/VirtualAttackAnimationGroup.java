@@ -4,8 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.system.animations.json.definitions.AnimationGroupType;
-import sleys.efedp.system.animations.json.properties.IAnimationProperty;
 import sleys.efedp.system.animations.json.properties.phase.AttackPhaseProperties;
+import sleys.efedp.system.animations.json.properties.IAnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 
 import java.util.List;
@@ -34,7 +34,8 @@ public record VirtualAttackAnimationGroup(ResourceLocation realAnimation, Resour
 
     @Override
     public void configProtocol(IAnimationProperty<AttackAnimation> property) {
-        var animation = getAnimation().get();
+        if (this.isInvalidAccessor()) return;
+        var animation = getAccessor().get();
         var phases = animation.phases;
         int phasesSize = phases.length;
         int propertiesSize = properties.size();
@@ -50,5 +51,6 @@ public record VirtualAttackAnimationGroup(ResourceLocation realAnimation, Resour
         }
 
         property.applyTo(animation);
+        this.isSuccessful();
     }
 }

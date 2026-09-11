@@ -3,6 +3,7 @@ package sleys.efedp.system.combat;
 import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 
+@SuppressWarnings("SameParameterValue")
 public enum ExtendedSkillSlot implements SkillSlot {
     CHARGED_ATTACK(ExtendedSkillCategory.CHARGED_ATTACK);
 

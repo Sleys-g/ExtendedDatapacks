@@ -52,7 +52,8 @@ public class WeaponsPassiveParticlesCoroutine extends CoroutineTask {
         return true;
     }
 
-    @SuppressWarnings("all")
+    
+    @SuppressWarnings("ConstantValue")
     private void inViewerRendering(Player player) {
         var patch = EpicFightCapabilities.getPlayerPatch(player);
         if (patch == null) return;

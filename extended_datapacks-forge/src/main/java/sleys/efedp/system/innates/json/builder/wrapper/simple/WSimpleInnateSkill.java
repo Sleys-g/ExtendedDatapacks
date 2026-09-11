@@ -25,17 +25,17 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import java.util.List;
 
 public class WSimpleInnateSkill extends WeaponInnateSkill {
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
-    public static Builder createSimpleWeaponInnateBuilder() {
+    public static WSimpleInnateSkill.Builder createSimpleWeaponInnateBuilder() {
         return new WSimpleInnateSkill.Builder()
                 .setCategory(SkillCategories.WEAPON_INNATE)
                 .setResource(Resource.WEAPON_CHARGE);
     }
 
-    public WSimpleInnateSkill(Builder builder) {
+    public WSimpleInnateSkill(WSimpleInnateSkill.Builder builder) {
         super(builder);
         this.animation = builder.animation;
         this.tooltipComponents = builder.tooltipComponents;

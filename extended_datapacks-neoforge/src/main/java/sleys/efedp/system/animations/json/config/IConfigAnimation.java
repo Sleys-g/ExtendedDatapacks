@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.animations.json.definitions.AnimationGroupType;
 import sleys.efedp.system.animations.json.properties.IAnimationProperty;
-import sleys.sl.library.exceptions.RegistryObjectModificationException;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 

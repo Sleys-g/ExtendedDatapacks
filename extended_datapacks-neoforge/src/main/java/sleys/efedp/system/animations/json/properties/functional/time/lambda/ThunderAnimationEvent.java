@@ -39,6 +39,7 @@ public record ThunderAnimationEvent(Optional<Boolean> changeAmbient) implements 
                     Codec.BOOL.optionalFieldOf("change_ambient").forGetter(ThunderAnimationEvent::changeAmbient)
             ).apply(instance, ThunderAnimationEvent::new)
     );
+
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();

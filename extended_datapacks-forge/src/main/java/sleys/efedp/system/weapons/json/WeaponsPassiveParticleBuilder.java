@@ -20,14 +20,9 @@ import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.util.io.GsonUtilities;
 import yesman.epicfight.world.capabilities.item.Style;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WeaponsPassiveParticleBuilder extends SimplePreparableReloadListener<Map<ResourceLocation, JsonElement>> {
     private static final Map<ResourceLocation, Map<Style, List<PassiveParticleEntry>>> PASSIVE_PARTICLE_MAP = new HashMap<>();
@@ -97,6 +92,7 @@ public class WeaponsPassiveParticleBuilder extends SimplePreparableReloadListene
         );
     }
 
+    @SuppressWarnings("deprecation")
     private static void parseItemFile(ResourceLocation source, JsonElement json) {
         if (!json.isJsonObject()) {
             ExtendedDatapacks.LOGGER.warn(
@@ -209,6 +205,7 @@ public class WeaponsPassiveParticleBuilder extends SimplePreparableReloadListene
 
     public record PassiveParticleEntry(String passiveParticle, float passiveAmount, Vec3 passiveSpeed) {
 
+        @SuppressWarnings("deprecation")
         public @Nullable SimpleParticleType getPassiveParticle() {
             ResourceLocation id = ResourceLocation.tryParse(passiveParticle);
 

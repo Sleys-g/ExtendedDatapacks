@@ -32,11 +32,11 @@ public class WSequentialInnateSkill extends WeaponInnateSkill {
     private static final String COMBO_COUNT = "sequential_innate.skill.combo";
             
     private final List<AnimationSkillValues> animationSkillValues;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
     public static WSequentialInnateSkill.Builder createSequentialBuilder() {
-        return new Builder(WSequentialInnateSkill::new)
+        return new WSequentialInnateSkill.Builder(WSequentialInnateSkill::new)
                 .setCategory(SkillCategories.WEAPON_INNATE)
                 .setResource(Resource.WEAPON_CHARGE);
     }

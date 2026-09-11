@@ -11,6 +11,9 @@ import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.builder.HoldableInnateSkillBuilder;
 import sleys.efedp.system.innates.json.definitions.HoldableInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -26,11 +29,11 @@ public class HoldableInnateSkillsRegistry {
     public static void initialize(IEventBus modBus) {
         if (initialized) return;
         initialized = true;
-        ExtendedDatapacks.LOGGER.info("[Charged Innate Skill Registry] Registering JSON skills");
+        ExtendedDatapacks.LOGGER.info("[Holdable Innate Skill Registry] Registering JSON skills");
 
         var data = HoldableInnateSkillBuilder.getHoldableInnateSkillBuildData();
         if (data.isEmpty()) {
-            ExtendedDatapacks.LOGGER.info("[Charged Innate Skill Registry] No JSON skills found");
+            ExtendedDatapacks.LOGGER.info("[Holdable Innate Skill Registry] No JSON skills found");
             return;
         }
 
@@ -70,39 +73,50 @@ public class HoldableInnateSkillsRegistry {
             return;
         }
 
-        registry.register(name, key -> buildSkill(
-                registry, modId, name, animationId,
-                chargedAnimationId, skillData, key
+        registry.register(name, key -> buildSkillSafely(
+                registry, modId, name, animationId, chargedAnimationId, skillData, key
         ));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry, String modId, String name,
-                                    ResourceLocation animationId, ResourceLocation chargeAnimationId,
-                                    HoldableInnateSkillDefinition skillData, ResourceLocation key) {
-        try {
-            var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
-                    modId, name, animationId, RUNTIME_ERRORS
-            );
-            var chargeAnimationKey = AnimationBuilderHelper.resolveChargingAnimation(
-                    modId, name, chargeAnimationId, RUNTIME_ERRORS
-            );
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry, String modId, String name,
+                                          ResourceLocation animationId, ResourceLocation chargeAnimationId,
+                                          HoldableInnateSkillDefinition skillData, ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Holdable Innate Skill Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(modId, name, animationId, chargeAnimationId, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Holdable Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Holdable Innate Skill Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, animationId, RUNTIME_ERRORS, exception
+                        )
+                );
+    }
 
-            if (attackAnimationKey == null) return Skill.EMPTY;
-            if (chargeAnimationKey == null) return Skill.EMPTY;
+    private static Skill buildSkill(String modId, String name, ResourceLocation animationId,
+                                    ResourceLocation chargeAnimationId, HoldableInnateSkillDefinition skillData, ResourceLocation key) {
+        var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
+                modId, name, animationId, RUNTIME_ERRORS
+        );
+        var chargeAnimationKey = AnimationBuilderHelper.resolveChargingAnimation(
+                modId, name, chargeAnimationId, RUNTIME_ERRORS
+        );
 
-            var builder = skillData.createBuilder(modId, attackAnimationKey, chargeAnimationKey);
-            skillData.applyProperties(builder);
+        if (attackAnimationKey == null) return Skill.EMPTY;
+        if (chargeAnimationKey == null) return Skill.EMPTY;
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Charged Innate Skill Registry] Registration process completed for Skill: {} signed under modID: {} for animation: {}",
-                    name, modId, attackAnimationKey
-            );
+        var builder = skillData.createBuilder(modId, attackAnimationKey, chargeAnimationKey);
+        skillData.applyProperties(builder);
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Charged Innate Skill Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, animationId, RUNTIME_ERRORS, e);
-        }
+        return builder.build(key);
     }
 
     @SubscribeEvent

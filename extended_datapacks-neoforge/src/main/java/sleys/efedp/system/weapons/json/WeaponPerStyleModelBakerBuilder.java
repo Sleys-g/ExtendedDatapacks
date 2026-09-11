@@ -114,7 +114,6 @@ public class WeaponPerStyleModelBakerBuilder {
             return;
         }
 
-
         WeaponModelPerStyle models = ExecutionTasks.getAndFallback(
                 ExecutionPolicy.RESIST,
                 () -> parseModelsConfig(trailObj),

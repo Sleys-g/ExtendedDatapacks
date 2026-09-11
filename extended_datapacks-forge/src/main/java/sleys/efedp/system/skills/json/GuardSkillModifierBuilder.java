@@ -20,12 +20,13 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import java.util.*;
+
 public class GuardSkillModifierBuilder {
-    private static final Map<String, List<RawGuardBuilderData>> SKILL_GUARD_BUILD_DATA = new ConcurrentHashMap<>();
+    private static final Map<String, List<GuardSkillModifierBuilder.RawGuardBuilderData>> SKILL_GUARD_BUILD_DATA = new ConcurrentHashMap<>();
     private static final String SL_FOLDER_KEY = "skill_builder/guard_skills";
 
     public static void startToTracking(Path configDir) {
@@ -48,6 +49,7 @@ public class GuardSkillModifierBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -60,7 +62,6 @@ public class GuardSkillModifierBuilder {
                         ))
                 )
         ;
-
         return configDir;
     }
 
@@ -124,7 +125,7 @@ public class GuardSkillModifierBuilder {
         }
     }
 
-    private static RawGuardBuilderData startToParse(JsonObject json, String fileName) {
+    private static GuardSkillModifierBuilder.RawGuardBuilderData startToParse(JsonObject json, String fileName) {
         if (!json.has("skill_guard_id") || !json.has("category")) {
             ExtendedDatapacks.LOGGER.warn("[Add Guard to Build] Missing 'skill_guard_id' or category in: {}", fileName);
             return null;
@@ -164,7 +165,7 @@ public class GuardSkillModifierBuilder {
             guardAdvancedMotionData = parseMotionData(json.get("guard_advanced_motion"), fileName, "guard_advanced_motion");
         }
 
-        return new RawGuardBuilderData(
+        return new GuardSkillModifierBuilder.RawGuardBuilderData(
                 skillId,
                 category,
                 guardMotionData,
@@ -309,7 +310,7 @@ public class GuardSkillModifierBuilder {
     }
 
     @Nullable
-    public static List<RawGuardBuilderData> get(String skillId) {
+    public static List<GuardSkillModifierBuilder.RawGuardBuilderData> get(String skillId) {
         return SKILL_GUARD_BUILD_DATA.get(skillId);
     }
 

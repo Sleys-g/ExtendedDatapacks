@@ -255,8 +255,7 @@ public class OverlayPacketCoroutine extends CoroutineTask implements IEventListe
         }
     }
 
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent @OnlyIn(Dist.CLIENT)
     public void onRenderHud(RenderGuiEvent.Pre event) {
         if (currentPhase == OverlayPhase.OFF || currentAlphaMultiplier <= 0f || currentEffect == null) {
             return;

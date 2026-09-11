@@ -3,6 +3,7 @@ package sleys.efedp.system.animations;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import sleys.efedp.system.animations.json.accessor.IAnimationAccessor;
+import sleys.efedp.system.animations.json.config.ConfigAnimationsErrorPool;
 import sleys.efedp.system.animations.json.config.IConfigAnimation;
 import sleys.efedp.system.animations.json.definitions.AnimationsConfigBuilder;
 import sleys.efedp.system.animations.json.definitions.AnimationsRegistryBuilder;
@@ -12,16 +13,23 @@ import sleys.efedp.system.animations.json.definitions.registry.AnimationRegistry
 import sleys.efedp.system.animations.json.definitions.virtualization.AnimationVirtualDefinition;
 import sleys.efedp.system.animations.json.properties.IAnimationProperty;
 import sleys.efedp.system.animations.json.virtual.IVirtualAnimation;
+import sleys.efedp.system.animations.json.virtual.VirtualConfigAnimationErrorPool;
+import sleys.sl.library.exceptions.RegistryObjectModificationException;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 public class AnimationRegistryOperations {
 
     @SubscribeEvent
     public static void onRegistryAnimations(AnimationManager.AnimationRegistryEvent event) {
-        AnimationsRegistryBuilder.getAnimationDefinitionsData().forEach((modId, definitionList) ->
+        AnimationsRegistryBuilder
+                .getAnimationDefinitionsData()
+                .forEach((modId, definitionList) ->
                 event.newBuilder(modId, animationBuilder ->
                         definitionList.forEach(def -> registerDef(animationBuilder, def))
                 )
@@ -33,23 +41,37 @@ public class AnimationRegistryOperations {
         AnimationsVirtualBuilder
                 .getAnimationVirtualizationData()
                 .forEach((modId, virtualizationList) ->
-                        virtualizationList.forEach(AnimationRegistryOperations::virtualizationDef)
-                );
+                virtualizationList.forEach(AnimationRegistryOperations::virtualizationDef)
+       );
     }
 
     @SubscribeEvent
     public static void onModifierAnimations(FMLLoadCompleteEvent event) {
+        /// Config
         AnimationsConfigBuilder
                 .getAnimationConfigData()
                 .forEach((modId, configList) ->
-                        configList.forEach(AnimationRegistryOperations::configDef)
-                );
+                configList.forEach(AnimationRegistryOperations::configDef)
+        );
 
+        /// Config Virtual
         AnimationsVirtualBuilder
                 .getAnimationVirtualizationData()
                 .forEach((modId, virtualizationList) ->
-                        virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
-                );
+                virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
+        );
+
+        onModifierAnimationsError();
+    }
+
+    private static void onModifierAnimationsError() {
+        var errors = Stream.of(ConfigAnimationsErrorPool.getConfigError(), VirtualConfigAnimationErrorPool.getVirtualConfigError())
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (!errors.isEmpty()) {
+            throw new RegistryObjectModificationException("\n\n" + String.join("\n\n", errors));
+        }
     }
 
     private static <T extends DynamicAnimation> void registerDef(AnimationManager.AnimationBuilder builder,

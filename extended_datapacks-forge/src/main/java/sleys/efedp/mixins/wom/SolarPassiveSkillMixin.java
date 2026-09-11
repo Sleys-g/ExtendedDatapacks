@@ -8,6 +8,7 @@ import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponpassive.SolarPassiveSkill;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
 import sleys.efedp.system.thirdparty.wom.json.WoMSkillAccessorBuilder;
+import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.skill.SkillContainer;
@@ -34,29 +35,28 @@ public class SolarPassiveSkillMixin {
         );
     }
 
-    @Unique
+    @Unique @ErrorHandled /// Fix NPE on Level
     private Object extended_datapacks$listenSkillDataKeys(SkillDataManager manager, SkillDataKey<?> key, SkillContainer container) {
-        if (key.equals(WOMSkillDataKeys.SOLAR_OBSCURIDAD.get())) {
-            if (!container.getExecutor().isLogicalClient()) return manager.getDataValue(key);
-            var originalValue = manager.getDataValue(key);
-            if (container.getExecutor() != null) {
-                var entityPatch = container.getExecutor();
-                var player = entityPatch.getOriginal();
-                if (player != null) {
-                    var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "solar");
-                    var actualItem = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+        if (!key.equals(WOMSkillDataKeys.SOLAR_OBSCURIDAD.get())) return manager.getDataValue(key);
 
-                    if (targetItem != null && actualItem != targetItem) {
-                        boolean allowSolarParticles = WoMSkillAccessorBuilder.getSafeEntryAsSolarPassive(InteractionHand.MAIN_HAND, player)
-                                .map(WoMSkillAccessorBuilder.SolarPassiveHelper::allowSolarParticles)
-                                .orElse(false);
+        var originalValue = manager.getDataValue(key);
+        var entityPatch = container.getExecutor();
+        if (entityPatch == null) return originalValue;
+        if (!entityPatch.isLogicalClient()) return manager.getDataValue(key);
 
-                        return allowSolarParticles ? originalValue : Boolean.FALSE;
-                    }
-                }
-            }
-            return originalValue;
-        }
-        return manager.getDataValue(key);
+        var player = entityPatch.getOriginal();
+        if (player == null) return originalValue;
+
+        var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "solar");
+        var actualItem = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+
+        if (targetItem == null || actualItem == targetItem) return originalValue;
+
+        boolean allowSolarParticles = WoMSkillAccessorBuilder
+                .getSafeEntryAsSolarPassive(InteractionHand.MAIN_HAND, player)
+                .map(WoMSkillAccessorBuilder.SolarPassiveHelper::allowSolarParticles)
+                .orElse(false);
+
+        return allowSolarParticles ? originalValue : Boolean.FALSE;
     }
 }

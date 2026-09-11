@@ -1,6 +1,7 @@
 package sleys.efedp.system.animations.json.properties.phase;
 
 import com.mojang.serialization.Codec;
+import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.model.Armature;
@@ -35,6 +36,6 @@ public enum ArmatureType {
         return Arrays.stream(values())
                 .filter(a -> a.accessor == accessor)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new RegistryObjectException("[Armature Type] No ArmatureType found for accessor: " + accessor));
     }
 }

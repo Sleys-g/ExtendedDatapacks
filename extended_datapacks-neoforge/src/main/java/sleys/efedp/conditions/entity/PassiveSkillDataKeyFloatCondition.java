@@ -107,7 +107,7 @@ public class PassiveSkillDataKeyFloatCondition extends EntityPatchCondition {
         return tag;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT) @SuppressWarnings("deprecation")
     public List<ParameterEditor> getAcceptingParameters(Screen screen) {
         AbstractWidget popupBox = new PopupBox.RegistryPopupBox<>(
                 screen,

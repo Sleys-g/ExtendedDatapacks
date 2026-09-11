@@ -55,7 +55,8 @@ public class ItemOverridesMixinClient {
         }
     }
 
-    @Unique @SuppressWarnings("all")
+    @SuppressWarnings("ConstantValue")
+    @Unique
     private static BakedModel extended_datapacks$getModelStyleSocket(WeaponPerStyleModelBakerBuilder.WeaponModelPerStyle config,
                                                                      PlayerPatch<?> playerPatch, ItemStack stack) {
         final boolean isMainHanded = playerPatch.getOriginal()

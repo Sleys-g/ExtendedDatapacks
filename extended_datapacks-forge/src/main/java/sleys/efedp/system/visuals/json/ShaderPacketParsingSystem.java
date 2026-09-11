@@ -9,6 +9,7 @@ import sleys.sl.shaders.data.*;
 import java.util.Locale;
 
 public class ShaderPacketParsingSystem {
+    @SuppressWarnings("UnnecessaryDefault")
     public static IShaderParameters tryToGetSealedShaderPacket(JsonObject object, String value) {
         return switch ((ShaderEffectList.valueOf(value.toUpperCase(Locale.ROOT)))) {
             /// Shader I

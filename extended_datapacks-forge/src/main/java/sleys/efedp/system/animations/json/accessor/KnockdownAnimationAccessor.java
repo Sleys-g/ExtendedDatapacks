@@ -39,6 +39,7 @@ public record KnockdownAnimationAccessor(float transitionTime, String animationP
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

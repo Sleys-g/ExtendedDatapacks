@@ -14,6 +14,9 @@ import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
 import sleys.efedp.system.innates.json.builder.wrapper.combo.WPerComboInnateSkill;
 import sleys.efedp.system.innates.json.definitions.PerComboInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
@@ -56,64 +59,79 @@ public class PerComboInnateSkillsRegistry {
     private static void registerSkill(DeferredRegister<Skill> registry, String modId, PerComboInnateSkillDefinition skillData) {
         var name = skillData.name();
         var skillBuilder = skillData.createBuilder();
-        registry.register(name, key -> buildSkill(registry, skillBuilder, modId, name, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, skillBuilder, modId, name, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry,
-                                    WPerComboInnateSkill.Builder builder,
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry,
+                                          WPerComboInnateSkill.Builder builder,
+                                          String modId, String name,
+                                          PerComboInnateSkillDefinition skillData,
+                                          ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Per Combo Innate Skill Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(builder, modId, name, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Per Combo Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Per Combo Innate Skill Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, skillData.perComboAnimationData(), RUNTIME_ERRORS, exception
+                        )
+                );
+    }
+
+    private static Skill buildSkill(WPerComboInnateSkill.Builder builder,
                                     String modId, String name,
                                     PerComboInnateSkillDefinition skillData,
                                     ResourceLocation key) {
-        try {
-            var animationDataList = skillData.perComboAnimationData();
-            for (int i = 0; i < animationDataList.size(); i++) {
-                var animationData = animationDataList.get(i);
-                var targetAnimation = animationData.targetAnimation();
-                var animation = animationData.animation();
-                var properties = animationData.properties();
 
-                var animationId = ResourceLocation.tryParse(animation);
-                if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                            name, modId, animation, null)
-                    );
+        var animationDataList = skillData.perComboAnimationData();
+        for (int i = 0; i < animationDataList.size(); i++) {
+            var animationData = animationDataList.get(i);
+            var targetAnimation = animationData.targetAnimation();
+            var animation = animationData.animation();
+            var properties = animationData.properties();
 
-                    return Skill.EMPTY;
-                }
+            var animationId = ResourceLocation.tryParse(animation);
+            if (animationId == null) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
+                        name, modId, animation, null)
+                );
 
-                var targetAnimationId = ResourceLocation.tryParse(targetAnimation);
-                if (targetAnimationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                            name, modId, targetAnimation, null)
-                    );
-
-                    return Skill.EMPTY;
-                }
-
-                var postfix = FriendlyCountConverter.as(i);
-                var attackAnimationKey = postfix != null ?
-                        AnimationBuilderHelper.resolveAnimation(modId, name, postfix, animationId, RUNTIME_ERRORS) :
-                        AnimationBuilderHelper.resolveAnimation(modId, name, animationId, RUNTIME_ERRORS);
-
-                if (attackAnimationKey == null) return Skill.EMPTY;
-
-                var animationProperties = skillData.saveProperties(properties);
-                var animationSkillValues = new AnimationSkillValues(attackAnimationKey, animationProperties);
-                builder.putPerComboAnimationData(AnimationManager.byKey(targetAnimationId), animationSkillValues);
+                return Skill.EMPTY;
             }
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Per Combo Innate Skill Registry] Registered Skill: {} under modID: {}",
-                    name, modId
-            );
+            var targetAnimationId = ResourceLocation.tryParse(targetAnimation);
+            if (targetAnimationId == null) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
+                        name, modId, targetAnimation, null)
+                );
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Per Combo Innate Skill Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.perComboAnimationData(), RUNTIME_ERRORS, e);
+                return Skill.EMPTY;
+            }
+
+            var postfix = FriendlyCountConverter.as(i);
+            var attackAnimationKey = postfix != null ?
+                    AnimationBuilderHelper.resolveAnimation(modId, name, postfix, animationId, RUNTIME_ERRORS) :
+                    AnimationBuilderHelper.resolveAnimation(modId, name, animationId, RUNTIME_ERRORS);
+
+            if (attackAnimationKey == null) return Skill.EMPTY;
+
+            var animationProperties = skillData.saveProperties(properties);
+            var animationSkillValues = new AnimationSkillValues(attackAnimationKey, animationProperties);
+            builder.putPerComboAnimationData(AnimationManager.byKey(targetAnimationId), animationSkillValues);
         }
+
+        return builder.build(key);
     }
 
 

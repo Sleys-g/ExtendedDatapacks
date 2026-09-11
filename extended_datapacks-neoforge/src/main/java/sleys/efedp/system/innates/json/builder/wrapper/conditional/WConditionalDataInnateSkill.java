@@ -28,9 +28,9 @@ import java.util.*;
 import java.util.function.Function;
 
 public class WConditionalDataInnateSkill extends WeaponInnateSkill {
-    protected Map<AnimationSkillValues, ConditionalDataSkillValues> dataPacketSkillValues;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected boolean disableTooltipProperties;
+    protected final Map<AnimationSkillValues, ConditionalDataSkillValues> dataPacketSkillValues;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final boolean disableTooltipProperties;
 
     public static WConditionalDataInnateSkill.Builder createConditionalBuilder(
             Function<WConditionalDataInnateSkill.Builder, ? extends WConditionalDataInnateSkill> constructor) {

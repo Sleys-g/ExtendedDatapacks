@@ -11,6 +11,7 @@ import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
 import sleys.efedp.capability.ExtendedDatapacksUtilities;
 import sleys.efedp.system.thirdparty.wom.json.WoMSkillAccessorBuilder;
+import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.skill.SkillContainer;
@@ -26,24 +27,28 @@ public class DemonMarkPassiveSkillMixin {
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"
             )
-    ) @SuppressWarnings("removal")
+    )
     private Item redirectItemCheck(ItemStack stack, SkillContainer container) {
-        try {
-            Item originalItem = stack.getItem();
-            if (originalItem == ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus")) {
-                return originalItem;
-            }
+        return ExecutionTasks.getRaw(
+                ExecutionPolicy.RESIST,
+                () -> this.extended_datapacks$searchParity(stack, container)
+        ).fold(item -> item, exception -> stack.getItem());
+    }
 
-            var executor = container.getExecutor();
-            var capability = executor.getHoldingItemCapability(InteractionHand.MAIN_HAND);
-            if (capability != null && capability.getPassiveSkill() == WOMSkills.DEMON_MARK_PASSIVE) {
-                return ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
-            }
-
+    @Unique @ErrorHandled @SuppressWarnings("removal")
+    private Item extended_datapacks$searchParity(ItemStack stack, SkillContainer container) {
+        Item originalItem = stack.getItem();
+        if (originalItem == ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus")) {
             return originalItem;
-        } catch (Exception ignored) {
-            return stack.getItem();
         }
+
+        var executor = container.getExecutor();
+        var capability = executor.getHoldingItemCapability(InteractionHand.MAIN_HAND);
+        if (capability != null && capability.getPassiveSkill() == WOMSkills.DEMON_MARK_PASSIVE) {
+            return ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+        }
+
+        return originalItem;
     }
 
     @ModifyConstant(
@@ -52,30 +57,33 @@ public class DemonMarkPassiveSkillMixin {
             remap = false
     )
     private int modifyParticleCount(int original, SkillContainer container) {
-        try {
-            if (container != null && container.getExecutor() != null) {
-                var entityPatch = container.getExecutor();
-                var player = entityPatch.getOriginal();
-                if (player != null) {
-                    var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
-                    var actualItem = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+        return ExecutionTasks.getRaw(
+                ExecutionPolicy.RESIST,
+                () -> this.extended_datapacks$searchParticleParity(original, container)
+        ).fold(
+                item -> item,
+                exception -> original
+        );
+    }
 
-                    if (targetItem != null && actualItem != targetItem) {
-                        boolean isAllowDemonParticles = WoMSkillAccessorBuilder.getSafeEntryAsDemonMark(InteractionHand.MAIN_HAND, player)
-                                .map(WoMSkillAccessorBuilder.DemonMarkPassiveHelper::allowAntitheusParticles)
-                                .orElse(false);
+    @Unique @ErrorHandled
+    private int extended_datapacks$searchParticleParity(int original, SkillContainer container) {
+        if (container == null || container.getExecutor() == null) return original;
+        var entityPatch = container.getExecutor();
 
-                        if (isAllowDemonParticles) {
-                            return original;
-                        }
-                        return 0;
-                    }
-                }
-            }
-            return original;
-        } catch (Exception ignored) {
-            return original;
-        }
+        var player = entityPatch.getOriginal();
+        if (player == null) return original;
+
+        var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+        var actualItem = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+
+        if (targetItem == null || actualItem == targetItem) return original;
+        boolean isAllowDemonParticles = WoMSkillAccessorBuilder
+                .getSafeEntryAsDemonMark(InteractionHand.MAIN_HAND, player)
+                .map(WoMSkillAccessorBuilder.DemonMarkPassiveHelper::allowAntitheusParticles)
+                .orElse(false);
+
+        return isAllowDemonParticles ? original : 0;
     }
 
     @Redirect(
@@ -94,28 +102,27 @@ public class DemonMarkPassiveSkillMixin {
         );
     }
 
-    @Unique
+    @Unique @ErrorHandled
     private Object extended_datapacks$listenSkillDataKeys(SkillDataManager manager, SkillDataKey<?> key, SkillContainer container) {
-        if (key.equals(WOMSkillDataKeys.BASIC_ATTACK.get())) {
-            var originalValue = manager.getDataValue(key);
-            if (container.getExecutor() != null) {
-                var entityPatch = container.getExecutor();
-                var player = entityPatch.getOriginal();
-                if (player != null) {
-                    var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
-                    var actualItem = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+        if (!key.equals(WOMSkillDataKeys.BASIC_ATTACK.get())) return manager.getDataValue(key);
+        var originalValue = manager.getDataValue(key);
 
-                    if (targetItem != null && actualItem != targetItem) {
-                        boolean allowBasicParticles = WoMSkillAccessorBuilder.getSafeEntryAsDemonMark(InteractionHand.MAIN_HAND, player)
-                                .map(WoMSkillAccessorBuilder.DemonMarkPassiveHelper::allowBasicAntitheusParticles)
-                                .orElse(false);
+        if (container.getExecutor() == null) return originalValue;
+        var entityPatch = container.getExecutor();
 
-                        return allowBasicParticles ? originalValue : Boolean.FALSE;
-                    }
-                }
-            }
-            return originalValue;
-        }
-        return manager.getDataValue(key);
+        var player = entityPatch.getOriginal();
+        if (player == null) return originalValue;
+
+        var targetItem = ExtendedDatapacksUtilities.getSafeItem("wom", "antitheus");
+        var actualItem = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+
+        if (targetItem == null || actualItem == targetItem) return originalValue;
+
+        boolean allowBasicParticles = WoMSkillAccessorBuilder
+                .getSafeEntryAsDemonMark(InteractionHand.MAIN_HAND, player)
+                .map(WoMSkillAccessorBuilder.DemonMarkPassiveHelper::allowBasicAntitheusParticles)
+                .orElse(false);
+
+        return allowBasicParticles ? originalValue : Boolean.FALSE;
     }
 }

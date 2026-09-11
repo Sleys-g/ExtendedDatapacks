@@ -2,6 +2,7 @@ package sleys.efedp.system.weapons;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
+import sleys.efedp.ExtendedDatapacks;
 import sleys.efedp.system.weapons.json.WeaponItemsPropertiesBuilder;
 import sleys.sl.epicfight.util.helper.animation.AnimationHelper;
 import sleys.sl.library.execution.task.CoroutineTask;
@@ -13,7 +14,9 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 
 public class WeaponItemsPropertiesCoroutine extends CoroutineTask {
 
-    public WeaponItemsPropertiesCoroutine() {}
+    public WeaponItemsPropertiesCoroutine() {
+        ExtendedDatapacks.LOGGER.info("[Weapons Item Properties - Coroutine Runner] Cleaning & Rebooting Item Properties Coroutine!");
+    }
 
     public enum UsingState {
         IDLE, USE

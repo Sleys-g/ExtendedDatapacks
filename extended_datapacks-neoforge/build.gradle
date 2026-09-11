@@ -112,6 +112,9 @@ repositories {
 dependencies {
     compileOnly "curse.maven:epic-fight-mod-405076:8175609"
     runtimeOnly "curse.maven:epic-fight-mod-405076:8175609"
+
+    compileOnly "curse.maven:weapons-of-miracles-epicfight-918614:8829395"
+    runtimeOnly "curse.maven:weapons-of-miracles-epicfight-918614:8829395"
 }
 
 

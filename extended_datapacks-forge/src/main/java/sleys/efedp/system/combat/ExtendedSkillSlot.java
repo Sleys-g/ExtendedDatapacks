@@ -3,13 +3,15 @@ package sleys.efedp.system.combat;
 import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 
+@SuppressWarnings("SameParameterValue")
 public enum ExtendedSkillSlot implements SkillSlot {
-    CHARGED_ATTACK();
+    CHARGED_ATTACK(ExtendedSkillCategory.CHARGED_ATTACK);
+
     final SkillCategory category;
     final int id;
 
-    ExtendedSkillSlot() {
-        this.category = ExtendedSkillCategory.CHARGED_ATTACK;
+    ExtendedSkillSlot(SkillCategory category) {
+        this.category = category;
         this.id = SkillSlot.ENUM_MANAGER.assign(this);
     }
 
@@ -21,4 +23,3 @@ public enum ExtendedSkillSlot implements SkillSlot {
         return this.id;
     }
 }
-

@@ -16,7 +16,7 @@ public record AnimationVirtualDefinitionCodec<T extends StaticAnimation>(
         MapCodec<? extends IVirtualAnimation<T>> virtualCodec,
         MapCodec<? extends IAnimationProperty<T>> propertyCodec) {
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unchecked", "RedundantCast"})
     public MapCodec<AnimationVirtualDefinition<T>> combined() {
         MapCodec<IVirtualAnimation<T>> castedVirtual = (MapCodec<IVirtualAnimation<T>>) (MapCodec<?>) virtualCodec;
         MapCodec<IAnimationProperty<T>> castedProperty = (MapCodec<IAnimationProperty<T>>) (MapCodec<?>) propertyCodec;

@@ -15,13 +15,8 @@ import java.util.Map;
 
 public class ModifyGuardsApplier {
 
-    /**
-     * @author Sleys
-     * @param event Evento de Registro y Trabajo de la API Epic Fight, Para cualquier GuardSkill
-     * @apiNote Permite añadir cualquier categoria a una Guard Skills, se intuye que el usuario suministrara los datos
-     * via JSON
-     */
-    @SuppressWarnings("all")
+    
+    @SuppressWarnings("ConstantValue")
     public static void addAnyParameterToGuards(ResourceLocation skillRegistry, SkillBuilder<?> skillBuilder) {
         if (skillRegistry == null || skillBuilder == null) return;
         if (!(skillBuilder instanceof GuardSkill.Builder guardBuilder)) return;

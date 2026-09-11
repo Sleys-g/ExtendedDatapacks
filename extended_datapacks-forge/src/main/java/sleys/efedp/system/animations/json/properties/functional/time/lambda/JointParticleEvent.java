@@ -34,13 +34,13 @@ public record JointParticleEvent(ResourceLocation particle, Vec3 volume,
             ).apply(instance, JointParticleEvent::new)
     );
 
-    @Override
+    @Override @SuppressWarnings("deprecation")
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         ParticleType<?> particleType = BuiltInRegistries.PARTICLE_TYPE.get(particle);
+        if (this.isInvalid(patch.getOriginal().level(), AnimationEvent.Side.CLIENT, "Joint Particle Event")) return;
+
         if (!(particleType instanceof SimpleParticleType simpleParticle)) return;
         LivingEntity livingEntity = patch.getOriginal();
-
-        if (this.isInvalid(livingEntity.level(), AnimationEvent.Side.CLIENT,"Joint Particle Event")) return;
         JointModelParticleEngine.generateParticles(
                 livingEntity, joint,
                 offSets, step,

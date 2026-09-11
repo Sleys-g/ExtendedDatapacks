@@ -20,14 +20,13 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener;
 
 import java.util.UUID;
 
-@SuppressWarnings("removal")
 @Mixin(DemonicAscensionSkill.class)
 public class DemonicAscensionSkillMixin {
 
     @Unique
     private static final UUID EVENT_UUID = UUID.fromString("52dc318a-10f6-11ed-861d-0242ac120002");
 
-    @Inject(method = "onInitiate", at = @At("TAIL"), remap = false)
+    @Inject(method = "onInitiate", at = @At("TAIL"), remap = false) @SuppressWarnings("removal")
     private void injectCustomLogic(SkillContainer container, CallbackInfo ci) {
         var listener = container.getExecutor().getEventListener();
         listener.addEventListener(

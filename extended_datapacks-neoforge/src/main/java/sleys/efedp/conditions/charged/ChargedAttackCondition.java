@@ -64,7 +64,7 @@ public class ChargedAttackCondition extends Condition.EntityPatchCondition {
         return tag;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT) @SuppressWarnings("deprecation")
     public List<Condition.ParameterEditor> getAcceptingParameters(Screen screen) {
         AbstractWidget popupBox = new PopupBox.RegistryPopupBox<>(
                 screen,

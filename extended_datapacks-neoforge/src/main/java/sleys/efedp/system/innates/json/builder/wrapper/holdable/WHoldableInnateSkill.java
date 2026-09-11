@@ -41,12 +41,12 @@ import java.util.List;
 import java.util.function.Function;
 
 public class WHoldableInnateSkill extends WeaponInnateSkill implements ChargeableSkill, IOnMovementInputEFSkillEvent  {
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimation;
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected ListenerSkillValues listenerValues;
-    protected HoldableSkillValues holdableValues;
-    protected boolean disableTooltipProperties;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimation;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final ListenerSkillValues listenerValues;
+    protected final HoldableSkillValues holdableValues;
+    protected final boolean disableTooltipProperties;
 
     public static WHoldableInnateSkill.Builder createHoldableInnateSkillBuilder(
             Function<WHoldableInnateSkill.Builder, ? extends WHoldableInnateSkill> constructor) {
@@ -201,7 +201,8 @@ public class WHoldableInnateSkill extends WeaponInnateSkill implements Chargeabl
         }
     }
 
-    @Override @SuppressWarnings("all")
+    @SuppressWarnings("DataFlowIssue")
+    @Override
     public void startHolding(SkillContainer container) {
         AssetAccessor<? extends StaticAnimation> currentPlaying = container
                 .getExecutor()

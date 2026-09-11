@@ -1,6 +1,5 @@
 package sleys.efedp.system.combat.charged_attacks;
 
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +39,6 @@ import yesman.epicfight.world.capabilities.item.Style;
 public class ChargedAttack extends ExtendedPassiveSkill implements
         IOnLivingDamageEFSkillEvent, IOnAnimationPhaseEFSkillEvent, IOnAttackSpeedEFSkillEvent {
 
-    private static final String IsAttackAnimation = "lzm_epicfight.charged_attack.key.attack_animation";
     private static final String LastChargedState = "lzm.last_charged_state";
     private static final String PressedTimeKey = "lzm_epicfight.charged_attack.key.time";
     private static final String PressedCastKey = "lzm_epicfight.charged_attack.key.cast";
@@ -223,18 +221,12 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
 
     @ErrorHandled
     private float calculateStaminaCost(PlayerPatch<?> patch) {
-        if (EpicFightEDPConfig.getUseStaminaInChargedAttacks()) {
-            if (EpicFightEDPConfig.getUseWeightInChargedAttacks()) {
-                LivingEntity entity = patch.getOriginal();
-                AttributeInstance weightAttr = entity.getAttribute(EpicFightAttributes.WEIGHT);
-                float weight = weightAttr != null ? (float) weightAttr.getValue() != 0.0F ? (float) weightAttr.getValue() : 1F : 1F;
-                return (CostStamina * (1.0F + weight * 0.05F) / EpicFightEDPConfig.getWeightValueInChargedAttacks()) / 1.5F;
-            } else {
-                return CostStamina;
-            }
-        } else {
-            return 0;
-        }
+        if (!(EpicFightEDPConfig.getUseStaminaInChargedAttacks())) return 0;
+        if (!(EpicFightEDPConfig.getUseWeightInChargedAttacks())) return CostStamina;
+        LivingEntity entity = patch.getOriginal();
+        AttributeInstance weightAttr = entity.getAttribute(EpicFightAttributes.WEIGHT);
+        float weight = weightAttr != null ? (float) weightAttr.getValue() != 0.0F ? (float) weightAttr.getValue() : 1F : 1F;
+        return (CostStamina * (1.0F + weight * 0.05F) / EpicFightEDPConfig.getWeightValueInChargedAttacks()) / 1.5F;
     }
 }
 

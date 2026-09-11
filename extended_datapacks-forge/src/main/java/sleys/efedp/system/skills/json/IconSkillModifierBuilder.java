@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import sleys.efedp.capability.ExtendedDatapacksUtilities;
 import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.capability.ExtendedDatapacksUtilities;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class IconSkillModifierBuilder {
     private static final List<String> ICON_BUILD_DATA = new ArrayList<>();
-    private static final Map<String, RawIconSkillBuilderData> SKILL_ICON_BUILD_DATA = new ConcurrentHashMap<>();
+    private static final Map<String, IconSkillModifierBuilder.RawIconSkillBuilderData> SKILL_ICON_BUILD_DATA = new ConcurrentHashMap<>();
     private static final String SL_FOLDER_KEY = "skill_builder/category_icon";
 
     public static void startToTracking(Path configDir) {
@@ -49,6 +49,7 @@ public class IconSkillModifierBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -103,7 +104,6 @@ public class IconSkillModifierBuilder {
         JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
         ExtendedDatapacks.LOGGER.info("[Add Icon to Build] Reading file: {}", file.getFileName().toString());
         startToProcessIconEntry(root, file.getFileName().toString());
-
         return file;
     }
 
@@ -118,7 +118,7 @@ public class IconSkillModifierBuilder {
 
             if (!element.isJsonObject()) continue;
 
-            RawIconSkillBuilderData data = parseBuilder(element.getAsJsonObject(), fileName);
+            IconSkillModifierBuilder.RawIconSkillBuilderData data = parseBuilder(element.getAsJsonObject(), fileName);
             if (data != null && data.itemID() != null) {
                 ICON_BUILD_DATA.add(data.itemID());
                 SKILL_ICON_BUILD_DATA.put(data.itemID(), data);
@@ -126,7 +126,7 @@ public class IconSkillModifierBuilder {
         }
     }
 
-    private static RawIconSkillBuilderData parseBuilder(JsonObject json, String fileName) {
+    private static IconSkillModifierBuilder.RawIconSkillBuilderData parseBuilder(JsonObject json, String fileName) {
         if (!json.has("item_id") || !json.has("category")) {
             ExtendedDatapacks.LOGGER.warn("[Add Icon to Build] missing 'item_id' or 'category' in {}", fileName);
             return null;
@@ -144,7 +144,7 @@ public class IconSkillModifierBuilder {
             return null;
         }
 
-        return new RawIconSkillBuilderData(itemId, category);
+        return new IconSkillModifierBuilder.RawIconSkillBuilderData(itemId, category);
     }
 
     public static List<String> getItemList() {

@@ -44,12 +44,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class WHoldableConditionalInnateSkill extends WeaponInnateSkill implements ChargeableSkill, IOnMovementInputEFSkillEvent {
-    protected Map<ConditionalType, AnimationSkillValues> conditionMap;
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimation;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected ListenerSkillValues listenerValues;
-    protected HoldableSkillValues holdableValues;
-    protected boolean disableTooltipProperties;
+    protected final Map<ConditionalType, AnimationSkillValues> conditionMap;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimation;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final ListenerSkillValues listenerValues;
+    protected final HoldableSkillValues holdableValues;
+    protected final boolean disableTooltipProperties;
 
     public static WHoldableConditionalInnateSkill.Builder createHoldableConditionalInnateSkillBuilder(
             Function<WHoldableConditionalInnateSkill.Builder, ? extends WHoldableConditionalInnateSkill> constructor) {
@@ -116,7 +116,8 @@ public class WHoldableConditionalInnateSkill extends WeaponInnateSkill implement
         }
     }
 
-    @Override @SuppressWarnings("all")
+    @SuppressWarnings("DataFlowIssue")
+    @Override
     public void startHolding(SkillContainer container) {
         AssetAccessor<? extends StaticAnimation> currentPlaying = container
                 .getExecutor()

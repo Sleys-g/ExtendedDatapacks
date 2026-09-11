@@ -1,9 +1,6 @@
 package sleys.efedp.system.skills.json;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
@@ -47,6 +44,7 @@ public class PassiveSkillModifierBuilder {
         ));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException, UncheckedIOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))
@@ -101,7 +99,6 @@ public class PassiveSkillModifierBuilder {
         JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
         ExtendedDatapacks.LOGGER.info("[Add Skill to Build] Reading file: {}", file.getFileName().toString());
         startToProcessSkillEntry(root, file.getFileName().toString());
-
         return file;
     }
 

@@ -14,6 +14,9 @@ import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalStackInnateSkill;
 import sleys.efedp.system.innates.json.definitions.ConditionalStackInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -55,68 +58,83 @@ public class ConditionalStackInnateSkillsRegistry {
     private static void registerSkill(DeferredRegister<Skill> registry, String modId, ConditionalStackInnateSkillDefinition skillData) {
         var name = skillData.name();
         var skillBuilder = skillData.createBuilder();
-        registry.register(name, key -> buildSkill(registry, skillBuilder, modId, name, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, skillBuilder, modId, name, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry,
-                                    WConditionalStackInnateSkill.Builder builder,
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry,
+                                          WConditionalStackInnateSkill.Builder builder,
+                                          String modId, String name,
+                                          ConditionalStackInnateSkillDefinition skillData,
+                                          ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Conditional Stack Innate Skill Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(builder, modId, name, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Conditional Stack Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Conditional Stack Innate Skill Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, exception
+                        )
+                );
+    }
+
+    private static Skill buildSkill(WConditionalStackInnateSkill.Builder builder,
                                     String modId, String name,
                                     ConditionalStackInnateSkillDefinition skillData,
                                     ResourceLocation key) {
 
         boolean hasNormalCondition = false;
-        try {
-            for (var conditionEntry : skillData.conditionalAnimationData().entrySet()) {
-                var conditionalTypes = conditionEntry.getKey();
-                var conditionalAnimationData = conditionEntry.getValue();
-                var animation = conditionalAnimationData.animation();
+
+        for (var conditionEntry : skillData.conditionalAnimationData().entrySet()) {
+            var conditionalTypes = conditionEntry.getKey();
+            var conditionalAnimationData = conditionEntry.getValue();
+            var animation = conditionalAnimationData.animation();
 
 
-                var animationId = ResourceLocation.tryParse(animation);
-                if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                            name, modId, animation, null)
-                    );
-
-                    return Skill.EMPTY;
-                }
-
-                var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
-                        modId, name, conditionalTypes, animationId, RUNTIME_ERRORS
+            var animationId = ResourceLocation.tryParse(animation);
+            if (animationId == null) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
+                        name, modId, animation, null)
                 );
-                if (attackAnimationKey == null) return Skill.EMPTY;
 
-
-                if (conditionalTypes == ConditionalType.NORMAL) hasNormalCondition = true;
-
-                var conditionalProperties = skillData.saveProperties(conditionalAnimationData.properties());
-                var conditionalValues = new AnimationSkillValues(attackAnimationKey, conditionalProperties);
-                builder.putConditionData(conditionalTypes, conditionalValues);
-                builder.putStackData(conditionalTypes, conditionalAnimationData.stack());
-            }
-
-            if (!hasNormalCondition) {
-                RUNTIME_ERRORS.add(
-                        RegistryErrorHelper.getError(
-                                RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
-                                name, modId, null,
-                                "Missing NORMAL predicate."
-                        )
-                );
                 return Skill.EMPTY;
             }
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Conditional Stack Innate Skill Registry] Registered Skill: {} under modID: {}",
-                    name, modId
+            var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
+                    modId, name, conditionalTypes, animationId, RUNTIME_ERRORS
             );
+            if (attackAnimationKey == null) return Skill.EMPTY;
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Conditional Stack Innate Skill Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.conditionalAnimationData(), RUNTIME_ERRORS, e);
+
+            if (conditionalTypes == ConditionalType.NORMAL) hasNormalCondition = true;
+
+            var conditionalProperties = skillData.saveProperties(conditionalAnimationData.properties());
+            var conditionalValues = new AnimationSkillValues(attackAnimationKey, conditionalProperties);
+            builder.putConditionData(conditionalTypes, conditionalValues);
+            builder.putStackData(conditionalTypes, conditionalAnimationData.stack());
         }
+
+        if (!hasNormalCondition) {
+            RUNTIME_ERRORS.add(
+                    RegistryErrorHelper.getError(
+                            RegistryErrorHelper.ErrorsType.REGISTRY_BUILDER,
+                            name, modId, null,
+                            "Missing NORMAL predicate."
+                    )
+            );
+            return Skill.EMPTY;
+        }
+
+        return builder.build(key);
     }
 
     @SubscribeEvent

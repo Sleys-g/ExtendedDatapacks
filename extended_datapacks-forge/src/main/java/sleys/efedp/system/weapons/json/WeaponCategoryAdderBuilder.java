@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import sleys.efedp.ExtendedDatapacks;
 import sleys.sl.datadriven.api.SLDataDrivenAPI;
+
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
@@ -65,7 +66,7 @@ public class WeaponCategoryAdderBuilder {
         );
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("resource")
     private static void startToLoadFromConfig(Path configDir) throws IOException {
         Files.list(configDir).filter(p -> p.toString().endsWith(".json"))
                 .forEach(p ->

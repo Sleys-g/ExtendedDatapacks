@@ -23,6 +23,7 @@ public record ColliderArray(Optional<Integer> arrayLength,
         );
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static MultiOBBCollider getMultiOBBCollider(Optional<ColliderArray> optionalKey) {
         if (optionalKey.isEmpty()) return null;
         var key = optionalKey.get();
@@ -36,6 +37,7 @@ public record ColliderArray(Optional<Integer> arrayLength,
         return new MultiOBBCollider(arrayLength, vertex.x, vertex.y, vertex.z, center.x, center.y, center.z);
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static OBBCollider getOBBCollider(Optional<ColliderArray> optionalKey) {
         if (optionalKey.isEmpty()) return null;
         var key = optionalKey.get();

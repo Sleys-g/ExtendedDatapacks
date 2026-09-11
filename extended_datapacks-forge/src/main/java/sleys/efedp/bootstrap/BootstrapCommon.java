@@ -38,6 +38,12 @@ public class BootstrapCommon {
         modBus.register(ConditionalInnateSkillsRegistry.class);
         modBus.register(ConditionalStackInnateSkillsRegistry.class);
 
+        modBus.register(ConditionalDataInnateSkillsRegistry.class);
+        modBus.register(SequentialInnateSkillsRegistry.class);
+        modBus.register(PerComboInnateSkillsRegistry.class);
+        modBus.register(ComboInnateSkillsRegistry.class);
+        modBus.register(HoldableConditionalInnateSkillsRegistry.class);
+
         modBus.register(ModifyPassivesApplier.class);
         modBus.register(ModifyGuardsApplier.class);
 

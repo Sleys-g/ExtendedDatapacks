@@ -59,30 +59,25 @@ public class PassiveSkillDataKeyFloatCondition extends EntityPatchCondition {
 
     @Override
     public boolean predicate(LivingEntityPatch<?> entityPatch) {
-        if (entityPatch instanceof PlayerPatch<?> playerPatch) {
-            SkillContainer skillContainer = playerPatch.getSkill(SkillSlots.WEAPON_PASSIVE);
-            if (skillContainer == null) return false;
+        if (!(entityPatch instanceof PlayerPatch<?> playerPatch)) return false;
 
-            SkillDataManager skillManager = skillContainer.getDataManager();
-            if (skillManager == null) return false;
+        SkillContainer skillContainer = playerPatch.getSkill(SkillSlots.WEAPON_PASSIVE);
+        if (skillContainer == null) return false;
 
-            SkillDataKey<?> key = SkillDataKeys.REGISTRY.get().getValue(skillFloatDataKey);
-            if (key == null) return false;
+        SkillDataManager skillManager = skillContainer.getDataManager();
+        if (skillManager == null) return false;
 
-            if (skillManager.hasData(key)) {
-                Object value = skillManager.getDataValue(key);
-                Float floatValue = null;
+        SkillDataKey<?> key = SkillDataKeys.REGISTRY.get().getValue(skillFloatDataKey);
 
-                if (value instanceof Float) {
-                    floatValue = (Float) value;
-                } else if (value instanceof Number) {
-                    floatValue = ((Number) value).floatValue();
-                }
+        if (key == null || !skillManager.hasData(key)) return false;
 
-                if (floatValue != null) {
-                    return CommonUtilities.compareFloatValues(floatValue, expectedValue, comparisonType, tolerance);
-                }
-            }
+        Float floatValue = null;
+        if (skillManager.getDataValue(key) instanceof Float primFloat) {
+            floatValue = primFloat;
+        }
+
+        if (floatValue != null) {
+            return CommonUtilities.compareFloatValues(floatValue, expectedValue, comparisonType, tolerance);
         }
         return false;
     }

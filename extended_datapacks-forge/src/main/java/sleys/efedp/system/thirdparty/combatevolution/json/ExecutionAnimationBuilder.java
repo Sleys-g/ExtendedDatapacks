@@ -56,6 +56,7 @@ public class ExecutionAnimationBuilder {
         );
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWaling(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))

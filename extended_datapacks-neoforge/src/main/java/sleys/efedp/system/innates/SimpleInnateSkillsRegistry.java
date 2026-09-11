@@ -11,6 +11,9 @@ import sleys.efedp.system.innates.json.builder.helper.RegistryErrorHelper;
 import sleys.efedp.system.innates.json.definitions.SimpleInnateSkillDefinition;
 import sleys.efedp.system.innates.json.builder.SimpleInnateSkillBuilder;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -59,31 +62,49 @@ public class SimpleInnateSkillsRegistry {
             return;
         }
 
-        registry.register(name, key -> buildSkill(registry, modId, name, animationId, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, modId, name, animationId, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry, String modId, String name,
-                                    ResourceLocation animationId, SimpleInnateSkillDefinition skillData,
-                                    ResourceLocation key) {
-        try {
-            var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
-                    modId, name, animationId, RUNTIME_ERRORS
-            );
-            if (attackAnimationKey == null) return Skill.EMPTY;
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry, String modId, String name,
+                                          ResourceLocation animationId, SimpleInnateSkillDefinition skillData,
+                                          ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Simple Innate Skill Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(modId, name, animationId, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Simple Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Simple Innate Skill Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, animationId, RUNTIME_ERRORS, exception
+                        )
+                );
+    }
 
-            var builder = skillData.createBuilder(attackAnimationKey);
-            skillData.applyProperties(builder);
+    private static Skill buildSkill(String modId, String name, ResourceLocation animationId,
+                                    SimpleInnateSkillDefinition skillData, ResourceLocation key) {
+        var attackAnimationKey = AnimationBuilderHelper.resolveAnimation(
+                modId, name, animationId, RUNTIME_ERRORS
+        );
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Simple Innate Skill Registry] Registration process completed for Skill: {} signed under modID: {} for animation: {}",
-                    name, modId, attackAnimationKey
-            );
+        if (attackAnimationKey == null) return Skill.EMPTY;
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Simple Innate Skill Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, animationId, RUNTIME_ERRORS, e);
-        }
+        var builder = skillData.createBuilder(attackAnimationKey);
+        skillData.applyProperties(builder);
+
+        ExtendedDatapacks.LOGGER.info(
+                "[Simple Innate Skill Registry] Registration process completed for Skill: {} signed under modID: {} for animation: {}",
+                name, modId, attackAnimationKey
+        );
+
+        return builder.build(key);
     }
 
     @SubscribeEvent

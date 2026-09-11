@@ -30,7 +30,8 @@ public record LongHitAnimationAccessor(float transitionTime, String animationPat
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<LongHitAnimation> register(AnimationManager.AnimationBuilder builder, IAnimationProperty<LongHitAnimation> property) {
+    public AnimationManager.AnimationAccessor<LongHitAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                         IAnimationProperty<LongHitAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new LongHitAnimation(
                     transitionTime,
@@ -38,6 +39,7 @@ public record LongHitAnimationAccessor(float transitionTime, String animationPat
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

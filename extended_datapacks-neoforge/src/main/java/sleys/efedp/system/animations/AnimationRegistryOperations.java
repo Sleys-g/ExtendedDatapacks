@@ -72,7 +72,9 @@ public class AnimationRegistryOperations {
                 .filter(Objects::nonNull)
                 .toList();
 
-        if (!errors.isEmpty()) {throw new RegistryObjectModificationException("\n\n" + String.join("\n\n", errors));}
+        if (!errors.isEmpty()) {
+            throw new RegistryObjectModificationException("\n\n" + String.join("\n\n", errors));
+        }
     }
 
     private static <T extends DynamicAnimation> void registerDef(AnimationManager.AnimationBuilder builder,

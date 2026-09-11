@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="epicfight_edp"
-version="2.5"
+version="2.5.1"
 displayName="Epic Fight - Extended Datapacks"
 authors="Sleys"
 logoFile = "extended_datapacks.png"
@@ -18,7 +18,7 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/epic-fight-edp"
 
 [[mixins]]
 modId="epicfight_edp"
-config="mixins.epicfight_edp.json" #"mixins.won_edp.json"
+config="mixins.epicfight_edp.json"
 
 
 [[dependencies."epicfight_edp"]]

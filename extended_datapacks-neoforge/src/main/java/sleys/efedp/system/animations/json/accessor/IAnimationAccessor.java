@@ -10,6 +10,7 @@ public sealed interface IAnimationAccessor<T extends DynamicAnimation> permits A
 
     AnimationRegistryType accessorType();
 
+    @SuppressWarnings("UnusedReturnValue")
     AnimationManager.AnimationAccessor<T> register(AnimationManager.AnimationBuilder builder, IAnimationProperty<T> property);
 
     default void isSuccessful(AnimationManager.AnimationAccessor<T> accessor) {

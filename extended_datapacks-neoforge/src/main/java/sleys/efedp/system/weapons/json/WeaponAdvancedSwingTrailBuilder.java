@@ -114,7 +114,6 @@ public class WeaponAdvancedSwingTrailBuilder {
             return;
         }
 
-
         AdvancedSwingTrails trail = ExecutionTasks.getAndFallback(
                 ExecutionPolicy.RESIST,
                 () -> parseTrailConfig(trailObj),

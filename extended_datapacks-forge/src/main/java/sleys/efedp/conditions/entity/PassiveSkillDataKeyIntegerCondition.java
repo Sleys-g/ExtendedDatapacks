@@ -52,30 +52,24 @@ public class PassiveSkillDataKeyIntegerCondition extends EntityPatchCondition {
 
     @Override
     public boolean predicate(LivingEntityPatch<?> entityPatch) {
-        if (entityPatch instanceof PlayerPatch<?> playerPatch) {
-            SkillContainer skillContainer = playerPatch.getSkill(SkillSlots.WEAPON_PASSIVE);
-            if (skillContainer == null) return false;
+        if (!(entityPatch instanceof PlayerPatch<?> playerPatch))return false;
+        SkillContainer skillContainer = playerPatch.getSkill(SkillSlots.WEAPON_PASSIVE);
+        if (skillContainer == null) return false;
 
-            SkillDataManager skillManager = skillContainer.getDataManager();
-            if (skillManager == null) return false;
+        SkillDataManager skillManager = skillContainer.getDataManager();
+        if (skillManager == null) return false;
 
-            SkillDataKey<?> key = SkillDataKeys.REGISTRY.get().getValue(skillIntegerDataKey);
-            if (key == null) return false;
+        SkillDataKey<?> key = SkillDataKeys.REGISTRY.get().getValue(skillIntegerDataKey);
 
-            if (skillManager.hasData(key)) {
-                Object value = skillManager.getDataValue(key);
-                Integer intValue = null;
+        if (key == null || !skillManager.hasData(key)) return false;
 
-                if (value instanceof Integer) {
-                    intValue = (Integer) value;
-                } else if (value instanceof Number) {
-                    intValue = ((Number) value).intValue();
-                }
+        Integer intValue = null;
+        if (skillManager.getDataValue(key) instanceof Integer integerValue) {
+            intValue = integerValue;
+        }
 
-                if (intValue != null) {
-                    return CommonUtilities.compareIntegerValues(intValue, expectedValue, comparisonType);
-                }
-            }
+        if (intValue != null) {
+            return CommonUtilities.compareIntegerValues(intValue, expectedValue, comparisonType);
         }
         return false;
     }

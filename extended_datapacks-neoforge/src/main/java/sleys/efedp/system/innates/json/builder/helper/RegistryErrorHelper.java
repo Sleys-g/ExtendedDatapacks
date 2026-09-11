@@ -56,11 +56,12 @@ public final class RegistryErrorHelper {
     }
 
     /// Fix Trying to access unbound value
+    @SuppressWarnings("SameReturnValue")
     public static Skill handleRegistrationError(DeferredRegister<Skill> registry,
-                                                 String modId, String name,
-                                                 Object animationId,
-                                                 List<String> errors,
-                                                 Exception e) {
+                                                String modId, String name,
+                                                Object animationId,
+                                                List<String> errors,
+                                                Exception e) {
         long matches = registry
                 .getEntries()
                 .stream()

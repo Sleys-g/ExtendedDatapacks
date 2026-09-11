@@ -77,7 +77,6 @@ public class InnateSkillDataKeyIntegerCondition extends Condition.EntityPatchCon
         if (intValue != null) {
             return CommonUtilities.compareIntegerValues(intValue, expectedValue, comparisonType);
         }
-
         return false;
     }
 
@@ -96,7 +95,7 @@ public class InnateSkillDataKeyIntegerCondition extends Condition.EntityPatchCon
         return tag;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT) @SuppressWarnings("deprecation")
     public List<Condition.ParameterEditor> getAcceptingParameters(Screen screen) {
         AbstractWidget popupBox = new PopupBox.RegistryPopupBox<>(
                 screen,

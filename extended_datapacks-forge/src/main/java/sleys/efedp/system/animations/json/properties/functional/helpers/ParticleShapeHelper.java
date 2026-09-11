@@ -87,6 +87,7 @@ public class ParticleShapeHelper {
         return result;
     }
 
+    @SuppressWarnings("DuplicateExpressions")
     public static List<Vec3> torus(double majorRadius, double minorRadius,
                                    int majorSegments, int minorSegments) {
         List<Vec3> result = new ArrayList<>();

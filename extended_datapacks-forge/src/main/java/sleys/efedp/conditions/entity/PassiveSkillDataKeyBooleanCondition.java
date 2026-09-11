@@ -41,22 +41,20 @@ public class PassiveSkillDataKeyBooleanCondition extends EntityPatchCondition {
 
     @Override
     public boolean predicate(LivingEntityPatch<?> entityPatch) {
-        if (entityPatch instanceof PlayerPatch<?> playerPatch) {
-            SkillContainer skillContainer = playerPatch.getSkill(SkillSlots.WEAPON_PASSIVE);
-            if (skillContainer == null) return false;
+        if (!(entityPatch instanceof PlayerPatch<?> playerPatch)) return false;
 
-            SkillDataManager skillManager = skillContainer.getDataManager();
-            if (skillManager == null) return false;
+        SkillContainer skillContainer = playerPatch.getSkill(SkillSlots.WEAPON_PASSIVE);
+        if (skillContainer == null) return false;
 
-            SkillDataKey<?> key = SkillDataKeys.REGISTRY.get().getValue(skillBooleanDataKey);
-            if (key == null) return false;
+        SkillDataManager skillManager = skillContainer.getDataManager();
+        if (skillManager == null) return false;
 
-            if (skillManager.hasData(key)) {
-                Object value = skillManager.getDataValue(key);
-                if (value instanceof Boolean boolValue) {
-                    return expectedValue.equals(boolValue);
-                }
-            }
+        SkillDataKey<?> key = SkillDataKeys.REGISTRY.get().getValue(skillBooleanDataKey);
+
+        if (key == null || !skillManager.hasData(key)) return false;
+
+        if (skillManager.getDataValue(key) instanceof Boolean boolValue) {
+            return expectedValue.equals(boolValue);
         }
         return false;
     }

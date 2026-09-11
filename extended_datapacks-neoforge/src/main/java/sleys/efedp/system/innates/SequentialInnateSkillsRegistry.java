@@ -14,6 +14,9 @@ import sleys.efedp.system.innates.json.builder.values.AnimationSkillValues;
 import sleys.efedp.system.innates.json.builder.wrapper.sequential.WSequentialInnateSkill;
 import sleys.efedp.system.innates.json.definitions.SequentialInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
+import sleys.sl.library.execution.policy.ErrorPolicy;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.skill.Skill;
 
@@ -55,53 +58,65 @@ public class SequentialInnateSkillsRegistry {
     private static void registerSkill(DeferredRegister<Skill> registry, String modId, SequentialInnateSkillDefinition skillData) {
         var name = skillData.name();
         var skillBuilder = skillData.createBuilder();
-        registry.register(name, key -> buildSkill(registry, skillBuilder, modId, name, skillData, key));
+        registry.register(name, key -> buildSkillSafely(registry, skillBuilder, modId, name, skillData, key));
     }
 
-    private static Skill buildSkill(DeferredRegister<Skill> registry,
-                                    WSequentialInnateSkill.Builder builder,
+    private static Skill buildSkillSafely(DeferredRegister<Skill> registry, WSequentialInnateSkill.Builder builder,
+                                          String modId, String name, SequentialInnateSkillDefinition skillData,
+                                          ResourceLocation key) {
+        return ExecutionTasks.getRaw(
+                        ExecutionPolicy.RESIST,
+                        ErrorPolicy.DEPURATE,
+                        "[Sequential Innate Skill Registry] Registering Skill '{" + name + "}'",
+                        () -> buildSkill(builder, modId, name, skillData, key)
+                )
+                .peek(skill -> ExtendedDatapacks.LOGGER.info(
+                        "[Sequential Innate Skill Registry] Registered Skill: {} under modID: {}", name, modId)
+                )
+                .peekError(error -> ExtendedDatapacks.LOGGER.fatal(
+                        "[Sequential Innate Skill Registry] Error Stack: ", error)
+                )
+                .fold(
+                        skill -> skill,
+                        exception -> RegistryErrorHelper.handleRegistrationError(
+                                registry, modId, name, skillData.sequentialAnimationData(), RUNTIME_ERRORS, exception
+                        )
+                );
+    }
+
+    private static Skill buildSkill(WSequentialInnateSkill.Builder builder,
                                     String modId, String name,
                                     SequentialInnateSkillDefinition skillData,
                                     ResourceLocation key) {
-        try {
-            var animationDataList = skillData.sequentialAnimationData();
-            for (int i = 0; i < animationDataList.size(); i++) {
-                var animationData = animationDataList.get(i);
-                var animation = animationData.animation();
-                var properties = animationData.properties();
+        var animationDataList = skillData.sequentialAnimationData();
+        for (int i = 0; i < animationDataList.size(); i++) {
+            var animationData = animationDataList.get(i);
+            var animation = animationData.animation();
+            var properties = animationData.properties();
 
-                var animationId = ResourceLocation.tryParse(animation);
-                if (animationId == null) {
-                    RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
-                            RegistryErrorHelper.ErrorsType.UNPARSEABLE,
-                            name, modId, animation, null)
-                    );
+            var animationId = ResourceLocation.tryParse(animation);
+            if (animationId == null) {
+                RUNTIME_ERRORS.add(RegistryErrorHelper.getError(
+                        RegistryErrorHelper.ErrorsType.UNPARSEABLE,
+                        name, modId, animation, null)
+                );
 
-                    return Skill.EMPTY;
-                }
-
-                var postfix = FriendlyCountConverter.as(i);
-                var attackAnimationKey = postfix != null ?
-                        AnimationBuilderHelper.resolveAnimation(modId, name, postfix, animationId, RUNTIME_ERRORS) :
-                        AnimationBuilderHelper.resolveAnimation(modId, name, animationId, RUNTIME_ERRORS);
-
-                if (attackAnimationKey == null) return Skill.EMPTY;
-
-                var animationProperties = skillData.saveProperties(properties);
-                var animationSkillValues = new AnimationSkillValues(attackAnimationKey, animationProperties);
-                builder.putAnimationData(animationSkillValues);
+                return Skill.EMPTY;
             }
 
-            ExtendedDatapacks.LOGGER.info(
-                    "[Sequential Innate Skill Registry] Registered Skill: {} under modID: {}",
-                    name, modId
-            );
+            var postfix = FriendlyCountConverter.as(i);
+            var attackAnimationKey = postfix != null ?
+                    AnimationBuilderHelper.resolveAnimation(modId, name, postfix, animationId, RUNTIME_ERRORS) :
+                    AnimationBuilderHelper.resolveAnimation(modId, name, animationId, RUNTIME_ERRORS);
 
-            return builder.build(key);
-        } catch (Exception e) {
-            ExtendedDatapacks.LOGGER.fatal("[Sequential Innate Skill Registry] Error Stack: ", e);
-            return RegistryErrorHelper.handleRegistrationError(registry, modId, name, skillData.sequentialAnimationData(), RUNTIME_ERRORS, e);
+            if (attackAnimationKey == null) return Skill.EMPTY;
+
+            var animationProperties = skillData.saveProperties(properties);
+            var animationSkillValues = new AnimationSkillValues(attackAnimationKey, animationProperties);
+            builder.putAnimationData(animationSkillValues);
         }
+
+        return builder.build(key);
     }
 
 

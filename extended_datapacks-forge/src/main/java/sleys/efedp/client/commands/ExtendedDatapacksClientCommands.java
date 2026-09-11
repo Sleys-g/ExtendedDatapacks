@@ -40,7 +40,7 @@ public class ExtendedDatapacksClientCommands {
                                                         .executes(ExtendedDatapacksClientCommands::reloadOverlayConfigClient)
                                                 )
                                         )
-                                        .then(Commands.literal("get")
+                                        .then(Commands.literal("as")
                                                 .then(Commands.literal("weapon-category")
                                                         .executes(ExtendedDatapacksClientCommands::getActuallyCategory)
                                                 )
@@ -104,7 +104,7 @@ public class ExtendedDatapacksClientCommands {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         player.displayClientMessage(Component.literal("Reassigning Item Model configuration!"), false);
-        WeaponPerStyleModelBakerBuilder.reinitialize();
+        WeaponPerStyleModelBakerBuilder.reinitializeWeaponPerStyle();
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }
@@ -128,7 +128,5 @@ public class ExtendedDatapacksClientCommands {
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }
-
 }
-
 

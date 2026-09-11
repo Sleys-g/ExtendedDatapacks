@@ -2,7 +2,7 @@ package sleys.efedp.system.combat;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.registry.ExtendedDatapacksRegistrySkills;
+import sleys.efedp.registry.ExtendedDatapacksSkills;
 import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
@@ -24,7 +24,7 @@ public class MechanicsAssignerEvent {
     @ErrorHandled
     private static PlayerPatch<?> onChargedSlot(PlayerPatch<?> playerPatch) {
         var chargedSlot = playerPatch.getSkill(ExtendedSkillSlot.CHARGED_ATTACK);
-        var chargedSkill = ExtendedDatapacksRegistrySkills.CHARGED_ATTACK;
+        var chargedSkill = ExtendedDatapacksSkills.CHARGED_ATTACK;
         var chargedSlotSkill = chargedSlot.getSkill();
         if (chargedSlotSkill == null && chargedSkill != null && !chargedSlot.hasSkill(chargedSkill)) {
             chargedSlot.setSkill(chargedSkill);

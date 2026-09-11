@@ -1,10 +1,13 @@
 package sleys.efedp.system.animations.json.properties.functional.time.lambda;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -12,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty;
@@ -26,10 +30,15 @@ import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 
 import java.util.List;
+import java.util.Optional;
 
-public record ThunderAnimationEvent() implements IAnimationEventParams {
-    
-    public static final MapCodec<ThunderAnimationEvent> CODEC = MapCodec.unit(ThunderAnimationEvent::new);
+public record ThunderAnimationEvent(Optional<Boolean> changeAmbient) implements IAnimationEventParams {
+
+    public static final MapCodec<ThunderAnimationEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(
+                    Codec.BOOL.optionalFieldOf("change_ambient").forGetter(ThunderAnimationEvent::changeAmbient)
+            ).apply(instance, ThunderAnimationEvent::new)
+    );
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
@@ -71,7 +80,22 @@ public record ThunderAnimationEvent() implements IAnimationEventParams {
                 : null;
 
         int hits = Math.min(maxStrikes, targets.size());
+        this.createLightningBolt(hits, targets, level, cause, attacker, attackAnimation, patch, phase, totalDamage);
+        if (hits > 0) {
+            changeAmbient
+                    .map(key -> key ? level : null)
+                    .ifPresent(this::changeAmbient);
+            attacker.playSound(
+                    SoundEvents.TRIDENT_THUNDER,
+                    5.0F,
+                    1.0F
+            );
+        }
+    }
 
+    private void createLightningBolt(int hits, List<Entity> targets, ServerLevel level, ServerPlayer cause,
+                                     LivingEntity attacker, AttackAnimation attackAnimation, LivingEntityPatch<?> patch,
+                                     AttackAnimation.Phase phase, float totalDamage) {
         for (int i = 0; i < hits; i++) {
             Entity target = targets.get(i);
 
@@ -101,24 +125,18 @@ public record ThunderAnimationEvent() implements IAnimationEventParams {
             target.thunderHit(level, lightning);
             level.addFreshEntity(lightning);
         }
+    }
 
-        if (hits > 0) {
-//            if (level.getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE)
-//                    && level.random.nextFloat() < 0.08F
-//                    && level.getThunderLevel(1.0F) < 1.0F) {
-//
-//                level.setWeatherParameters(
-//                        0,
-//                        Mth.randomBetweenInclusive(level.random, 12000, 180000),
-//                        true,
-//                        true
-//                );
-//            }
+    private void changeAmbient(ServerLevel level) {
+        if (level == null) return;
+        if (level.getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE)
+                && level.random.nextFloat() < 0.08F
+                && level.getThunderLevel(1.0F) < 1.0F) {
 
-            attacker.playSound(
-                    SoundEvents.TRIDENT_THUNDER,
-                    5.0F,
-                    1.0F
+            level.setWeatherParameters(
+                    0,
+                    Mth.randomBetweenInclusive(level.random, 12000, 180000),
+                    true, true
             );
         }
     }

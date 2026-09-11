@@ -3,9 +3,9 @@ package sleys.efedp.system.innates.json.definitions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import sleys.efedp.system.innates.json.builder.data.ConditionalStackAnimationData;
+import sleys.efedp.system.innates.json.builder.data.ConditionalType;
 import sleys.efedp.system.innates.json.builder.wrapper.conditional.WConditionalStackInnateSkill;
-import sleys.efedp.system.innates.json.data.ConditionalStackAnimationData;
-import sleys.efedp.system.innates.json.data.ConditionalType;
 import sleys.sl.library.util.io.JsonComponentArgs;
 
 import javax.annotation.Nullable;

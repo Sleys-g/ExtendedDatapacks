@@ -12,7 +12,7 @@ public record AnimationConfigDefinition<T extends StaticAnimation>(IConfigAnimat
     public static final Codec<AnimationConfigDefinition<?>> CODEC =
             Codec.STRING.dispatch(
                     "type",
-                    def -> def.config.virtualGroupType().name().toLowerCase(),
+                    def -> def.config.configGroupType().name().toLowerCase(),
                     type -> AnimationConfigDefinitionCodec.CODECS
                             .get(AnimationGroupType.valueOf(type.toUpperCase()))
                             .combinedLegacy()

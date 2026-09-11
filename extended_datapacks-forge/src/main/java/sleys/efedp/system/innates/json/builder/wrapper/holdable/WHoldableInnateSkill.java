@@ -9,14 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.system.innates.json.builder.values.HoldableSkillValues;
+import sleys.efedp.system.innates.json.builder.values.ListenerSkillValues;
 import sleys.efedp.system.innates.json.builder.helper.SkillTooltipHelper;
-import sleys.efedp.system.innates.json.data.HoldableSkillValues;
-import sleys.efedp.system.innates.json.data.ListenerSkillValues;
 import sleys.sl.epicfight.client.events.EFMovementInputEvent;
 import sleys.sl.epicfight.skills.interfaces.movement.IOnMovementInputEFSkillEvent;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.SynchedAnimationVariableKeys;
@@ -39,21 +39,21 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import java.util.List;
 
 public class WHoldableInnateSkill extends WeaponInnateSkill implements ChargeableSkill, IOnMovementInputEFSkillEvent  {
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimation;
-    protected AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
-    protected List<JsonComponentArgs> tooltipComponents;
-    protected ListenerSkillValues listenerValues;
-    protected HoldableSkillValues holdableValues;
-    protected boolean disableTooltipProperties;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> chargingAnimation;
+    protected final AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
+    protected final List<JsonComponentArgs> tooltipComponents;
+    protected final ListenerSkillValues listenerValues;
+    protected final HoldableSkillValues holdableValues;
+    protected final boolean disableTooltipProperties;
 
-    public static Builder createHoldableInnateSkillBuilder() {
+    public static WHoldableInnateSkill.Builder createHoldableInnateSkillBuilder() {
         return new WHoldableInnateSkill.Builder()
                 .setCategory(SkillCategories.WEAPON_INNATE)
                 .setResource(Resource.WEAPON_CHARGE)
                 .setActivateType(ActivateType.HELD);
     }
 
-    public WHoldableInnateSkill(Builder builder) {
+    public WHoldableInnateSkill(WHoldableInnateSkill.Builder builder) {
         super(builder);
         this.animation = builder.animation;
         this.chargingAnimation = builder.chargingAnimation;
@@ -197,7 +197,8 @@ public class WHoldableInnateSkill extends WeaponInnateSkill implements Chargeabl
         }
     }
 
-    @Override @SuppressWarnings("all")
+    @SuppressWarnings("DataFlowIssue")
+    @Override
     public void startHolding(SkillContainer container) {
         AssetAccessor<? extends StaticAnimation> currentPlaying = container
                 .getExecutor()

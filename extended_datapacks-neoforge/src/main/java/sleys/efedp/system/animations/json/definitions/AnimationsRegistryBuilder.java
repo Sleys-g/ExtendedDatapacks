@@ -42,6 +42,7 @@ public class AnimationsRegistryBuilder {
         ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn("[Animations Registry] Error reading Animation Registry Config", e));
     }
 
+    @SuppressWarnings("resource")
     private static Path startToWalking(Path configDir) throws IOException {
         Stream<Path> paths = Files.list(configDir);
         paths.filter(p -> p.toString().endsWith(".json"))

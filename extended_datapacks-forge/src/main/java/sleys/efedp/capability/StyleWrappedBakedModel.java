@@ -19,7 +19,7 @@ import java.util.List;
 public record StyleWrappedBakedModel(BakedModel original, BakedModel dynamic) implements BakedModel {
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
         return dynamic.getQuads(state, side, rand);
     }
 

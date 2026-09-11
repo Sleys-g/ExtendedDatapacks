@@ -40,6 +40,7 @@ public record GuardAnimationAccessor(float transitionTime, float lockTime, Strin
                     armature
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
         });
     }

@@ -51,8 +51,8 @@ public record ComboAttackAccessor(float transitionTime, String animationPath,
                             .toArray(AttackAnimation.Phase[]::new)
             );
             property.applyTo(animation);
+            this.isSuccessful(accessor);
             return animation;
-        }
-        );
+        });
     }
 }

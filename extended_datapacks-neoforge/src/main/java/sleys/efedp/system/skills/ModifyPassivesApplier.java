@@ -17,12 +17,6 @@ import java.util.Set;
 
 public class ModifyPassivesApplier {
 
-    /**
-     * @author Sleys
-     * @apiNote Permite añadir cualquier categoria a una Passive Skills, se intuye que el usuario suministrara la categoria
-     * objetivo desde JSON, al igual que la Passive Skill. Se excluye Weapon Passive e Weapon Innate porque operan desde otro campo
-     * y ya se pueden añadir.
-     */
     public static void addAnyParameterToSkill(ResourceLocation skillRegistry, SkillBuilder<?> skillBuilder) {
         if (skillRegistry == null) return;
 

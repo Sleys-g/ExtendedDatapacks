@@ -29,8 +29,8 @@ public class RenderItemBaseMixinClient {
 
         LivingEntity entity = entityPatch.getOriginal();
         InteractionHand hand = original.hand() != null
-                ? original.hand()
-                : InteractionHand.MAIN_HAND;
+                        ? original.hand()
+                        : InteractionHand.MAIN_HAND;
 
         ItemStack item = entity.getItemInHand(hand);
         WeaponAdvancedSwingTrailBuilder.AdvancedSwingTrails config = WeaponAdvancedSwingTrailBuilder.getAdvancedSwingTrails(item);
