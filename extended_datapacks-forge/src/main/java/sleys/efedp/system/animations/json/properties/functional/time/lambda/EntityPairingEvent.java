@@ -3,6 +3,8 @@ package sleys.efedp.system.animations.json.properties.functional.time.lambda;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import sleys.efedp.ExtendedDatapacks;
+import sleys.sl.library.annotations.Internal;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -12,40 +14,61 @@ import yesman.epicfight.network.server.SPEntityPairingPacket;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 import java.util.Locale;
+import java.util.function.BiConsumer;
 
-public record EntityPairingEvent(SimplyPairingTypes types) implements IAnimationEventParams {
+public record EntityPairingEvent(PairingTypes types) implements IAnimationEventParams {
 
     public static final MapCodec<EntityPairingEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    SimplyPairingTypes.CODEC.fieldOf("types").forGetter(EntityPairingEvent::types)
+                    PairingTypes.CODEC.fieldOf("types").forGetter(EntityPairingEvent::types)
             ).apply(instance, EntityPairingEvent::new)
     );
 
-    private enum SimplyPairingTypes {
-        ADRENALINE_ACTIVATED,
-        BONEBREAKER_BEGIN,
-        BONEBREAKER_MAX_STACK,
-        BONEBREAKER_CLEAR,
-        STAMINA_PILLAGER_BODY_ASHES,
-        TECHNICIAN_ACTIVATED,
-        VENGEANCE_OVERLAY,
-        VENGEANCE_TARGET_CANCEL;
+    @Internal
+    public enum PairingTypes {
+        BONE_BREAKER_BEGIN(PairingTypes::onSendPairing, EntityPairingPacketTypes.BONEBREAKER_BEGIN),
+        BONE_BREAKER_MAX_STACK(PairingTypes::onSendPairing, EntityPairingPacketTypes.BONEBREAKER_MAX_STACK),
+        BONE_BREAKER_CLEAR(PairingTypes::onRemovePairing, EntityPairingPacketTypes.BONEBREAKER_CLEAR),
+        VENGEANCE_OVERLAY(PairingTypes::onSendPairing, EntityPairingPacketTypes.VENGEANCE_OVERLAY),
+        VENGEANCE_CLEAR(PairingTypes::onRemovePairing, EntityPairingPacketTypes.VENGEANCE_TARGET_CANCEL);
 
-        private static final Codec<SimplyPairingTypes> CODEC = EnumCodecs.byId(
+        final BiConsumer<PairingTypes, LivingEntityPatch<?>> onProcessPairing;
+        final EntityPairingPacketTypes precursorPairing;
+
+        PairingTypes(BiConsumer<PairingTypes,LivingEntityPatch<?>> cancelPairing, EntityPairingPacketTypes precursorPairing) {
+            this.onProcessPairing = cancelPairing;
+            this.precursorPairing = precursorPairing;
+        }
+
+        private static final Codec<PairingTypes> CODEC = EnumCodecs.byId(
                 values(), e -> e.name().toUpperCase(Locale.ROOT)
         );
 
-        private EntityPairingPacketTypes thisToEntityPairingPacketTypes() {
-            return EntityPairingPacketTypes.valueOf(this.name().toUpperCase(Locale.ROOT));
+        public void trackingAndOperate(LivingEntityPatch<?> patch) {
+            this.onProcessPairing.accept(this, patch);
+        }
+
+        public static void onSendPairing(PairingTypes pairingTypes, LivingEntityPatch<?> patch) {
+            patch.sendToAllPlayersTrackingMe(new SPEntityPairingPacket(patch.getOriginal().getId(), pairingTypes.precursorPairing));
+        }
+
+        public static void onRemovePairing(PairingTypes pairingTypes, LivingEntityPatch<?> patch) {
+            patch.sendToAllPlayersTrackingMe(new SPEntityPairingPacket(patch.getOriginal().getId(), pairingTypes.precursorPairing));
         }
     }
-
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
 
         if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER,"Entity Pairing Event")) return;
-        patch.sendToAllPlayersTrackingMe(new SPEntityPairingPacket(livingCaster.getId(), types.thisToEntityPairingPacketTypes()));
+
+        var pairing = types.precursorPairing;
+        if (pairing == null) {
+            ExtendedDatapacks.LOGGER.warn("[Entity Pairing Event] Outrange Pairing Type in animation: '{}'", accessor);
+            return;
+        }
+
+        types.trackingAndOperate(patch);
     }
 }

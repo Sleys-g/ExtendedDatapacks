@@ -9,6 +9,7 @@ public enum EntityAnimationsEvents implements IAnimationEventType {
     TELEPORT(TeleportEvent.CODEC),
     FLASH_WHITE_PAIR(FlashWhitePairEvent.CODEC),
     SCAPE_EMERGENCE_PAIR(ScapeEmergencePairEvent.CODEC),
+    ADRENALINE_PAIR(AdrenalinePairEvent.CODEC),
     ENTITY_PAIRING(EntityPairingEvent.CODEC)
 
     ;private final MapCodec<? extends IAnimationEventParams> codec;

@@ -33,45 +33,52 @@ public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimatio
 
         switch (mode) {
             case LOCAL -> {
-                float yaw = livingCaster.getYRot();
-                Vec3 localOffset = offset.yRot(-yaw * Mth.DEG_TO_RAD);
-                livingCaster.setPos(livingCaster.position().add(localOffset));
+                var yaw = livingCaster.getYRot();
+                var localOffset = offset.yRot(-yaw * Mth.DEG_TO_RAD);
+                var finalPos = livingCaster.position().add(localOffset);
+                livingCaster.teleportTo(finalPos.x, finalPos.y, finalPos.z);
             }
-            case WORLD -> livingCaster.setPos(livingCaster.position().add(offset));
+            case WORLD -> {
+                var finalPos = livingCaster.position().add(offset);
+                livingCaster.setPos(finalPos.x, finalPos.y, finalPos.z);
+            }
 
             case TARGET -> {
                 var target = patch.getTarget();
                 if (target != null) {
-                    livingCaster.setPos(target.position().add(offset));
+                    var finalPos = target.position().add(offset);
+                    livingCaster.teleportTo(finalPos.x, finalPos.y, finalPos.z);
                 }
             }
 
             case TARGET_FRONT -> {
                 var target = patch.getTarget();
                 if (target != null) {
-                    float targetYaw = target.getYRot();
-                    Vec3 rotatedOffset = offset.yRot(-targetYaw * Mth.DEG_TO_RAD);
-                    livingCaster.setPos(target.position().add(rotatedOffset));
+                    var targetYaw = target.getYRot();
+                    var rotatedOffset = offset.yRot(-targetYaw * Mth.DEG_TO_RAD);
+                    var finalPos = target.position().add(rotatedOffset);
+                    livingCaster.teleportTo(finalPos.x, finalPos.y, finalPos.z);
                 }
             }
 
             case TARGET_BEHIND -> {
                 var target = patch.getTarget();
                 if (target != null) {
-                    float targetYaw = target.getYRot();
-                    Vec3 behindOffset = new Vec3(offset.x, offset.y, -offset.z)
+                    var targetYaw = target.getYRot();
+                    var behindOffset = new Vec3(offset.x, offset.y, -offset.z)
                             .yRot(-targetYaw * Mth.DEG_TO_RAD);
-                    livingCaster.setPos(target.position().add(behindOffset));
+                    var finalPos = target.position().add(behindOffset);
+                    livingCaster.teleportTo(finalPos.x, finalPos.y, finalPos.z);
                 }
             }
 
             case GROUND -> {
-                Vec3 targetXZ = livingCaster.position().add(offset.x, 0, offset.z);
-                BlockPos highestGround = livingCaster.level().getHeightmapPos(
+                var targetXZ = livingCaster.position().add(offset.x, 0, offset.z);
+                var highestGround = livingCaster.level().getHeightmapPos(
                         Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                         BlockPos.containing(targetXZ)
                 );
-                livingCaster.setPos(targetXZ.x, highestGround.getY(), targetXZ.z);
+                livingCaster.teleportTo(targetXZ.x, highestGround.getY(), targetXZ.z);
             }
         }
     }

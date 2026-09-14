@@ -97,7 +97,7 @@ public record AnimationsInPeriodTimeEvent<T extends StaticAnimation>(IAnimationE
     @Override
     public void applyTo(T animation) {
         if (side == null || start == null || type == null) {
-            ExtendedDatapacks.LOGGER.error("[Animation In Internal Time Event] Some of your statements are not valid, looking... Side: {}, start: {}, End: {}, Type: {}",
+            ExtendedDatapacks.LOGGER.error("[Animation In Period Time Event] Some of your statements are not valid, looking... Side: {}, start: {}, End: {}, Type: {}",
                     this.isValid(side), this.isValid(start), this.isValid(end), this.isValid(type)
             );
             return;
