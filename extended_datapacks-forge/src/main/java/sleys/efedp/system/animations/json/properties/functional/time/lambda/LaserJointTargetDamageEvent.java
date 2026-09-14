@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.system.animations.json.properties.functional.helpers.LaserEventHelper;
+import sleys.efedp.system.animations.json.properties.phase.PhaseStunType;
 import sleys.sl.epicfight.model.JointModelCordReader;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -12,10 +13,12 @@ import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSources;
+import yesman.epicfight.world.damagesource.StunType;
 
 import java.util.Optional;
 
 public record LaserJointTargetDamageEvent(Float damage,
+                                          Optional<StunType> stunType,
                                           String joint,
                                           float poseTime,
                                           Optional<Double> CasterLateral,
@@ -25,6 +28,7 @@ public record LaserJointTargetDamageEvent(Float damage,
     public static final MapCodec<LaserJointTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserJointTargetDamageEvent::damage),
+                    PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(LaserJointTargetDamageEvent::stunType),
 
                     Codec.STRING.fieldOf("joint").forGetter(LaserJointTargetDamageEvent::joint),
                     Codec.FLOAT.fieldOf("pose_time").forGetter(LaserJointTargetDamageEvent::poseTime),
@@ -65,7 +69,7 @@ public record LaserJointTargetDamageEvent(Float damage,
         var collider = LaserEventHelper.buildBeamCollider(casterPos, hitLocation, 0.25F);
 
         collider.getCollideEntities(livingCaster).forEach(entity -> {
-            entity.hurt(EpicFightDamageSources.witherBeam(livingCaster), damage);
+            entity.hurt(EpicFightDamageSources.witherBeam(livingCaster).setStunType(stunType.orElse(StunType.NONE)), damage);
             LaserEventHelper.impactBurstServer(level, entity.position());
         });
     }

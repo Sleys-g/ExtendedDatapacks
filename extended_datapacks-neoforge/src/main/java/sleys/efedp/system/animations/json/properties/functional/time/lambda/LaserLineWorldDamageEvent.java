@@ -5,15 +5,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.system.animations.json.properties.functional.helpers.LaserEventHelper;
+import sleys.efedp.system.animations.json.properties.phase.PhaseStunType;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightSounds;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+import yesman.epicfight.world.damagesource.StunType;
 
 import java.util.Optional;
 
 public record LaserLineWorldDamageEvent(Float damage, Float range,
+                                        Optional<StunType> stunType,
                                         Optional<Double> OriginLateral,
                                         Optional<Double> OriginVertical,
                                         Optional<Double> OriginAvance,
@@ -25,6 +28,7 @@ public record LaserLineWorldDamageEvent(Float damage, Float range,
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserLineWorldDamageEvent::damage),
                     Codec.FLOAT.fieldOf("range").forGetter(LaserLineWorldDamageEvent::range),
+                    PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(LaserLineWorldDamageEvent::stunType),
 
                     Codec.DOUBLE.optionalFieldOf("origin_lateral").forGetter(LaserLineWorldDamageEvent::OriginLateral),
                     Codec.DOUBLE.optionalFieldOf("origin_vertical").forGetter(LaserLineWorldDamageEvent::OriginVertical),
@@ -64,6 +68,10 @@ public record LaserLineWorldDamageEvent(Float damage, Float range,
             return;
         }
 
-        LaserEventHelper.hurtAlongVerticalLazers(level, livingCaster, points, 30, 0.4F, damage);
+        LaserEventHelper.hurtAlongVerticalLazers(
+                level, livingCaster, points,
+                stunType.orElse(StunType.NONE),
+                30, 0.4F, damage
+        );
     }
 }

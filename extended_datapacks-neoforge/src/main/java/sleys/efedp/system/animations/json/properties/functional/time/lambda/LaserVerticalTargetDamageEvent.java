@@ -5,18 +5,24 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.system.animations.json.properties.functional.helpers.LaserEventHelper;
+import sleys.efedp.system.animations.json.properties.phase.PhaseStunType;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightSounds;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSources;
+import yesman.epicfight.world.damagesource.StunType;
 
-public record LaserVerticalTargetDamageEvent(Float damage) implements IAnimationEventParams {
+import java.util.Optional;
+
+public record LaserVerticalTargetDamageEvent(Float damage,
+                                             Optional<StunType> stunType) implements IAnimationEventParams {
 
     public static final MapCodec<LaserVerticalTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Codec.FLOAT.fieldOf("damage").forGetter(LaserVerticalTargetDamageEvent::damage)
+                    Codec.FLOAT.fieldOf("damage").forGetter(LaserVerticalTargetDamageEvent::damage),
+                    PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(LaserVerticalTargetDamageEvent::stunType)
             ).apply(instance, LaserVerticalTargetDamageEvent::new)
     );
 
@@ -43,7 +49,7 @@ public record LaserVerticalTargetDamageEvent(Float damage) implements IAnimation
         var collider = LaserEventHelper.buildBeamCollider(targetPos, hitLocation, 0.25F);
 
         collider.getCollideEntities(livingCaster).forEach(entity -> {
-            entity.hurt(EpicFightDamageSources.witherBeam(livingCaster), damage);
+            entity.hurt(EpicFightDamageSources.witherBeam(livingCaster).setStunType(stunType.orElse(StunType.NONE)), damage);
             LaserEventHelper.impactBurstServer(level, entity.position());
         });
     }

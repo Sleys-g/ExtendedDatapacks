@@ -7,17 +7,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.system.animations.json.properties.functional.helpers.LaserEventHelper;
+import sleys.efedp.system.animations.json.properties.phase.PhaseStunType;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightSounds;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+import yesman.epicfight.world.damagesource.StunType;
 
-public record LaserFloorWorldDamageEvent(Float damage, Float radius, Integer count) implements IAnimationEventParams {
+import java.util.Optional;
+
+public record LaserFloorWorldDamageEvent(Float damage, Optional<StunType> stunType,
+                                         Float radius, Integer count) implements IAnimationEventParams {
 
     public static final MapCodec<LaserFloorWorldDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserFloorWorldDamageEvent::damage),
+                    PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(LaserFloorWorldDamageEvent::stunType),
                     Codec.FLOAT.fieldOf("radius").forGetter(LaserFloorWorldDamageEvent::radius),
                     Codec.INT.fieldOf("count").forGetter(LaserFloorWorldDamageEvent::count)
             ).apply(instance, LaserFloorWorldDamageEvent::new)
@@ -47,7 +53,11 @@ public record LaserFloorWorldDamageEvent(Float damage, Float radius, Integer cou
             if (level.isClientSide) {
                 LaserEventHelper.renderVerticalLazers(level, points, 30);
             } else {
-                LaserEventHelper.hurtAlongVerticalLazers(level, livingCaster, points, 30, 0.4F, damage);
+                LaserEventHelper.hurtAlongVerticalLazers(
+                        level, livingCaster, points,
+                        stunType.orElse(StunType.NONE),
+                        30, 0.4F, damage
+                );
             }
         }
     }

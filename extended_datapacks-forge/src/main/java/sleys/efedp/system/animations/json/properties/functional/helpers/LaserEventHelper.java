@@ -17,6 +17,7 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.damagesource.EpicFightDamageSources;
+import yesman.epicfight.world.damagesource.StunType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,7 @@ public final class LaserEventHelper {
         }
     }
 
-    public static void hurtAlongVerticalLazers(Level level, LivingEntity caster, List<Vec3> groundedPoints,
+    public static void hurtAlongVerticalLazers(Level level, LivingEntity caster, List<Vec3> groundedPoints, StunType stunType,
                                                double laserHeight, float halfWidth, float damage) {
         for (Vec3 base : groundedPoints) {
             AABB pillar = new AABB(
@@ -107,7 +108,7 @@ public final class LaserEventHelper {
                     base.x + halfWidth, base.y + laserHeight, base.z + halfWidth
             );
             level.getEntitiesOfClass(LivingEntity.class, pillar, e -> e != caster).forEach(entity -> {
-                entity.hurt(EpicFightDamageSources.witherBeam(caster), damage);
+                entity.hurt(EpicFightDamageSources.witherBeam(caster).setStunType(stunType), damage);
                 impactBurstServer(level, entity.position());
             });
         }
