@@ -18,16 +18,20 @@ import java.util.Optional;
 public record LaserJointTargetDamageEvent(Float damage,
                                           String joint,
                                           float poseTime,
-                                          Optional<Vec3> finalOffset,
-                                          Optional<Vec3> originOffset) implements IAnimationEventParams {
+                                          Optional<Double> CasterLateral,
+                                          Optional<Double> CasterVertical,
+                                          Optional<Double> CasterAvance) implements IAnimationEventParams {
 
     public static final MapCodec<LaserJointTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserJointTargetDamageEvent::damage),
+
                     Codec.STRING.fieldOf("joint").forGetter(LaserJointTargetDamageEvent::joint),
                     Codec.FLOAT.fieldOf("pose_time").forGetter(LaserJointTargetDamageEvent::poseTime),
-                    Vec3.CODEC.optionalFieldOf("final_offset").forGetter(LaserJointTargetDamageEvent::finalOffset),
-                    Vec3.CODEC.optionalFieldOf("origin_offset").forGetter(LaserJointTargetDamageEvent::originOffset)
+
+                    Codec.DOUBLE.optionalFieldOf("caster_lateral").forGetter(LaserJointTargetDamageEvent::CasterLateral),
+                    Codec.DOUBLE.optionalFieldOf("caster_vertical").forGetter(LaserJointTargetDamageEvent::CasterVertical),
+                    Codec.DOUBLE.optionalFieldOf("caster_avance").forGetter(LaserJointTargetDamageEvent::CasterAvance)
             ).apply(instance, LaserJointTargetDamageEvent::new)
     );
 
@@ -40,11 +44,15 @@ public record LaserJointTargetDamageEvent(Float damage,
         if (livingTarget == null) return;
 
         var level = livingCaster.level();
+
         var casterPos = JointModelCordReader
                 .getJoinWorldCoords(patch, patch.getArmature().searchJointByName(joint), poseTime, Vec3.ZERO)
-                .add(originOffset.orElse(Vec3.ZERO));
+                .add(LaserEventHelper.resolveLocalOffset(
+                        livingCaster,
+                        new Vec3(CasterLateral.orElse(0.0), CasterVertical.orElse(0.0), CasterAvance.orElse(0.0))
+                ));
 
-        var targetPos = LaserEventHelper.resolveAimPoint(livingCaster, patch.getTarget(), 20, finalOffset.orElse(Vec3.ZERO));
+        var targetPos = LaserEventHelper.resolveAimPoint(livingCaster, patch.getTarget(), 20, Vec3.ZERO);
 
         if (level.isClientSide) {
             livingCaster.playSound(EpicFightSounds.LASER_BLAST.get(), 0.5F, 1F);

@@ -11,8 +11,6 @@ public enum GameplayAnimationsEvents implements IAnimationEventType {
     LASER_TARGET_DAMAGE(LaserTargetDamageEvent.CODEC),
     LASER_VERTICAL_TARGET_DAMAGE(LaserVerticalTargetDamageEvent.CODEC),
     LASER_JOINT_TARGET_DAMAGE(LaserJointTargetDamageEvent.CODEC),
-    LASER_VERTICAL_DAMAGE(LaserVerticalDamageEvent.CODEC),
-    LASER_JOINT_VERTICAL_DAMAGE(LaserJointVerticalDamageEvent.CODEC),
     LASER_LINE_WORLD_DAMAGE(LaserLineWorldDamageEvent.CODEC),
     LASER_FLOOR_WORLD_DAMAGE(LaserFloorWorldDamageEvent.CODEC)
 

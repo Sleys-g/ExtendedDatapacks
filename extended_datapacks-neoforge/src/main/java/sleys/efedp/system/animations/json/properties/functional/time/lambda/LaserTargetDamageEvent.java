@@ -15,14 +15,17 @@ import yesman.epicfight.world.damagesource.EpicFightDamageSources;
 import java.util.Optional;
 
 public record LaserTargetDamageEvent(Float damage,
-                                     Optional<Vec3> finalOffset,
-                                     Optional<Vec3> originOffset) implements IAnimationEventParams {
+                                     Optional<Double> CasterLateral,
+                                     Optional<Double> CasterVertical,
+                                     Optional<Double> CasterAvance) implements IAnimationEventParams {
 
     public static final MapCodec<LaserTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserTargetDamageEvent::damage),
-                    Vec3.CODEC.optionalFieldOf("final_offset").forGetter(LaserTargetDamageEvent::finalOffset),
-                    Vec3.CODEC.optionalFieldOf("origin_offset").forGetter(LaserTargetDamageEvent::originOffset)
+
+                    Codec.DOUBLE.optionalFieldOf("caster_lateral").forGetter(LaserTargetDamageEvent::CasterLateral),
+                    Codec.DOUBLE.optionalFieldOf("caster_vertical").forGetter(LaserTargetDamageEvent::CasterVertical),
+                    Codec.DOUBLE.optionalFieldOf("caster_avance").forGetter(LaserTargetDamageEvent::CasterAvance)
             ).apply(instance, LaserTargetDamageEvent::new)
     );
 
@@ -35,8 +38,15 @@ public record LaserTargetDamageEvent(Float damage,
         if (livingTarget == null) return;
 
         var level = livingCaster.level();
-        var casterPos = livingCaster.position().add(originOffset.orElse(Vec3.ZERO));
-        var targetPos = LaserEventHelper.resolveAimPoint(livingCaster, patch.getTarget(), 20, finalOffset.orElse(Vec3.ZERO));
+
+        var casterPos = livingCaster.position().add(
+                LaserEventHelper.resolveLocalOffset(
+                        livingCaster,
+                        new Vec3(CasterLateral.orElse(0.0), CasterVertical.orElse(0.0), CasterAvance.orElse(0.0))
+                )
+        );
+
+        var targetPos = LaserEventHelper.resolveAimPoint(livingCaster, patch.getTarget(), 20, Vec3.ZERO);
 
         if (level.isClientSide) {
             livingCaster.playSound(EpicFightSounds.LASER_BLAST.get(), 0.5F, 1F);

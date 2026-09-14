@@ -14,15 +14,25 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import java.util.Optional;
 
 public record LaserLineWorldDamageEvent(Float damage, Float range,
-                                        Optional<Vec3> finalOffset,
-                                        Optional<Vec3> originOffset) implements IAnimationEventParams {
+                                        Optional<Double> OriginLateral,
+                                        Optional<Double> OriginVertical,
+                                        Optional<Double> OriginAvance,
+                                        Optional<Double> EndLateral,
+                                        Optional<Double> EndVertical,
+                                        Optional<Double> EndAvance) implements IAnimationEventParams {
 
     public static final MapCodec<LaserLineWorldDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserLineWorldDamageEvent::damage),
                     Codec.FLOAT.fieldOf("range").forGetter(LaserLineWorldDamageEvent::range),
-                    Vec3.CODEC.optionalFieldOf("final_offset").forGetter(LaserLineWorldDamageEvent::finalOffset),
-                    Vec3.CODEC.optionalFieldOf("origin_offset").forGetter(LaserLineWorldDamageEvent::originOffset)
+
+                    Codec.DOUBLE.optionalFieldOf("origin_lateral").forGetter(LaserLineWorldDamageEvent::OriginLateral),
+                    Codec.DOUBLE.optionalFieldOf("origin_vertical").forGetter(LaserLineWorldDamageEvent::OriginVertical),
+                    Codec.DOUBLE.optionalFieldOf("origin_avance").forGetter(LaserLineWorldDamageEvent::OriginAvance),
+
+                    Codec.DOUBLE.optionalFieldOf("end_lateral").forGetter(LaserLineWorldDamageEvent::EndLateral),
+                    Codec.DOUBLE.optionalFieldOf("end_vertical").forGetter(LaserLineWorldDamageEvent::EndVertical),
+                    Codec.DOUBLE.optionalFieldOf("end_avance").forGetter(LaserLineWorldDamageEvent::EndAvance)
             ).apply(instance, LaserLineWorldDamageEvent::new)
     );
 
@@ -32,8 +42,19 @@ public record LaserLineWorldDamageEvent(Float damage, Float range,
         if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.BOTH, "Laser World Line Damage Event")) return;
 
         var level = livingCaster.level();
-        var casterPos = livingCaster.position().add(originOffset.orElse(Vec3.ZERO));
-        var targetPos = LaserEventHelper.resolveAimPoint(livingCaster, null, range, finalOffset.orElse(Vec3.ZERO));
+
+        var casterPos = livingCaster.position().add(LaserEventHelper.resolveLocalOffset(
+                livingCaster,
+                new Vec3(OriginLateral.orElse(0.0), OriginVertical.orElse(0.0), OriginAvance.orElse(0.0))
+        ));
+
+        var targetPos = LaserEventHelper.resolveAimPoint(
+                livingCaster, null, range,
+                LaserEventHelper.resolveLocalOffset(
+                        livingCaster,
+                        new Vec3(EndLateral.orElse(0.0), EndVertical.orElse(0.0), EndAvance.orElse(0.0))
+                )
+        );
 
         var points = LaserEventHelper.computeGroundedLazerPath(level, casterPos, targetPos, 1.3, 3.0, 32.0);
 

@@ -3,6 +3,7 @@ package sleys.efedp.system.animations.json.properties.functional.helpers;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -152,5 +153,9 @@ public final class LaserEventHelper {
             serverLevel.sendParticles(ParticleTypes.END_ROD,
                     pos.x, pos.y + 0.1, pos.z, 1, dx * 0.05, dy * 0.05, dz * 0.05, 0.25);
         }
+    }
+
+    public static Vec3 resolveLocalOffset(LivingEntity entity, Vec3 offset) {
+        return offset.yRot(-entity.getYRot() * Mth.DEG_TO_RAD);
     }
 }
