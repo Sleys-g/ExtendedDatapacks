@@ -2,10 +2,9 @@ package sleys.efedp.bootstrap;
 
 import net.neoforged.bus.api.IEventBus;
 import sleys.efedp.ExtendedDatapacks;
+import sleys.efedp.bootstrap.registry.ExtendedDatapacksRegistry;
 import sleys.efedp.system.animations.json.properties.functional.playback.list.PlaySpeedModifierLambda;
-import sleys.efedp.system.animations.json.properties.functional.playback.registry.PlaySpeedModifierTypeRegistry;
 import sleys.efedp.system.animations.json.properties.functional.time.list.*;
-import sleys.efedp.system.animations.json.properties.functional.time.registry.AnimationEventTypeRegistry;
 import sleys.sl.library.contract.ExpectedContracts;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -44,16 +43,21 @@ public class Bootstrap {
     }
 
     private static void registryAnimationsEvents() {
-        AnimationEventTypeRegistry.registerAsMain(DataAnimationsEvents.class);
-        AnimationEventTypeRegistry.registerAsMain(EntityAnimationsEvents.class);
-        AnimationEventTypeRegistry.registerAsMain(GameplayAnimationsEvents.class);
-        AnimationEventTypeRegistry.registerAsMain(ParticleAnimationsEvents.class);
-        AnimationEventTypeRegistry.registerAsMain(SummonAnimationsEvents.class);
-        AnimationEventTypeRegistry.registerAsMain(VisualAnimationsEvents.class);
+        ExtendedDatapacksRegistry.ANIMATIONS_EVENTS.register(
+                ExtendedDatapacks.MODID,
+                DataAnimationsEvents.class,
+                EntityAnimationsEvents.class,
+                GameplayAnimationsEvents.class,
+                ParticleAnimationsEvents.class,
+                SummonAnimationsEvents.class,
+                VisualAnimationsEvents.class
+        );
     }
 
     private static void registrySpeedModifiers() {
-        PlaySpeedModifierTypeRegistry.registerAsMain(PlaySpeedModifierLambda.class);
+        ExtendedDatapacksRegistry.ANIMATION_PLAYBACK.register(
+                ExtendedDatapacks.MODID, PlaySpeedModifierLambda.class
+        );
     }
 
     private static void changes() {

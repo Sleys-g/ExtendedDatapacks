@@ -15,10 +15,6 @@ public final class PlaySpeedModifierTypeRegistry {
 
     private PlaySpeedModifierTypeRegistry() {}
 
-    public static void registerAsMain(Class<? extends Enum<?>> enumClass) {
-        register(ExtendedDatapacks.MODID, enumClass);
-    }
-
     public static void register(String modId, Class<? extends Enum<?>> enumClass) {
         if (Bootstrap.isClosedRegistry()) throw new RegistryObjectException(
                 "Attempted illegal registration, the operation cannot be completed because the playbacks have been consumed by the accessors by the time this function is being called"
