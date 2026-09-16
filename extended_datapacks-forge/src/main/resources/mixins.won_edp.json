@@ -1,8 +1,8 @@
 {
   "required": false,
   "minVersion": "0.8",
-  "plugin": "sleys.efedp.mixins.plugins.WoMMixinPlugin",
-  "package": "sleys.efedp.mixins",
+  "plugin": "sleys.efedp.forge.mixins.plugins.WoMMixinPlugin",
+  "package": "sleys.efedp.forge.mixins",
   "refmap": "mixins.epicfight_edp.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [

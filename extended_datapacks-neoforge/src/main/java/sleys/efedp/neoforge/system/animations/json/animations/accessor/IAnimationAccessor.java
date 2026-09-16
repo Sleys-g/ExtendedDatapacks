@@ -1,0 +1,26 @@
+package sleys.efedp.neoforge.system.animations.json.animations.accessor;
+
+import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
+import yesman.epicfight.api.animation.AnimationManager;
+import yesman.epicfight.api.animation.types.DynamicAnimation;
+
+public sealed interface IAnimationAccessor<T extends DynamicAnimation> permits ActionAnimationAccessor, AimAnimationAccessor, AirAttackAnimationAccessor, AttackAnimationAccessor, ComboAttackAccessor, DashAttackAnimationAccessor, DodgeAnimationAccessor, GuardAnimationAccessor, HitAnimationAccessor, IAnimationExternalAccessor, KnockdownAnimationAccessor, LongHitAnimationAccessor, MovementAnimationAccessor, StaticAnimationAccessor {
+
+    IAnimationAccessorType accessorType();
+
+    @SuppressWarnings("UnusedReturnValue")
+    AnimationManager.AnimationAccessor<T> register(AnimationManager.AnimationBuilder builder, IAnimationProperties<T> property);
+
+    default void isSuccessful(AnimationManager.AnimationAccessor<T> accessor) {
+        ExtendedDatapacks.LOGGER.info(
+                "[<I> - Animation Accessor] Successfully registered animation '{}' for accessor type '{}'",
+                accessor, this.getAccessorId()
+        );
+    }
+
+    default String getAccessorId() {
+        return this.accessorType().id();
+    }
+}
