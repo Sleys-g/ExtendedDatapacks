@@ -37,7 +37,7 @@ public enum ExtendedDatapacksRegistry {
         if (!IAnimationEventType.class.isAssignableFrom(enumClass)) {
             ExtendedDatapacks.LOGGER.warn(
                     "[<E> - Animation Event] The namespace '{}' attempted to register a class '{}' that is not an instance of IAnimationEventType; therefore, registration was prevented...",
-                    enumClass.getSimpleName(), modId
+                    modId, enumClass.getSimpleName()
             );
             return;
         }
@@ -49,7 +49,7 @@ public enum ExtendedDatapacksRegistry {
         if (!IPlaySpeedModifierType.class.isAssignableFrom(enumClass)) {
             ExtendedDatapacks.LOGGER.warn(
                     "[<E> - Play Speed Modifier] The namespace '{}' attempted to register a class '{}' that is not an instance of IPlaySpeedModifierType; therefore, registration was prevented...",
-                    enumClass.getSimpleName(), modId
+                    modId, enumClass.getSimpleName()
             );
 
             return;
@@ -62,7 +62,7 @@ public enum ExtendedDatapacksRegistry {
         if (!IAnimationAccessorType.class.isAssignableFrom(enumClass)) {
             ExtendedDatapacks.LOGGER.warn(
                     "[<E> - Animation Accessor] The namespace '{}' attempted to register a class '{}' that is not an instance of IAnimationAccessorType; therefore, registration was prevented...",
-                    enumClass.getSimpleName(), modId
+                    modId, enumClass.getSimpleName()
             );
 
             return;
@@ -75,7 +75,7 @@ public enum ExtendedDatapacksRegistry {
         if (!IAnimationGroupType.class.isAssignableFrom(enumClass)) {
             ExtendedDatapacks.LOGGER.warn(
                     "[<E> - Animation Group] The namespace '{}' attempted to register a class '{}' that is not an instance of IAnimationGroupType; therefore, registration was prevented...",
-                    enumClass.getSimpleName(), modId
+                    modId, enumClass.getSimpleName()
             );
 
             return;
