@@ -1,6 +1,7 @@
 package sleys.efedp.neoforge.bootstrap;
 
 import net.neoforged.bus.api.IEventBus;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.types.ArmatureType;
 import sleys.efedp.neoforge.system.animations.json.properties.time.types.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.ExtendedDatapacksRegistry;
@@ -32,6 +33,7 @@ public class Bootstrap {
         if (STATE.equals(SystemState.CLOSED)) return;
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing...");
 
+        Bootstrap.registryAnimationsArmature();
         Bootstrap.registryAnimationsGroups();
         Bootstrap.registryAnimationsAccessors();
         Bootstrap.registryAnimationsEvents();
@@ -47,6 +49,13 @@ public class Bootstrap {
         );
 
         STATE = SystemState.CLOSED;
+    }
+
+    private static void registryAnimationsArmature() {
+        ExtendedDatapacksRegistry.ANIMATION_ARMATURE.register(
+                ExtendedDatapacks.MODID,
+                ArmatureType.class
+        );
     }
 
     private static void registryAnimationsGroups() {
@@ -75,7 +84,8 @@ public class Bootstrap {
                 ParticleAnimationsEvents.class,
                 SummonAnimationsEvents.class,
                 VisualAnimationsEvents.class,
-                GameAnimationsEvents.class
+                GameAnimationsEvents.class,
+                TaskableGameplayAnimationsEvents.class
         );
     }
 

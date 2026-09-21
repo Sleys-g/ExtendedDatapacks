@@ -6,24 +6,21 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.animations.types.InteractionAnimationAccessors;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.GuardAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record GuardAnimationAccessor(float transitionTime, float lockTime, String animationPath,
-                                     AssetAccessor<? extends Armature> armature) implements IAnimationAccessor<GuardAnimation> {
+                                     IArmatureType armatureType) implements IAnimationAccessor<GuardAnimation> {
 
     public static final MapCodec<GuardAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("transition_time").forGetter(GuardAnimationAccessor::transitionTime),
                     Codec.FLOAT.fieldOf("lock_time").forGetter(GuardAnimationAccessor::lockTime),
                     Codec.STRING.fieldOf("animation").forGetter(GuardAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, lockTime,path, armature) ->
-                    new GuardAnimationAccessor(transition, lockTime, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(GuardAnimationAccessor::armatureType)
+            ).apply(instance, GuardAnimationAccessor::new)
     );
 
     @Override
@@ -38,7 +35,7 @@ public record GuardAnimationAccessor(float transitionTime, float lockTime, Strin
                     transitionTime,
                     lockTime,
                     accessor,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

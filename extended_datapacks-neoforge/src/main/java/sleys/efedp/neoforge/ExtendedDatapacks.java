@@ -64,6 +64,8 @@ public class ExtendedDatapacks {
                 "Extended Datapacks - Client",
                 () -> ExtendedDatapacks.ExtendedDatapacksClient(modBus, modContainer)
         );
+//
+//        SLLPreferences.turnOnGameTest();
     }
 
     @ErrorHandled

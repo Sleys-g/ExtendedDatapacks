@@ -5,15 +5,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.animations.types.LivingAnimationAccessors;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record StaticAnimationAccessor(float transitionTime, boolean isRepeat, String animationPath,
-                                      AssetAccessor<? extends Armature> armature
+                                      IArmatureType armatureType
 ) implements IAnimationAccessor<StaticAnimation> {
 
     public static final MapCodec<StaticAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -21,10 +20,8 @@ public record StaticAnimationAccessor(float transitionTime, boolean isRepeat, St
                     Codec.FLOAT.fieldOf("transition_time").forGetter(StaticAnimationAccessor::transitionTime),
                     Codec.BOOL.fieldOf("is_repeat").forGetter(StaticAnimationAccessor::isRepeat),
                     Codec.STRING.fieldOf("animation").forGetter(StaticAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, repeat, path, armature) ->
-                    new StaticAnimationAccessor(transition, repeat, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(StaticAnimationAccessor::armatureType)
+            ).apply(instance, StaticAnimationAccessor::new)
     );
 
     @Override
@@ -40,7 +37,7 @@ public record StaticAnimationAccessor(float transitionTime, boolean isRepeat, St
                     transitionTime,
                     isRepeat,
                     accessor,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

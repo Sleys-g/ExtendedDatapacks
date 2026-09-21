@@ -79,6 +79,14 @@ Take a look at what is currently implemented and what is coming next!
       - [x] **On Begin Events** ✔️
       - [x] **On End Events** ✔️
 
+### 🏗️ Settling debts
+- [x] **Taskable Animation Event** ✔️
+  - [x] **Taskable Laser Line World Damage** ✔️
+  - [x] **Taskable Laser Floor World Damage** ✔️
+  - [x] **Taskable Laser Shape World Damage** ✔️
+  - [x] **Taskable Entity Clone** ✔️
+  - [x] **Taskable Entity Animated** ✔️
+
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates

@@ -5,16 +5,15 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.animations.types.InteractionAnimationAccessors;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.ActionAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record ActionAnimationAccessor(
         float transitionTime, float delay, String animationPath,
-        AssetAccessor<? extends Armature> armature
+        IArmatureType armatureType
 ) implements IAnimationAccessor<ActionAnimation> {
 
     public static final MapCodec<ActionAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -22,10 +21,8 @@ public record ActionAnimationAccessor(
                     Codec.FLOAT.fieldOf("transition_time").forGetter(ActionAnimationAccessor::transitionTime),
                     Codec.FLOAT.fieldOf("delay").forGetter(ActionAnimationAccessor::delay),
                     Codec.STRING.fieldOf("animation").forGetter(ActionAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, delay, path, armature) ->
-                    new ActionAnimationAccessor(transition, delay, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(ActionAnimationAccessor::armatureType)
+            ).apply(instance, ActionAnimationAccessor::new)
     );
 
     @Override
@@ -41,7 +38,7 @@ public record ActionAnimationAccessor(
                     transitionTime,
                     delay,
                     accessor,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

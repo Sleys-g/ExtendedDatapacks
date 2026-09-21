@@ -63,11 +63,9 @@ public class OwnableWitherGhost extends WitherGhostClone implements OwnableEntit
 
     @Override
     public boolean doHurtTarget(@NotNull Entity target) {
-        System.out.println("Puede golpear?: " + canDamage(target) + " Al objetivo: " + target);
         if (!canDamage(target)) return false;
         if (!this.getAreaDamage()) if (this.getTarget() == null || !target.equals(this.getTarget())) return false;
 
-        System.out.println("Aplicando!");
         var rawSupplier = ExecutionTasks.getRaw(ExecutionPolicy.RESIST, this::getEntityDamage);
         rawSupplier.ifSuccessOrElse(
                 damage -> this.onSuccessfulHurtTarget(target, damage),

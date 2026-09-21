@@ -6,23 +6,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.animations.types.HitAnimationAccessors;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.LongHitAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record LongHitAnimationAccessor(float transitionTime, String animationPath,
-                                       AssetAccessor<? extends Armature> armature) implements IAnimationAccessor<LongHitAnimation> {
+                                       IArmatureType armatureType) implements IAnimationAccessor<LongHitAnimation> {
 
     public static final MapCodec<LongHitAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("transition_time").forGetter(LongHitAnimationAccessor::transitionTime),
                     Codec.STRING.fieldOf("animation").forGetter(LongHitAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, path, armature) ->
-                    new LongHitAnimationAccessor(transition, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(LongHitAnimationAccessor::armatureType)
+            ).apply(instance, LongHitAnimationAccessor::new)
     );
 
     @Override
@@ -37,7 +34,7 @@ public record LongHitAnimationAccessor(float transitionTime, String animationPat
             var animation = new LongHitAnimation(
                     transitionTime,
                     accessor,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);
