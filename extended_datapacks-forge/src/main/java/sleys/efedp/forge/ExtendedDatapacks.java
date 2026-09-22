@@ -8,6 +8,7 @@ import sleys.efedp.forge.capability.data.HitParticleCache;
 import sleys.efedp.forge.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.forge.bootstrap.Bootstrap;
 import sleys.efedp.forge.client.config.EpicFightEDPClientConfig;
+import sleys.efedp.forge.events.ControlDamageEvent;
 import sleys.efedp.forge.registry.*;
 import sleys.efedp.forge.system.combat.MechanicsAssignerEvent;
 import sleys.efedp.forge.system.combat.ExtendedSkillCategory;
@@ -18,6 +19,7 @@ import sleys.efedp.forge.system.combat.charged_attacks.ChargedAttackStyles;
 import sleys.efedp.forge.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.forge.config.EpicFightEDPConfig;
 import net.minecraftforge.fml.common.Mod;
+import sleys.sl.library.SLLPreferences;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -43,21 +45,27 @@ public class ExtendedDatapacks {
         Style.ENUM_MANAGER.registerEnumCls(MODID, ChargedAttackStyles.class);
         SkillCategory.ENUM_MANAGER.registerEnumCls(MODID, ExtendedSkillCategory.class);
         SkillSlot.ENUM_MANAGER.registerEnumCls(MODID, ExtendedSkillSlot.class);
+
         MinecraftForge.EVENT_BUS.register(MechanicsAssignerEvent.class);
+        MinecraftForge.EVENT_BUS.register(ControlDamageEvent.class);
+
         modBus.register(HitParticleCache.class);
         modBus.register(ExtendedDatapacksAttributes.class);
         modBus.register(ExtendedDatapacksSkills.class);
-        ExtendedDatapacksEntities.REGISTRY.register(modBus);
         modBus.register(ExtendedDatapacksConditions.class);
-        context.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EPICFIGHT_CONFIG, CONFIG_PATH);
         modBus.addListener(ExtendedDatapacksEntitiesArmatures::registerEntitiesArmatures);
         modBus.register(ExtendedDatapacksPatchesEntities.class);
+
+        ExtendedDatapacksEntities.REGISTRY.register(modBus);
+        context.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EPICFIGHT_CONFIG, CONFIG_PATH);
 
         LogicalTasks.run(
                 LogicalPolicy.LOGICAL_CLIENT, ErrorPolicy.DEPURATE,
                 "Extended Datapacks - Client",
                 () -> ExtendedDatapacks.ExtendedDatapacksClient(modBus, context)
         );
+//
+//        SLLPreferences.turnOnGameTest();
 	}
 
     @ErrorHandled

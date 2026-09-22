@@ -6,16 +6,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.animations.types.InteractionAnimationAccessors;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
-import sleys.efedp.forge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.DodgeAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record DodgeAnimationAccessor(float transitionTime,
                                      float width, float height,
                                      String animationPath,
-                                     AssetAccessor<? extends Armature> armature) implements IAnimationAccessor<DodgeAnimation> {
+                                     IArmatureType armatureType) implements IAnimationAccessor<DodgeAnimation> {
 
     public static final MapCodec<DodgeAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -23,10 +22,8 @@ public record DodgeAnimationAccessor(float transitionTime,
                     Codec.FLOAT.fieldOf("width").forGetter(DodgeAnimationAccessor::width),
                     Codec.FLOAT.fieldOf("height").forGetter(DodgeAnimationAccessor::height),
                     Codec.STRING.fieldOf("animation").forGetter(DodgeAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, width, height,path, armature) ->
-                    new DodgeAnimationAccessor(transition, width, height, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(DodgeAnimationAccessor::armatureType)
+            ).apply(instance, DodgeAnimationAccessor::new)
     );
 
     @Override
@@ -42,7 +39,7 @@ public record DodgeAnimationAccessor(float transitionTime,
                     accessor,
                     width,
                     height,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

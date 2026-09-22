@@ -28,9 +28,7 @@ public final class AnimationGroupRegistry {
             IAnimationGroupType type = (IAnimationGroupType) constant;
             String key = type.id().toLowerCase(Locale.ROOT);
 
-            if (BY_KEY.putIfAbsent(key, type) != null) {
-                throw new IllegalStateException("Duplicate Animation Group key: " + key);
-            }
+            if (BY_KEY.putIfAbsent(key, type) != null) throw new IllegalStateException("[Animation Group - Registry] Duplicate Animation Group key: " + key);
             KEY_BY_INSTANCE.put(type, key);
         }
 

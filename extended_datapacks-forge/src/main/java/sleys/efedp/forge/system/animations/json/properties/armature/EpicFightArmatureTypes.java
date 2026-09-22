@@ -1,15 +1,11 @@
-package sleys.efedp.forge.system.animations.json.properties.phase;
+package sleys.efedp.forge.system.animations.json.properties.armature;
 
-import com.mojang.serialization.Codec;
-import sleys.sl.library.exceptions.RegistryObjectException;
-import sleys.sl.library.util.data.codec.EnumCodecs;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.gameasset.Armatures;
 
-import java.util.Arrays;
-
-public enum ArmatureType {
+public enum EpicFightArmatureTypes implements IArmatureType {
     BIPED("epicfight:entity/biped", Armatures.BIPED),
     CREEPER("epicfight:entity/creeper", Armatures.CREEPER),
     ENDERMAN("epicfight:entity/enderman", Armatures.ENDERMAN),
@@ -26,16 +22,18 @@ public enum ArmatureType {
     public final String id;
     public final AssetAccessor<? extends Armature> accessor;
 
-    ArmatureType(String id, AssetAccessor<? extends Armature> accessor) {
+    EpicFightArmatureTypes(String id, AssetAccessor<? extends Armature> accessor) {
         this.id = id;
         this.accessor = accessor;
     }
 
-    public static final Codec<ArmatureType> CODEC = EnumCodecs.byId(values(), c -> c.id);
-    public static ArmatureType fromAccessor(AssetAccessor<? extends Armature> accessor) {
-        return Arrays.stream(values())
-                .filter(a -> a.accessor == accessor)
-                .findFirst()
-                .orElseThrow(() -> new RegistryObjectException("[Armature Type] No ArmatureType found for accessor: " + accessor));
+    @Override
+    public String id() {
+        return id;
+    }
+
+    @Override
+    public AssetAccessor<? extends Armature> armature() {
+        return accessor;
     }
 }

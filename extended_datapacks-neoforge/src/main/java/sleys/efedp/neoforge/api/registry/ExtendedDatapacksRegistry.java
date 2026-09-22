@@ -5,8 +5,8 @@ import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimatio
 import sleys.efedp.neoforge.system.animations.json.animations.registry.AnimationAccessorRegistry;
 import sleys.efedp.neoforge.system.animations.json.groups.registry.AnimationGroupRegistry;
 import sleys.efedp.neoforge.system.animations.json.groups.registry.IAnimationGroupType;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.ArmatureTypeRegistry;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import sleys.efedp.neoforge.system.animations.json.properties.playback.registry.IPlaySpeedModifierType;
 import sleys.efedp.neoforge.system.animations.json.properties.playback.registry.PlaySpeedModifierTypeRegistry;
 import sleys.efedp.neoforge.system.animations.json.properties.time.registry.IAnimationEventType;

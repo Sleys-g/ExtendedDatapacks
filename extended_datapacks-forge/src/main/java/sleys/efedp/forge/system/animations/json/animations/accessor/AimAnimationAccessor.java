@@ -6,16 +6,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.animations.types.CombatAnimationAccessors;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
-import sleys.efedp.forge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.AimAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record AimAnimationAccessor(float transitionTime, boolean isRepeat, String animationPath,
                                    String animationMidPath, String animationUpPath,
                                    String animationDownPath, String animationLyingPath,
-                                   AssetAccessor<? extends Armature> armature) implements IAnimationAccessor<AimAnimation> {
+                                   IArmatureType armatureType) implements IAnimationAccessor<AimAnimation> {
 
     public static final MapCodec<AimAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -28,17 +27,8 @@ public record AimAnimationAccessor(float transitionTime, boolean isRepeat, Strin
                     Codec.STRING.fieldOf("animation_down").forGetter(AimAnimationAccessor::animationDownPath),
                     Codec.STRING.fieldOf("animation_lying").forGetter(AimAnimationAccessor::animationLyingPath),
 
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, repeat,
-                               animation, animation_mid,
-                               animation_up, animation_down,
-                               animation_lying, armature) ->
-                    new AimAnimationAccessor(
-                            transition, repeat, animation,
-                            animation_mid, animation_up, animation_down,
-                            animation_lying, armature.accessor
-                    )
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(AimAnimationAccessor::armatureType)
+            ).apply(instance, AimAnimationAccessor::new)
     );
 
     @Override
@@ -53,7 +43,7 @@ public record AimAnimationAccessor(float transitionTime, boolean isRepeat, Strin
                     transitionTime, isRepeat, accessor,
                     animationMidPath, animationUpPath,
                     animationDownPath, animationLyingPath,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

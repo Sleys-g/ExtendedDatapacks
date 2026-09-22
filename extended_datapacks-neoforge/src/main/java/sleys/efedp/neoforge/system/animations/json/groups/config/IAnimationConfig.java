@@ -45,6 +45,6 @@ public sealed interface IAnimationConfig<T extends StaticAnimation> permits Conf
     }
 
     default String getGroupId() {
-        return this.groupType().id();
+        return this.groupType().toString();
     }
 }

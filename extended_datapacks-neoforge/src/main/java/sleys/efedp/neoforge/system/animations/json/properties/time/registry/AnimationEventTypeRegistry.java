@@ -25,9 +25,7 @@ public final class AnimationEventTypeRegistry {
             IAnimationEventType type = (IAnimationEventType) constant;
             String key = modId + ":" + constant.name().toLowerCase(Locale.ROOT);
 
-            if (BY_KEY.putIfAbsent(key, type) != null) {
-                throw new IllegalStateException("Duplicate animation event key: " + key);
-            }
+            if (BY_KEY.putIfAbsent(key, type) != null) throw new IllegalStateException("[Animation Event - Registry] Duplicate animation event key: " + key);
             KEY_BY_INSTANCE.put(type, key);
         }
 

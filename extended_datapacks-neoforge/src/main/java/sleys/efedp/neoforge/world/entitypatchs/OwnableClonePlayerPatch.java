@@ -92,7 +92,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
         return (animation == null ||
                 animation.isEmpty() ||
                 animation.registryName() == null ||
-                animation.toString().contains("epicfight:empty")
+                animation.toString().contains("epicfight:emtpy")
         );
     }
 

@@ -1,9 +1,9 @@
-package sleys.efedp.neoforge.system.animations.json.properties.phase.registry;
+package sleys.efedp.forge.system.animations.json.properties.armature.registry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.bootstrap.Bootstrap;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.bootstrap.Bootstrap;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.exceptions.RegistryObjectModificationException;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -27,15 +27,13 @@ public final class ArmatureTypeRegistry {
         for (Enum<?> constant : enumClass.getEnumConstants()) {
             IArmatureType type = (IArmatureType) constant;
             String key = type.id().toLowerCase(Locale.ROOT);
-            if (!key.contains(":")) throw new IllegalArgumentException("Armature type id must be namespaced: " + key);
 
-            if (BY_ID.putIfAbsent(key, type) != null) {
-                throw new IllegalStateException("Duplicate armature type id: " + key);
-            }
-
+            if (BY_ID.putIfAbsent(key, type) != null) throw new IllegalStateException("[Armature - Registry] Duplicate armature type id: " + key);
             var previous = BY_ACCESSOR.putIfAbsent(type.armature(), type);
             if (previous != null) ExtendedDatapacks.LOGGER.warn("[Armature - Registry] {} shares its armature with {}", key, previous.id());
         }
+
+        ExtendedDatapacks.LOGGER.info("[Armature - Registry] Registration completed successfully!");
     }
 
     public static Optional<IArmatureType> find(String key) {

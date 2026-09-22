@@ -6,8 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.animations.types.CombatAnimationAccessors;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.ArmatureTypeRegistry;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.AimAnimation;
 

@@ -3,7 +3,7 @@ package sleys.efedp.neoforge.system.animations.json.properties.phase;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.types.AttackAnimation;

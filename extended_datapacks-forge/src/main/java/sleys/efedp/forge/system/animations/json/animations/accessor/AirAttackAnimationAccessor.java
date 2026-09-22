@@ -5,19 +5,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.animations.types.CombatAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.properties.phase.ArmatureType;
 import sleys.efedp.forge.system.animations.json.properties.phase.AnimationPhase;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.AirSlashAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 import java.util.Arrays;
 
 public record AirAttackAnimationAccessor(float transitionTime, String animationPath,
-                                         AssetAccessor<? extends Armature> armature,
+                                         IArmatureType armatureType,
                                          AnimationPhase... phases
 ) implements IAnimationAccessor<AirSlashAnimation> {
 
@@ -25,10 +24,10 @@ public record AirAttackAnimationAccessor(float transitionTime, String animationP
             instance.group(
                     Codec.FLOAT.fieldOf("transition_time").forGetter(AirAttackAnimationAccessor::transitionTime),
                     Codec.STRING.fieldOf("animation").forGetter(AirAttackAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature())),
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(AirAttackAnimationAccessor::armatureType),
                     AnimationPhase.CODEC.codec().listOf().fieldOf("phases").forGetter(r -> Arrays.asList(r.phases()))
             ).apply(instance, (transition, path, armature, phases) ->
-                    new AirAttackAnimationAccessor(transition, path, armature.accessor, phases.toArray(AnimationPhase[]::new))
+                    new AirAttackAnimationAccessor(transition, path, armature, phases.toArray(AnimationPhase[]::new))
             )
     );
 
@@ -40,12 +39,11 @@ public record AirAttackAnimationAccessor(float transitionTime, String animationP
     @Override
     public AnimationManager.AnimationAccessor<AirSlashAnimation> register(AnimationManager.AnimationBuilder builder,
                                                                           IAnimationProperties<AirSlashAnimation> property) {
-        ArmatureType armatureType = ArmatureType.fromAccessor(this.armature);
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new AirSlashAnimation(
                     transitionTime,
                     accessor,
-                    armature,
+                    armatureType.armature(),
                     Arrays.stream(phases)
                             .map(animationPhase -> animationPhase.parseToEpicFightPhases(armatureType))
                             .toArray(AttackAnimation.Phase[]::new)

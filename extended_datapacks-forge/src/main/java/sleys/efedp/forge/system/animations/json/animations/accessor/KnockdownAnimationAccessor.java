@@ -6,23 +6,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.animations.types.HitAnimationAccessors;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
-import sleys.efedp.forge.system.animations.json.properties.phase.ArmatureType;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.KnockdownAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 public record KnockdownAnimationAccessor(float transitionTime, String animationPath,
-                                         AssetAccessor<? extends Armature> armature) implements IAnimationAccessor<KnockdownAnimation> {
+                                         IArmatureType armatureType) implements IAnimationAccessor<KnockdownAnimation> {
 
     public static final MapCodec<KnockdownAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.FLOAT.fieldOf("transition_time").forGetter(KnockdownAnimationAccessor::transitionTime),
                     Codec.STRING.fieldOf("animation").forGetter(KnockdownAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, path, armature) ->
-                    new KnockdownAnimationAccessor(transition, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(KnockdownAnimationAccessor::armatureType)
+            ).apply(instance, KnockdownAnimationAccessor::new)
     );
 
     @Override
@@ -37,7 +34,7 @@ public record KnockdownAnimationAccessor(float transitionTime, String animationP
             var animation = new KnockdownAnimation(
                     transitionTime,
                     accessor,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

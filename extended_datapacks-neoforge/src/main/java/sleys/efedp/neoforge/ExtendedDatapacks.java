@@ -13,6 +13,7 @@ import sleys.efedp.neoforge.capability.data.SkillDataKeyCache;
 import sleys.efedp.neoforge.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.neoforge.bootstrap.Bootstrap;
 import sleys.efedp.neoforge.client.config.EpicFightEDPClientConfig;
+import sleys.efedp.neoforge.events.ControlDamageEvent;
 import sleys.efedp.neoforge.registry.*;
 import sleys.efedp.neoforge.system.combat.ExtendedSkillCategory;
 import sleys.efedp.neoforge.system.combat.MechanicsAssignerEvent;
@@ -46,18 +47,23 @@ public class ExtendedDatapacks {
         Style.ENUM_MANAGER.registerEnumCls(MODID, ChargedAttackStyles.class);
         SkillCategory.ENUM_MANAGER.registerEnumCls(MODID, ExtendedSkillCategory.class);
         SkillSlot.ENUM_MANAGER.registerEnumCls(MODID, ExtendedSkillSlot.class);
+
         NeoForge.EVENT_BUS.register(MechanicsAssignerEvent.class);
+        NeoForge.EVENT_BUS.register(ControlDamageEvent.class);
+
         modBus.register(SkillDataKeyCache.class);
         modBus.register(HitParticleCache.class);
         modBus.register(ExtendedDatapacksAttributes.class);
+        modBus.addListener(FMLCommonSetupEvent.class, ExtendedDatapacksEntitiesArmatures::registerEntitiesArmatures);
+
         ExtendedDatapacksSkills.REGISTRY.register(modBus);
         ExtendedDatapacksEntities.REGISTRY.register(modBus);
         ExtendedDatapacksConditions.CONDITIONS.register(modBus);
-        modContainer.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EDP, CONFIG_PATH);
-        modBus.addListener(FMLCommonSetupEvent.class, ExtendedDatapacksEntitiesArmatures::registerEntitiesArmatures);
         EpicFightEventHooks.Registry.ENTITY_PATCH.registerEvent(
                 ExtendedDatapacksPatchesEntities::registerPatchesEntities, ExtendedDatapacks.MODID
         );
+
+        modContainer.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EDP, CONFIG_PATH);
 
         LogicalTasks.run(
                 LogicalPolicy.LOGICAL_CLIENT, ErrorPolicy.DEPURATE,

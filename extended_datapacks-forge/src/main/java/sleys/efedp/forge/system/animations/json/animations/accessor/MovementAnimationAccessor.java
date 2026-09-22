@@ -5,15 +5,15 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.animations.types.LivingAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.properties.phase.ArmatureType;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.MovementAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
-public record MovementAnimationAccessor(float transitionTime, boolean isRepeat, String animationPath,
-                                        AssetAccessor<? extends Armature> armature
+public record MovementAnimationAccessor(float transitionTime, boolean isRepeat,
+                                        String animationPath,
+                                        IArmatureType armatureType
 ) implements IAnimationAccessor<MovementAnimation> {
 
     public static final MapCodec<MovementAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -21,10 +21,8 @@ public record MovementAnimationAccessor(float transitionTime, boolean isRepeat, 
                     Codec.FLOAT.fieldOf("transition_time").forGetter(MovementAnimationAccessor::transitionTime),
                     Codec.BOOL.fieldOf("is_repeat").forGetter(MovementAnimationAccessor::isRepeat),
                     Codec.STRING.fieldOf("animation").forGetter(MovementAnimationAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature()))
-            ).apply(instance, (transition, repeat, path, armature) ->
-                    new MovementAnimationAccessor(transition, repeat, path, armature.accessor)
-            )
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(MovementAnimationAccessor::armatureType)
+            ).apply(instance, MovementAnimationAccessor::new)
     );
 
     @Override
@@ -40,7 +38,7 @@ public record MovementAnimationAccessor(float transitionTime, boolean isRepeat, 
                     transitionTime,
                     isRepeat,
                     accessor,
-                    armature
+                    armatureType.armature()
             );
             property.applyTo(animation);
             this.isSuccessful(accessor);

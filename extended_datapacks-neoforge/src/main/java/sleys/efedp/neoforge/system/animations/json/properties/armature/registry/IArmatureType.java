@@ -1,4 +1,4 @@
-package sleys.efedp.neoforge.system.animations.json.properties.phase.registry;
+package sleys.efedp.neoforge.system.animations.json.properties.armature.registry;
 
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.model.Armature;

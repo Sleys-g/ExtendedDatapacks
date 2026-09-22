@@ -5,19 +5,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.animations.types.CombatAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.properties.phase.ArmatureType;
 import sleys.efedp.forge.system.animations.json.properties.phase.AnimationPhase;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.BasicAttackAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.model.Armature;
 
 import java.util.Arrays;
 
 public record ComboAttackAccessor(float transitionTime, String animationPath,
-                                  AssetAccessor<? extends Armature> armature,
+                                  IArmatureType armatureType,
                                   AnimationPhase... phases
 ) implements IAnimationAccessor<BasicAttackAnimation> {
 
@@ -25,10 +24,10 @@ public record ComboAttackAccessor(float transitionTime, String animationPath,
             instance.group(
                     Codec.FLOAT.fieldOf("transition_time").forGetter(ComboAttackAccessor::transitionTime),
                     Codec.STRING.fieldOf("animation").forGetter(ComboAttackAccessor::animationPath),
-                    ArmatureType.CODEC.fieldOf("armature").forGetter(r -> ArmatureType.fromAccessor(r.armature())),
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(ComboAttackAccessor::armatureType),
                     AnimationPhase.CODEC.codec().listOf().fieldOf("phases").forGetter(r -> Arrays.asList(r.phases()))
             ).apply(instance, (transition, path, armature, phases) ->
-                    new ComboAttackAccessor(transition, path, armature.accessor, phases.toArray(AnimationPhase[]::new))
+                    new ComboAttackAccessor(transition, path, armature, phases.toArray(AnimationPhase[]::new))
             )
     );
 
@@ -40,13 +39,11 @@ public record ComboAttackAccessor(float transitionTime, String animationPath,
     @Override
     public AnimationManager.AnimationAccessor<BasicAttackAnimation> register(AnimationManager.AnimationBuilder builder,
                                                                              IAnimationProperties<BasicAttackAnimation> property) {
-
-        ArmatureType armatureType = ArmatureType.fromAccessor(this.armature);
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new BasicAttackAnimation(
                     transitionTime,
                     accessor,
-                    armature,
+                    armatureType.armature(),
                     Arrays.stream(phases)
                             .map(animationPhase -> animationPhase.parseToEpicFightPhases(armatureType))
                             .toArray(AttackAnimation.Phase[]::new)

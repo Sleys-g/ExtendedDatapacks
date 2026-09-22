@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
@@ -23,7 +24,7 @@ import yesman.epicfight.registry.entries.EpicFightAttributes;
 import java.util.Optional;
 import java.util.UUID;
 
-public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity {
+public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, IControlableEntityDamage {
 
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID =
             SynchedEntityData.defineId(
@@ -36,6 +37,8 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity {
 
     private Vec3 spawnOffset = Vec3.ZERO;
     private long despawnAtGameTime = -1L;
+
+    private float MULTIPLIER = 1f;
 
     public OwnableClonePlayer(EntityType<? extends OwnableClonePlayer> entityType, Level level) {
         super(entityType, level);
@@ -219,5 +222,19 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity {
                 .add(EpicFightAttributes.ARMOR_NEGATION)
                 .add(EpicFightAttributes.IMPACT)
                 .add(EpicFightAttributes.MAX_STRIKES);
+    }
+
+    @Override
+    public void entityHurtEvent(LivingDamageEvent.Pre event) {
+        var damage = event.getNewDamage() * this.getMultiplier();
+        event.setNewDamage(damage);
+    }
+
+    public float getMultiplier() {
+        return this.MULTIPLIER;
+    }
+
+    public void setMultiplier(float multiplier) {
+        this.MULTIPLIER = multiplier;
     }
 }

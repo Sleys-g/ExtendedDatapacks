@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.InteractionHand;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.registry.IArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 
 import java.util.Arrays;

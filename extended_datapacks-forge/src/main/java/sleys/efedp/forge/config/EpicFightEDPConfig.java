@@ -11,6 +11,7 @@ public class EpicFightEDPConfig {
     public static final ForgeConfigSpec.BooleanValue USE_STAMINA_IN_CHARGED_ATTACKS;
     public static final ForgeConfigSpec.BooleanValue USE_WEIGHT_IN_CHARGED_ATTACKS;
     public static final ForgeConfigSpec.DoubleValue SET_WEIGHT_IN_CHARGED_ATTACKS;
+
     public static final ForgeConfigSpec.EnumValue<ExecutionPolicy> RUNNER_TYPE_ENUM_VALUE;
 
     static {
@@ -20,8 +21,8 @@ public class EpicFightEDPConfig {
         RUNNER_TYPE_ENUM_VALUE = builder
                 .comment("""
                         Determine how Epic Fight EDP will handle errors.\
-                        CATCH: Catches errors, preventing the game from closing if an error occurs. It does not provide any debugging data.\
-                        EXCEPTION: Closes the game immediately upon an error. The closure is immediate and provides debugging data."""
+                        RESIST: Catches errors, preventing the game from closing if an error occurs. It does not provide any debugging data.\
+                        ABORT: Closes the game immediately upon an error. The closure is immediate and provides debugging data."""
                 )
                 .defineEnum("fatalEpicFightEDPRuntimeHandler", ExecutionPolicy.RESIST);
 

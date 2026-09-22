@@ -24,9 +24,7 @@ public final class PlaySpeedModifierTypeRegistry {
             IPlaySpeedModifierType type = (IPlaySpeedModifierType) constant;
             String key = modId + ":" + constant.name().toLowerCase(Locale.ROOT);
 
-            if (BY_KEY.putIfAbsent(key, type) != null) {
-                throw new IllegalStateException("Duplicate playback speed modifier key: " + key);
-            }
+            if (BY_KEY.putIfAbsent(key, type) != null) throw new IllegalStateException("[Play Speed Modifier - Registry] Duplicate playback speed modifier key: " + key);
             KEY_BY_INSTANCE.put(type, key);
         }
 

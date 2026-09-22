@@ -9,5 +9,11 @@ public class ExtendedDatapacksEntitiesArmatures {
         Armatures.registerEntityTypeArmature(
                 ExtendedDatapacksEntities.OWNABLE_WITHER_GHOST.get(), Armatures.WITHER
         );
+        Armatures.registerEntityTypeArmature(
+                ExtendedDatapacksEntities.OWNABLE_CLONE_PLAYER.get(), Armatures.BIPED
+        );
+        Armatures.registerEntityTypeArmature(
+                ExtendedDatapacksEntities.OWNABLE_ANIMATED_PLAYER.get(), Armatures.BIPED
+        );
     }
 }

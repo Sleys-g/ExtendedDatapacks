@@ -2,11 +2,9 @@ package sleys.efedp.forge.conditions;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.jetbrains.annotations.ApiStatus;
 import yesman.epicfight.skill.SkillDataKey;
 import yesman.epicfight.skill.SkillDataKeys;
 
-@ApiStatus.Internal
 public class CommonUtilities {
 
     public static boolean compareFloatValues(float actual, float expected, ComparisonType type, float tolerance) {

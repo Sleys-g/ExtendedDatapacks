@@ -1,4 +1,4 @@
-package sleys.efedp.neoforge.system.animations.json.properties.phase.registry;
+package sleys.efedp.neoforge.system.animations.json.properties.armature.registry;
 
 import sleys.sl.library.util.io.FriendlyErrorBuilder;
 

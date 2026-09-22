@@ -1,8 +1,5 @@
 package sleys.efedp.forge.conditions;
 
-import org.jetbrains.annotations.ApiStatus;
-
-@ApiStatus.Internal
 public enum ComparisonType {
     EQUAL("="),
     NOT_EQUAL("!="),

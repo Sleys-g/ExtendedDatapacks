@@ -28,9 +28,7 @@ public final class AnimationAccessorRegistry {
             IAnimationAccessorType type = (IAnimationAccessorType) constant;
             String key = type.id().toLowerCase(Locale.ROOT);
 
-            if (BY_KEY.putIfAbsent(key, type) != null) {
-                throw new IllegalStateException("Duplicate Animation Accessor key: " + key);
-            }
+            if (BY_KEY.putIfAbsent(key, type) != null) throw new IllegalStateException("[Animation Accessor - Registry] Duplicate Animation Accessor key: " + key);
             KEY_BY_INSTANCE.put(type, key);
         }
 

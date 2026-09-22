@@ -8,6 +8,7 @@ import sleys.efedp.forge.system.animations.json.animations.types.HitAnimationAcc
 import sleys.efedp.forge.system.animations.json.animations.types.InteractionAnimationAccessors;
 import sleys.efedp.forge.system.animations.json.animations.types.LivingAnimationAccessors;
 import sleys.efedp.forge.system.animations.json.groups.types.EpicFightAnimationGroups;
+import sleys.efedp.forge.system.animations.json.properties.armature.EpicFightArmatureTypes;
 import sleys.efedp.forge.system.animations.json.properties.playback.types.AnimationPlaySpeedModifiers;
 import sleys.efedp.forge.system.animations.json.properties.time.types.*;
 import sleys.sl.library.contract.ExpectedContracts;
@@ -32,6 +33,7 @@ public class Bootstrap {
         if (STATE.equals(SystemState.CLOSED)) return;
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing...");
 
+        Bootstrap.registryAnimationsArmature();
         Bootstrap.registryAnimationsGroups();
         Bootstrap.registryAnimationsAccessors();
         Bootstrap.registryAnimationsEvents();
@@ -48,6 +50,13 @@ public class Bootstrap {
         );
 
         STATE = SystemState.CLOSED;
+    }
+
+    private static void registryAnimationsArmature() {
+        ExtendedDatapacksRegistry.ANIMATION_ARMATURE.register(
+                ExtendedDatapacks.MODID,
+                EpicFightArmatureTypes.class
+        );
     }
 
     private static void registryAnimationsGroups() {
@@ -76,7 +85,8 @@ public class Bootstrap {
                 ParticleAnimationsEvents.class,
                 SummonAnimationsEvents.class,
                 VisualAnimationsEvents.class,
-                GameAnimationsEvents.class
+                GameAnimationsEvents.class,
+                TaskableGameplayAnimationsEvents.class
         );
     }
 

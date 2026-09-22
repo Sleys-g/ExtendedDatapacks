@@ -15,6 +15,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import java.util.Optional;
 
 public record TaskableEntityCloneEvent(int duration,
+                                       Optional<Float> damageFactor,
                                        Optional<Double> lateralOffset,
                                        Optional<Double> verticalOffset,
                                        Optional<Double> avanceOffset) implements IAnimationEventParams {
@@ -22,6 +23,7 @@ public record TaskableEntityCloneEvent(int duration,
     public static final MapCodec<TaskableEntityCloneEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.INT.fieldOf("duration").forGetter(TaskableEntityCloneEvent::duration),
+                    Codec.FLOAT.optionalFieldOf("damage_factor").forGetter(TaskableEntityCloneEvent::damageFactor),
                     Codec.DOUBLE.optionalFieldOf("lateral_offset").forGetter(TaskableEntityCloneEvent::lateralOffset),
                     Codec.DOUBLE.optionalFieldOf("vertical_offset").forGetter(TaskableEntityCloneEvent::verticalOffset),
                     Codec.DOUBLE.optionalFieldOf("avance_offset").forGetter(TaskableEntityCloneEvent::avanceOffset)
@@ -39,6 +41,7 @@ public record TaskableEntityCloneEvent(int duration,
                 level, new Vec3(lateralOffset.orElse(0.0), verticalOffset.orElse(0.0), avanceOffset.orElse(0.0)),
                 player.position(), player, this.duration()
         );
+        damageFactor.ifPresent(cloneEntity::setMultiplier);
         level.addFreshEntity(cloneEntity);
     }
 }

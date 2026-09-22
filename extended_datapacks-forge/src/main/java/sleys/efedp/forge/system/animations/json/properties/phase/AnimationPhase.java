@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.InteractionHand;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 
 import java.util.Arrays;
@@ -40,7 +41,7 @@ public record AnimationPhase(float anticipation, float pre_delay, float contact,
             )
     );
 
-    public AttackAnimation.Phase parseToEpicFightPhases(ArmatureType armatureType) {
+    public AttackAnimation.Phase parseToEpicFightPhases(IArmatureType armatureType) {
         AttackAnimation.JointColliderPair[] pairs = Arrays.stream(jointColliders)
                 .map(c -> c.resolve(armatureType))
                 .toArray(AttackAnimation.JointColliderPair[]::new);

@@ -1,7 +1,7 @@
 package sleys.efedp.neoforge.bootstrap;
 
 import net.neoforged.bus.api.IEventBus;
-import sleys.efedp.neoforge.system.animations.json.properties.phase.types.ArmatureType;
+import sleys.efedp.neoforge.system.animations.json.properties.armature.EpicFightArmatureTypes;
 import sleys.efedp.neoforge.system.animations.json.properties.time.types.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.ExtendedDatapacksRegistry;
@@ -54,7 +54,7 @@ public class Bootstrap {
     private static void registryAnimationsArmature() {
         ExtendedDatapacksRegistry.ANIMATION_ARMATURE.register(
                 ExtendedDatapacks.MODID,
-                ArmatureType.class
+                EpicFightArmatureTypes.class
         );
     }
 

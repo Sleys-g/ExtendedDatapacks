@@ -17,6 +17,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import java.util.Optional;
 
 public record TaskableEntityAnimatedEvent(ResourceLocation animation,
+                                          Optional<Float> damageFactor,
                                           Optional<Double> lateralOffset,
                                           Optional<Double> verticalOffset,
                                           Optional<Double> avanceOffset) implements IAnimationEventParams {
@@ -24,6 +25,7 @@ public record TaskableEntityAnimatedEvent(ResourceLocation animation,
     public static final MapCodec<TaskableEntityAnimatedEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("animation").forGetter(TaskableEntityAnimatedEvent::animation),
+                    Codec.FLOAT.optionalFieldOf("damage_factor").forGetter(TaskableEntityAnimatedEvent::damageFactor),
                     Codec.DOUBLE.optionalFieldOf("lateral_offset").forGetter(TaskableEntityAnimatedEvent::lateralOffset),
                     Codec.DOUBLE.optionalFieldOf("vertical_offset").forGetter(TaskableEntityAnimatedEvent::verticalOffset),
                     Codec.DOUBLE.optionalFieldOf("avance_offset").forGetter(TaskableEntityAnimatedEvent::avanceOffset)
@@ -41,6 +43,7 @@ public record TaskableEntityAnimatedEvent(ResourceLocation animation,
                 level, new Vec3(lateralOffset.orElse(0.0), verticalOffset.orElse(0.0), avanceOffset.orElse(0.0)),
                 player.position(), player, patch.getTarget(), AnimationManager.byKey(animation)
         );
+        damageFactor.ifPresent(animatedEntity::setMultiplier);
         level.addFreshEntity(animatedEntity);
     }
 }

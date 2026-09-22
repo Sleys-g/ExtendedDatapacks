@@ -5,6 +5,8 @@ import sleys.efedp.forge.system.animations.json.animations.registry.AnimationAcc
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.groups.registry.AnimationGroupRegistry;
 import sleys.efedp.forge.system.animations.json.groups.registry.IAnimationGroupType;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import sleys.efedp.forge.system.animations.json.properties.playback.registry.IPlaySpeedModifierType;
 import sleys.efedp.forge.system.animations.json.properties.playback.registry.PlaySpeedModifierTypeRegistry;
 import sleys.efedp.forge.system.animations.json.properties.time.registry.AnimationEventTypeRegistry;
@@ -17,6 +19,7 @@ public enum ExtendedDatapacksRegistry {
     ANIMATION_PLAYBACK(ExtendedDatapacksRegistry::onRegisterPlaySpeedModifier),
     ANIMATION_ACCESSOR(ExtendedDatapacksRegistry::onRegisterAnimationsAccessor),
     ANIMATION_GROUP(ExtendedDatapacksRegistry::onRegisterAnimationsGroups),
+    ANIMATION_ARMATURE(ExtendedDatapacksRegistry::onRegisterAnimationsArmatures)
 
     ;private final BiConsumer<String, Class<? extends Enum<?>>> registryProcess;
 
@@ -82,5 +85,18 @@ public enum ExtendedDatapacksRegistry {
         }
 
         AnimationGroupRegistry.register(modId, enumClass);
+    }
+
+    private static void onRegisterAnimationsArmatures(String modId, Class<? extends Enum<?>> enumClass) {
+        if (!IArmatureType.class.isAssignableFrom(enumClass)) {
+            ExtendedDatapacks.LOGGER.warn(
+                    "[<E> - Animation Armature] The namespace '{}' attempted to register a class '{}' that is not an instance of IArmatureType; therefore, registration was prevented...",
+                    modId, enumClass.getSimpleName()
+            );
+
+            return;
+        }
+
+        ArmatureTypeRegistry.register(modId, enumClass);
     }
 }
