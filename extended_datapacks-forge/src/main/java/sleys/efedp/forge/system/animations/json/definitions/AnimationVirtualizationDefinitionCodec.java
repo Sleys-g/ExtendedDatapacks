@@ -3,8 +3,8 @@ package sleys.efedp.forge.system.animations.json.definitions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.efedp.forge.system.animations.json.groups.virtual.IAnimationVirtualization;
+import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.sl.library.annotations.LegacyFunction;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 

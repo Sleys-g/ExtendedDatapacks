@@ -2,6 +2,7 @@ package sleys.efedp.forge.system.animations.json.properties;
 
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 
-public sealed interface IAnimationProperties<T extends DynamicAnimation> permits ActionAnimationProperties, AimAnimationProperties, AirAttackAnimationProperties, AttackAnimationProperties, ComboAttackAnimationProperties, DashAttackAnimationProperties, DodgeAnimationProperties, GuardAnimationProperties, HitAnimationProperties, KnockdownAnimationProperties, LongHitAnimationProperties, MovementAnimationProperties, StaticAnimationProperties, IAnimationExternalProperties {
+public sealed interface IAnimationProperties<T extends DynamicAnimation> permits
+        ActionAnimationProperties, AttackAnimationProperties, IAnimationExternalProperties, StaticAnimationProperties {
     void applyTo(T animation);
 }

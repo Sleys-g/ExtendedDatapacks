@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.animations.types.HitAnimationAccessors;
+import sleys.efedp.forge.system.animations.json.animations.types.ActionAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
@@ -24,7 +24,7 @@ public record KnockdownAnimationAccessor(float transitionTime, String animationP
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return HitAnimationAccessors.KNOCKDOWN;
+        return ActionAnimationAccessorType.KNOCKDOWN;
     }
 
     @Override

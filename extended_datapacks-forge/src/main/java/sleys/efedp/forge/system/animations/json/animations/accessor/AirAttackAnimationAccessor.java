@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.animations.types.CombatAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.properties.phase.AnimationPhase;
+import sleys.efedp.forge.system.animations.json.animations.types.AttackAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.phase.AnimationPhase;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
@@ -33,7 +33,7 @@ public record AirAttackAnimationAccessor(float transitionTime, String animationP
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return CombatAnimationAccessors.AIR_ATTACK;
+        return AttackAnimationAccessorType.AIR_ATTACK;
     }
 
     @Override

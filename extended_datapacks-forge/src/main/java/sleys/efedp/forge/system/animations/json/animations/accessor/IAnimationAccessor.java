@@ -6,7 +6,7 @@ import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 
-public sealed interface IAnimationAccessor<T extends DynamicAnimation> permits ActionAnimationAccessor, AimAnimationAccessor, AirAttackAnimationAccessor, AttackAnimationAccessor, ComboAttackAccessor, DashAttackAnimationAccessor, DodgeAnimationAccessor, GuardAnimationAccessor, HitAnimationAccessor, IAnimationExternalAccessor, KnockdownAnimationAccessor, LongHitAnimationAccessor, MovementAnimationAccessor, StaticAnimationAccessor {
+public sealed interface IAnimationAccessor<T extends DynamicAnimation> permits ActionAnimationAccessor, AimAnimationAccessor, AirAttackAnimationAccessor, AttackAnimationAccessor, ComboAttackAccessor, DashAttackAnimationAccessor, DodgeAnimationAccessor, EmoteAnimationAccessor, GuardAnimationAccessor, HitAnimationAccessor, IAnimationExternalAccessor, InvincibleAnimationAccessor, KnockdownAnimationAccessor, LongHitAnimationAccessor, MountAttackAnimationAccessor, MovementAnimationAccessor, RangedAttackAnimationAccessor, StaticAnimationAccessor {
 
     IAnimationAccessorType accessorType();
 

@@ -6,25 +6,25 @@ import sleys.efedp.forge.system.animations.json.groups.config.ConfigStaticAnimat
 import sleys.efedp.forge.system.animations.json.definitions.AnimationConfigDefinitionCodec;
 import sleys.efedp.forge.system.animations.json.definitions.AnimationVirtualizationDefinitionCodec;
 import sleys.efedp.forge.system.animations.json.groups.registry.IAnimationGroupType;
-import sleys.efedp.forge.system.animations.json.properties.ActionAnimationProperties;
-import sleys.efedp.forge.system.animations.json.properties.AttackAnimationProperties;
-import sleys.efedp.forge.system.animations.json.properties.StaticAnimationProperties;
 import sleys.efedp.forge.system.animations.json.groups.virtual.VirtualActionAnimationGroup;
 import sleys.efedp.forge.system.animations.json.groups.virtual.VirtualAttackAnimationGroup;
 import sleys.efedp.forge.system.animations.json.groups.virtual.VirtualStaticAnimationGroup;
+import sleys.efedp.forge.system.animations.json.properties.ActionAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.AttackAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.StaticAnimationProperties;
 
 public enum EpicFightAnimationGroups implements IAnimationGroupType {
     STATIC_GROUP("epicfight_edp:static_group",
-            new AnimationVirtualizationDefinitionCodec<>(VirtualStaticAnimationGroup.CODEC, StaticAnimationProperties.CODEC),
-            new AnimationConfigDefinitionCodec<>(ConfigStaticAnimationGroup.CODEC, StaticAnimationProperties.CODEC)
+            new AnimationVirtualizationDefinitionCodec<>(VirtualStaticAnimationGroup.CODEC, StaticAnimationProperties.codec()),
+            new AnimationConfigDefinitionCodec<>(ConfigStaticAnimationGroup.CODEC, StaticAnimationProperties.codec())
     ),
     ATTACK_GROUP("epicfight_edp:attack_group",
-            new AnimationVirtualizationDefinitionCodec<>(VirtualActionAnimationGroup.CODEC, ActionAnimationProperties.CODEC),
-            new AnimationConfigDefinitionCodec<>(ConfigActionAnimationGroup.CODEC, ActionAnimationProperties.CODEC)
+            new AnimationVirtualizationDefinitionCodec<>(VirtualActionAnimationGroup.CODEC, ActionAnimationProperties.codec()),
+            new AnimationConfigDefinitionCodec<>(ConfigActionAnimationGroup.CODEC, ActionAnimationProperties.codec())
     ),
     ACTION_GROUP("epicfight_edp:action_group",
-            new AnimationVirtualizationDefinitionCodec<>(VirtualAttackAnimationGroup.CODEC, AttackAnimationProperties.CODEC),
-            new AnimationConfigDefinitionCodec<>(ConfigAttackAnimationGroup.CODEC, AttackAnimationProperties.CODEC)
+            new AnimationVirtualizationDefinitionCodec<>(VirtualAttackAnimationGroup.CODEC, AttackAnimationProperties.codec()),
+            new AnimationConfigDefinitionCodec<>(ConfigAttackAnimationGroup.CODEC, AttackAnimationProperties.codec())
     );
 
     private final String id;

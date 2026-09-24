@@ -9,29 +9,31 @@ import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperti
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import yesman.epicfight.api.animation.AnimationManager;
-import yesman.epicfight.api.animation.types.LongHitAnimation;
+import yesman.epicfight.api.animation.types.InvincibleAnimation;
 
-public record LongHitAnimationAccessor(float transitionTime, String animationPath,
-                                       IArmatureType armatureType) implements IAnimationAccessor<LongHitAnimation> {
+public record InvincibleAnimationAccessor(float transitionTime,
+                                          String animationPath,
+                                          IArmatureType armatureType
+) implements IAnimationAccessor<InvincibleAnimation> {
 
-    public static final MapCodec<LongHitAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final MapCodec<InvincibleAnimationAccessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Codec.FLOAT.fieldOf("transition_time").forGetter(LongHitAnimationAccessor::transitionTime),
-                    Codec.STRING.fieldOf("animation").forGetter(LongHitAnimationAccessor::animationPath),
-                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(LongHitAnimationAccessor::armatureType)
-            ).apply(instance, LongHitAnimationAccessor::new)
+                    Codec.FLOAT.fieldOf("transitionTime").forGetter(InvincibleAnimationAccessor::transitionTime),
+                    Codec.STRING.fieldOf("animation").forGetter(InvincibleAnimationAccessor::animationPath),
+                    ArmatureTypeRegistry.CODEC.fieldOf("armature").forGetter(InvincibleAnimationAccessor::armatureType)
+            ).apply(instance, InvincibleAnimationAccessor::new)
     );
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return ActionAnimationAccessorType.LONG_HIT;
+        return ActionAnimationAccessorType.INVINCIBLE;
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<LongHitAnimation> register(AnimationManager.AnimationBuilder builder,
-                                                                         IAnimationProperties<LongHitAnimation> property) {
+    public AnimationManager.AnimationAccessor<InvincibleAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                        IAnimationProperties<InvincibleAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
-            var animation = new LongHitAnimation(
+            var animation = new InvincibleAnimation(
                     transitionTime,
                     accessor,
                     armatureType.armature()

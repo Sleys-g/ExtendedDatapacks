@@ -1,10 +1,10 @@
-package sleys.efedp.forge.system.animations.json.properties.groups;
+package sleys.efedp.neoforge.system.animations.json.properties;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec2;
-import sleys.efedp.forge.system.animations.json.properties.coords.AnimationCoord;
+import sleys.efedp.neoforge.system.animations.json.properties.coords.AnimationCoord;
 import sleys.sl.library.util.data.codec.SLCodec;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
@@ -12,7 +12,7 @@ import yesman.epicfight.api.utils.TimePairList;
 
 import java.util.Optional;
 
-public record ActionPropertyGroup<T extends ActionAnimation>(
+public record ActionAnimationPropertyGroup<T extends ActionAnimation>(
         Optional<Boolean> stopMovement,
         Optional<Boolean> removeDeltaMovement,
         Optional<Boolean> moveVertical,
@@ -27,42 +27,42 @@ public record ActionPropertyGroup<T extends ActionAnimation>(
         Optional<AnimationCoord<T>> animationCoords
 ) {
 
-    public static <T extends ActionAnimation> MapCodec<ActionPropertyGroup<T>> codec() {
+    public static <T extends ActionAnimation> MapCodec<ActionAnimationPropertyGroup<T>> codec() {
         return RecordCodecBuilder.mapCodec(instance ->
                 instance.group(
                         Codec.BOOL.optionalFieldOf("stop_movements")
-                                .forGetter(ActionPropertyGroup::stopMovement),
+                                .forGetter(ActionAnimationPropertyGroup::stopMovement),
 
                         Codec.BOOL.optionalFieldOf("remove_delta_move")
-                                .forGetter(ActionPropertyGroup::removeDeltaMovement),
+                                .forGetter(ActionAnimationPropertyGroup::removeDeltaMovement),
 
                         Codec.BOOL.optionalFieldOf("move_vertically")
-                                .forGetter(ActionPropertyGroup::moveVertical),
+                                .forGetter(ActionAnimationPropertyGroup::moveVertical),
 
                         Codec.BOOL.optionalFieldOf("move_during_link")
-                                .forGetter(ActionPropertyGroup::moveOnLink),
+                                .forGetter(ActionAnimationPropertyGroup::moveOnLink),
 
                         Codec.BOOL.optionalFieldOf("move_speed_based_distance")
-                                .forGetter(ActionPropertyGroup::affectSpeed),
+                                .forGetter(ActionAnimationPropertyGroup::affectSpeed),
 
                         Codec.BOOL.optionalFieldOf("cancellable_movement")
-                                .forGetter(ActionPropertyGroup::cancelableMove),
+                                .forGetter(ActionAnimationPropertyGroup::cancelableMove),
 
                         Codec.BOOL.optionalFieldOf("is_death")
-                                .forGetter(ActionPropertyGroup::isDeathAnimation),
+                                .forGetter(ActionAnimationPropertyGroup::isDeathAnimation),
 
                         Codec.BOOL.optionalFieldOf("reset_combo_attack_counter")
-                                .forGetter(ActionPropertyGroup::resetPlayerComboCounter),
+                                .forGetter(ActionAnimationPropertyGroup::resetPlayerComboCounter),
 
                         Codec.BOOL.optionalFieldOf("sync_camera")
-                                .forGetter(ActionPropertyGroup::syncCamera),
+                                .forGetter(ActionAnimationPropertyGroup::syncCamera),
 
                         SLCodec.VEC2_CODEC.optionalFieldOf("no_gravity_time")
-                                .forGetter(ActionPropertyGroup::noGravityTime),
+                                .forGetter(ActionAnimationPropertyGroup::noGravityTime),
 
                         AnimationCoord.<T>codec().codec().optionalFieldOf("animation_coords")
-                                .forGetter(ActionPropertyGroup::animationCoords)
-                ).apply(instance, ActionPropertyGroup::new)
+                                .forGetter(ActionAnimationPropertyGroup::animationCoords)
+                ).apply(instance, ActionAnimationPropertyGroup::new)
         );
     }
 
@@ -75,6 +75,7 @@ public record ActionPropertyGroup<T extends ActionAnimation>(
         cancelableMove.ifPresent(cancelableMove ->  animation.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, cancelableMove));
         isDeathAnimation.ifPresent(isDeathAnimation ->  animation.addProperty(AnimationProperty.ActionAnimationProperty.IS_DEATH_ANIMATION, isDeathAnimation));
         syncCamera.ifPresent(syncCamera ->  animation.addProperty(AnimationProperty.ActionAnimationProperty.SYNC_CAMERA, syncCamera));
+        resetPlayerComboCounter.ifPresent(resetPlayerComboCounter -> animation.addProperty(AnimationProperty.ActionAnimationProperty.RESET_PLAYER_COMBO_COUNTER, resetPlayerComboCounter));
 
         noGravityTime.ifPresent(noGravityTime -> animation.addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(noGravityTime.x, noGravityTime.y)));
         animationCoords.ifPresent(animationCoords -> animationCoords.applyCoords(animation));

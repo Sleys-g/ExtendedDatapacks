@@ -3,10 +3,9 @@ package sleys.efedp.forge.bootstrap;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.api.registry.ExtendedDatapacksRegistry;
-import sleys.efedp.forge.system.animations.json.animations.types.CombatAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.animations.types.HitAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.animations.types.InteractionAnimationAccessors;
-import sleys.efedp.forge.system.animations.json.animations.types.LivingAnimationAccessors;
+import sleys.efedp.forge.system.animations.json.animations.types.ActionAnimationAccessorType;
+import sleys.efedp.forge.system.animations.json.animations.types.AttackAnimationAccessorType;
+import sleys.efedp.forge.system.animations.json.animations.types.StaticAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.groups.types.EpicFightAnimationGroups;
 import sleys.efedp.forge.system.animations.json.properties.armature.EpicFightArmatureTypes;
 import sleys.efedp.forge.system.animations.json.properties.playback.types.AnimationPlaySpeedModifiers;
@@ -69,10 +68,9 @@ public class Bootstrap {
     private static void registryAnimationsAccessors() {
         ExtendedDatapacksRegistry.ANIMATION_ACCESSOR.register(
                 ExtendedDatapacks.MODID,
-                CombatAnimationAccessors.class,
-                HitAnimationAccessors.class,
-                InteractionAnimationAccessors.class,
-                LivingAnimationAccessors.class
+                AttackAnimationAccessorType.class,
+                ActionAnimationAccessorType.class,
+                StaticAnimationAccessorType.class
         );
     }
 

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.animations.types.InteractionAnimationAccessors;
+import sleys.efedp.neoforge.system.animations.json.animations.types.StaticAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
@@ -25,7 +25,7 @@ public record GuardAnimationAccessor(float transitionTime, float lockTime, Strin
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return InteractionAnimationAccessors.GUARD;
+        return StaticAnimationAccessorType.GUARD;
     }
 
     @Override

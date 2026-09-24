@@ -5,8 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.forge.system.animations.json.groups.types.EpicFightAnimationGroups;
 import sleys.efedp.forge.system.animations.json.groups.registry.IAnimationGroupType;
-import sleys.efedp.forge.system.animations.json.properties.phase.AttackPhaseProperties;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.phase.AttackPhaseProperties;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 
 import java.util.List;

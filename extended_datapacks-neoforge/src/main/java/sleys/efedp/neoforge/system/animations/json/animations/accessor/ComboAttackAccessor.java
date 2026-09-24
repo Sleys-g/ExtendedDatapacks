@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.animations.types.CombatAnimationAccessors;
+import sleys.efedp.neoforge.system.animations.json.animations.types.AttackAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import sleys.efedp.neoforge.system.animations.json.properties.phase.AnimationPhase;
@@ -33,7 +33,7 @@ public record ComboAttackAccessor(float transitionTime, String animationPath,
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return CombatAnimationAccessors.COMBO_ATTACK;
+        return AttackAnimationAccessorType.COMBO_ATTACK;
     }
 
     @Override

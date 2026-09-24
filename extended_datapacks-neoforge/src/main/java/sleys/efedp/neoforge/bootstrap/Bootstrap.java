@@ -5,10 +5,9 @@ import sleys.efedp.neoforge.system.animations.json.properties.armature.EpicFight
 import sleys.efedp.neoforge.system.animations.json.properties.time.types.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.ExtendedDatapacksRegistry;
-import sleys.efedp.neoforge.system.animations.json.animations.types.CombatAnimationAccessors;
-import sleys.efedp.neoforge.system.animations.json.animations.types.HitAnimationAccessors;
-import sleys.efedp.neoforge.system.animations.json.animations.types.InteractionAnimationAccessors;
-import sleys.efedp.neoforge.system.animations.json.animations.types.LivingAnimationAccessors;
+import sleys.efedp.neoforge.system.animations.json.animations.types.AttackAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.json.animations.types.ActionAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.json.animations.types.StaticAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.groups.types.EpicFightAnimationGroups;
 import sleys.efedp.neoforge.system.animations.json.properties.playback.types.AnimationPlaySpeedModifiers;
 import sleys.sl.library.contract.ExpectedContracts;
@@ -68,10 +67,9 @@ public class Bootstrap {
     private static void registryAnimationsAccessors() {
         ExtendedDatapacksRegistry.ANIMATION_ACCESSOR.register(
                 ExtendedDatapacks.MODID,
-                CombatAnimationAccessors.class,
-                HitAnimationAccessors.class,
-                InteractionAnimationAccessors.class,
-                LivingAnimationAccessors.class
+                AttackAnimationAccessorType.class,
+                ActionAnimationAccessorType.class,
+                StaticAnimationAccessorType.class
         );
     }
 

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.animations.types.InteractionAnimationAccessors;
+import sleys.efedp.forge.system.animations.json.animations.types.ActionAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
@@ -28,11 +28,12 @@ public record DodgeAnimationAccessor(float transitionTime,
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return InteractionAnimationAccessors.DODGE;
+        return ActionAnimationAccessorType.DODGE;
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<DodgeAnimation> register(AnimationManager.AnimationBuilder builder, IAnimationProperties<DodgeAnimation> property) {
+    public AnimationManager.AnimationAccessor<DodgeAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                       IAnimationProperties<DodgeAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new DodgeAnimation(
                     transitionTime,

@@ -1,20 +1,21 @@
-package sleys.efedp.forge.system.animations.json.properties.groups;
+package sleys.efedp.forge.system.animations.json.properties;
 
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import sleys.efedp.forge.system.animations.json.properties.playback.PlaySpeedModifier;
+import sleys.efedp.forge.system.animations.json.properties.state.AnimationEntityState;
 import sleys.efedp.forge.system.animations.json.properties.time.AnimationsInIntervalTimeEvent;
 import sleys.efedp.forge.system.animations.json.properties.time.AnimationsInPeriodTimeEvent;
 import sleys.efedp.forge.system.animations.json.properties.time.AnimationsInTimeEvent;
-import sleys.efedp.forge.system.animations.json.properties.playback.PlaySpeedModifier;
 import sleys.efedp.forge.system.animations.json.properties.time.AnimationsOnProcessEvent;
-import sleys.efedp.forge.system.animations.json.properties.state.AnimationEntityState;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
 import java.util.List;
 import java.util.Optional;
 
-public record StaticPropertyGroup<T extends StaticAnimation>(
+public record StaticAnimationPropertyGroup<T extends StaticAnimation>(
         Optional<Boolean> noPhysics,
         Optional<Boolean> fixedHeadRotation,
         List<AnimationsOnProcessEvent<T>> onProcessEvents,
@@ -25,44 +26,44 @@ public record StaticPropertyGroup<T extends StaticAnimation>(
         Optional<AnimationEntityState<T>> animationEntityState
 ) {
 
-    public static <T extends StaticAnimation> MapCodec<StaticPropertyGroup<T>> codec() {
+    public static <T extends StaticAnimation> MapCodec<StaticAnimationPropertyGroup<T>> codec() {
         return RecordCodecBuilder.mapCodec(instance ->
                 instance.group(
                         Codec.BOOL.optionalFieldOf("no_physics")
-                                .forGetter(StaticPropertyGroup::noPhysics),
+                                .forGetter(StaticAnimationPropertyGroup::noPhysics),
 
                         Codec.BOOL.optionalFieldOf("fixed_head_rotation")
-                                .forGetter(StaticPropertyGroup::fixedHeadRotation),
+                                .forGetter(StaticAnimationPropertyGroup::fixedHeadRotation),
 
                         AnimationsOnProcessEvent.<T>codec()
                                         .listOf().optionalFieldOf("on_process_events", List.of())
-                                        .forGetter(StaticPropertyGroup::onProcessEvents),
+                                        .forGetter(StaticAnimationPropertyGroup::onProcessEvents),
 
                         AnimationsInTimeEvent.<T>codec()
                                 .listOf()
                                 .optionalFieldOf("in_time_events", List.of())
-                                .forGetter(StaticPropertyGroup::inTimeEvents),
+                                .forGetter(StaticAnimationPropertyGroup::inTimeEvents),
 
                         AnimationsInPeriodTimeEvent.<T>codec()
                                 .listOf()
                                 .optionalFieldOf("in_period_time_events", List.of())
-                                .forGetter(StaticPropertyGroup::inPeriodEvents),
+                                .forGetter(StaticAnimationPropertyGroup::inPeriodEvents),
 
                         AnimationsInIntervalTimeEvent.<T>codec()
                                 .listOf()
                                 .optionalFieldOf("in_interval_time_events", List.of())
-                                .forGetter(StaticPropertyGroup::inIntervalTimeEvents),
+                                .forGetter(StaticAnimationPropertyGroup::inIntervalTimeEvents),
 
                         PlaySpeedModifier.<T>codec()
                                 .optionalFieldOf("play_speed_modifier")
-                                .forGetter(StaticPropertyGroup::playSpeedModifier),
+                                .forGetter(StaticAnimationPropertyGroup::playSpeedModifier),
 
                         AnimationEntityState.<T>codec()
                                 .codec()
                                 .optionalFieldOf("animation_entity_state")
-                                .forGetter(StaticPropertyGroup::animationEntityState)
+                                .forGetter(StaticAnimationPropertyGroup::animationEntityState)
 
-                ).apply(instance, StaticPropertyGroup::new)
+                ).apply(instance, StaticAnimationPropertyGroup::new)
         );
     }
 

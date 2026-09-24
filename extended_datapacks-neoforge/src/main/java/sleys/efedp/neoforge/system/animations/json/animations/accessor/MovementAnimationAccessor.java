@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.animations.types.LivingAnimationAccessors;
+import sleys.efedp.neoforge.system.animations.json.animations.types.StaticAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
@@ -27,7 +27,7 @@ public record MovementAnimationAccessor(float transitionTime, boolean isRepeat,
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return LivingAnimationAccessors.MOVEMENT;
+        return StaticAnimationAccessorType.MOVEMENT;
     }
 
     @Override

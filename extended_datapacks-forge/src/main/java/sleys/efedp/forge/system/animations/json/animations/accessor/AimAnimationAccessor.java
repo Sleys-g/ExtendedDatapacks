@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.animations.types.CombatAnimationAccessors;
+import sleys.efedp.forge.system.animations.json.animations.types.StaticAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
 import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
@@ -33,11 +33,12 @@ public record AimAnimationAccessor(float transitionTime, boolean isRepeat, Strin
 
     @Override
     public IAnimationAccessorType accessorType() {
-        return CombatAnimationAccessors.AIM;
+        return StaticAnimationAccessorType.AIM;
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<AimAnimation> register(AnimationManager.AnimationBuilder builder, IAnimationProperties<AimAnimation> property) {
+    public AnimationManager.AnimationAccessor<AimAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                     IAnimationProperties<AimAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new AimAnimation(
                     transitionTime, isRepeat, accessor,

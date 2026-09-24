@@ -1,4 +1,4 @@
-package sleys.efedp.neoforge.system.animations.json.properties.groups;
+package sleys.efedp.neoforge.system.animations.json.properties;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -8,7 +8,7 @@ import yesman.epicfight.api.animation.types.AttackAnimation;
 
 import java.util.Optional;
 
-public record AttackPropertyGroup<T extends AttackAnimation>(
+public record AttackAnimationPropertyGroup<T extends AttackAnimation>(
         Optional<Boolean> fixedMoveDistance,
         Optional<Float> attackSpeedFactor,
         Optional<Float> basisAttackSpeed,
@@ -16,24 +16,24 @@ public record AttackPropertyGroup<T extends AttackAnimation>(
         Optional<Float> reach
 ) {
 
-    public static <T extends AttackAnimation> MapCodec<AttackPropertyGroup<T>> codec() {
+    public static <T extends AttackAnimation> MapCodec<AttackAnimationPropertyGroup<T>> codec() {
         return RecordCodecBuilder.mapCodec(instance ->
                 instance.group(
                         Codec.BOOL.optionalFieldOf("fixed_move_distance")
-                                .forGetter(AttackPropertyGroup::fixedMoveDistance),
+                                .forGetter(AttackAnimationPropertyGroup::fixedMoveDistance),
 
                         Codec.FLOAT.optionalFieldOf("attack_speed_factor")
-                                .forGetter(AttackPropertyGroup::attackSpeedFactor),
+                                .forGetter(AttackAnimationPropertyGroup::attackSpeedFactor),
 
                         Codec.FLOAT.optionalFieldOf("basic_attack_speed")
-                                .forGetter(AttackPropertyGroup::basisAttackSpeed),
+                                .forGetter(AttackAnimationPropertyGroup::basisAttackSpeed),
 
                         Codec.INT.optionalFieldOf("extra_colliders")
-                                .forGetter(AttackPropertyGroup::extraColliders),
+                                .forGetter(AttackAnimationPropertyGroup::extraColliders),
 
                         Codec.FLOAT.optionalFieldOf("reach")
-                                .forGetter(AttackPropertyGroup::reach)
-                ).apply(instance, AttackPropertyGroup::new)
+                                .forGetter(AttackAnimationPropertyGroup::reach)
+                ).apply(instance, AttackAnimationPropertyGroup::new)
         );
     }
 

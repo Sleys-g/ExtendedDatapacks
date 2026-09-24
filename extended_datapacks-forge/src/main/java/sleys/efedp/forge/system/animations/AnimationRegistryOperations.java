@@ -11,9 +11,9 @@ import sleys.efedp.forge.system.animations.json.builder.AnimationsRegistryBuilde
 import sleys.efedp.forge.system.animations.json.definitions.AnimationConfigDefinition;
 import sleys.efedp.forge.system.animations.json.definitions.AnimationAccessorDefinition;
 import sleys.efedp.forge.system.animations.json.definitions.AnimationVirtualizationDefinition;
-import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.efedp.forge.system.animations.json.groups.virtual.IAnimationVirtualization;
 import sleys.efedp.forge.system.animations.json.groups.virtual.VirtualConfigAnimationErrorPool;
+import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.sl.library.exceptions.RegistryObjectModificationException;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
