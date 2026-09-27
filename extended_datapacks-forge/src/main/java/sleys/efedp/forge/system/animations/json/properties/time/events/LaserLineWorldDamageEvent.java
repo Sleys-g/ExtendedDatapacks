@@ -16,6 +16,7 @@ import yesman.epicfight.world.damagesource.StunType;
 import java.util.Optional;
 
 public record LaserLineWorldDamageEvent(Float damage, Float range,
+                                        Optional<Float> spacing,
                                         Optional<StunType> stunType,
                                         Optional<Double> OriginLateral,
                                         Optional<Double> OriginVertical,
@@ -28,6 +29,7 @@ public record LaserLineWorldDamageEvent(Float damage, Float range,
             instance.group(
                     Codec.FLOAT.fieldOf("damage").forGetter(LaserLineWorldDamageEvent::damage),
                     Codec.FLOAT.fieldOf("range").forGetter(LaserLineWorldDamageEvent::range),
+                    Codec.FLOAT.optionalFieldOf("spacing").forGetter(LaserLineWorldDamageEvent::spacing),
                     PhaseStunType.CODEC.optionalFieldOf("stun_type").forGetter(LaserLineWorldDamageEvent::stunType),
 
                     Codec.DOUBLE.optionalFieldOf("origin_lateral").forGetter(LaserLineWorldDamageEvent::OriginLateral),
@@ -60,7 +62,9 @@ public record LaserLineWorldDamageEvent(Float damage, Float range,
                 )
         );
 
-        var points = LaserEventHelper.computeGroundedLazerPath(level, casterPos, targetPos, 1.3, 3.0, 32.0);
+        var points = LaserEventHelper.computeGroundedLazerPath(
+                level, casterPos, targetPos, spacing.orElse(1.3F), 3.0, 32.0
+        );
 
         if (level.isClientSide) {
             livingCaster.playSound(EpicFightSounds.LASER_BLAST.get(), 0.5F, 0.2F);

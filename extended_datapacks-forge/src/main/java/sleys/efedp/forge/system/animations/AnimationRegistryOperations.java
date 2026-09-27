@@ -1,6 +1,6 @@
 package sleys.efedp.forge.system.animations;
 
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import sleys.efedp.forge.system.animations.json.animations.accessor.IAnimationAccessor;
 import sleys.efedp.forge.system.animations.json.builder.AnimationsVirtualizationBuilder;
@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 public class AnimationRegistryOperations {
 
-    @SubscribeEvent
     public static void onRegistryAnimations(AnimationManager.AnimationRegistryEvent event) {
         AnimationsRegistryBuilder
                 .getAnimationDefinitionsData()
@@ -36,7 +35,6 @@ public class AnimationRegistryOperations {
         );
     }
 
-    @SubscribeEvent
     public static void onVirtualizateAnimations(SkillBuildEvent event) {
         AnimationsVirtualizationBuilder
                 .getAnimationVirtualizationData()
@@ -45,21 +43,28 @@ public class AnimationRegistryOperations {
        );
     }
 
-    @SubscribeEvent
-    public static void onModifierAnimations(FMLLoadCompleteEvent event) {
+    public static void onModifierAnimationsClient(FMLLoadCompleteEvent event) {
+        AnimationRegistryOperations.onModifierAnimations();
+    }
+
+    public static void onModifierAnimationsServer(ServerStartedEvent event) {
+        AnimationRegistryOperations.onModifierAnimations();
+    }
+
+    public static void onModifierAnimations() {
         /// Config
         AnimationsConfigBuilder
                 .getAnimationConfigData()
                 .forEach((modId, configList) ->
-                configList.forEach(AnimationRegistryOperations::configDef)
-        );
+                        configList.forEach(AnimationRegistryOperations::configDef)
+                );
 
         /// Config Virtual
         AnimationsVirtualizationBuilder
                 .getAnimationVirtualizationData()
                 .forEach((modId, virtualizationList) ->
-                virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
-        );
+                        virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
+                );
 
         onModifierAnimationsError();
     }

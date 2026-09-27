@@ -33,7 +33,7 @@ public record EmoteAnimationAccessor(
     @Override
     public AnimationManager.AnimationAccessor<StaticAnimation> register(AnimationManager.AnimationBuilder builder,
                                                                         IAnimationProperties<StaticAnimation> property) {
-        throw new RegistryObjectException("Operation not supported by the environment! No Emote animation type exists for this instance");
+        throw new RegistryObjectException("Operation not supported by the environment! No Emote animation type exists for this version!");
 //        return builder.nextAccessor(animationPath, (accessor) -> {
 //            var animation = new EmoteAnimation(
 //                    transitionTime,

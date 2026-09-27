@@ -30,6 +30,7 @@ public class Bootstrap {
     public static void start(IEventBus modBus) {
         Bootstrap.changes();
         if (STATE.equals(SystemState.CLOSED)) return;
+
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing...");
 
         Bootstrap.registryAnimationsArmature();
@@ -41,11 +42,19 @@ public class Bootstrap {
         BootstrapBuilds.Initialize();
         BootstrapCommon.Initialize(modBus);
         BootstrapThirdParties.Initialize(modBus);
+
         LogicalTasks.operate(
                 LogicalPolicy.LOGICAL_CLIENT,
                 ErrorPolicy.DEPURATE,
                 "Bootstrap - Client",
                 modBus, BootstrapClient::Initialize
+        );
+
+        LogicalTasks.operate(
+                LogicalPolicy.DEDICATED_SERVER,
+                ErrorPolicy.DEPURATE,
+                "Bootstrap - Server",
+                modBus, BootstrapServer::Initialize
         );
 
         STATE = SystemState.CLOSED;

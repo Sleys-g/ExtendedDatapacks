@@ -61,5 +61,9 @@ public class ExtendedDatapacksConditions {
         event.register(ResourceLocation.fromNamespaceAndPath(EpicFightMod.MODID, "charged_attack_event"),
                 ChargedAttackCondition::new
         );
+
+        event.register(ResourceLocation.fromNamespaceAndPath(EpicFightMod.MODID, "has_skill"),
+                HasSkillCondition::new
+        );
     }
 }

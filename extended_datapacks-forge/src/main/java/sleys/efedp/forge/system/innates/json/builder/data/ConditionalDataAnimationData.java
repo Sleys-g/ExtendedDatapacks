@@ -10,7 +10,7 @@ import sleys.sl.library.annotations.Linked;
 import java.util.List;
 import java.util.Optional;
 
-@Linked(range = Linked.DependentRange.HIGH, packageId = "sleys.efedp.system.animations.json.properties.functional.datapackets")
+@Linked(range = Linked.DependentRange.HIGH, packageId = "sleys.efedp.forge.system.animations.json.properties.functional.datapackets")
 public record ConditionalDataAnimationData(String animation,
                                            ConditionalType physicalCondition,
                                            Optional<ReadDataPacketsGroup> readData,

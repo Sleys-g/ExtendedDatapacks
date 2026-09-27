@@ -37,7 +37,8 @@ public record AimAnimationAccessor(float transitionTime, boolean isRepeat, Strin
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<AimAnimation> register(AnimationManager.AnimationBuilder builder, IAnimationProperties<AimAnimation> property) {
+    public AnimationManager.AnimationAccessor<AimAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                     IAnimationProperties<AimAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new AimAnimation(
                     transitionTime, isRepeat, accessor,

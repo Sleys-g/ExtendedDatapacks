@@ -17,9 +17,13 @@ public class BootstrapCommon {
 
     protected static void Initialize(IEventBus modBus) {
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing Common Systems...");
-        RegisterHookers();
-        RegistryEnumerations();
-        InitializeRegistries(modBus);
+        registerCommonHookers();
+        registerCommonEnumerations();
+        registerCommonBus(modBus);
+        registerCommonEvents();
+    }
+
+    private static void registerCommonEvents() {
         NeoForge.EVENT_BUS.addListener(BootstrapCommon::onReloadEvent);
     }
 
@@ -27,20 +31,21 @@ public class BootstrapCommon {
         event.addListener(new WeaponItemsPropertiesBuilder());
     }
 
-    private static void RegisterHookers() {
+    private static void registerCommonHookers() {
         SkillBuilderHook.registerAssignor(ModifyGuardsApplier::addAnyParameterToGuards);
         SkillBuilderHook.registerAssignor(ModifyPassivesApplier::addAnyParameterToSkill);
     }
 
-    private static void RegistryEnumerations() {
+    private static void registerCommonEnumerations() {
         WeaponCategory.ENUM_MANAGER.registerEnumCls(
                 ExtendedDatapacks.MODID,
                 WeaponCategoriesRegistry.class
         );
     }
 
-    private static void InitializeRegistries(IEventBus modBus) {
-        modBus.register(AnimationRegistryOperations.class);
+    private static void registerCommonBus(IEventBus modBus) {
+        modBus.addListener(AnimationRegistryOperations::onRegistryAnimations);   /// Registry Parall
+        modBus.addListener(AnimationRegistryOperations::onVirtualizeAnimations); /// Virtualization Parall
 
         /// V1 Innate
         SimpleInnateSkillsRegistry.initialize(modBus);

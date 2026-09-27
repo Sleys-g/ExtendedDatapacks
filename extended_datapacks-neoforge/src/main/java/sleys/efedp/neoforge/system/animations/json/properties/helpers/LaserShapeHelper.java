@@ -1,10 +1,11 @@
 package sleys.efedp.neoforge.system.animations.json.properties.helpers;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.json.properties.time.events.TaskableLaserShapeWorldDamageEvent;
+import sleys.sl.library.util.data.codec.EnumCodecs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,16 @@ public final class LaserShapeHelper {
 
     private LaserShapeHelper() {}
 
-    public static List<Vec3> generate(TaskableLaserShapeWorldDamageEvent.LaserShape shape,
+    public enum LaserShape {
+        LINE, ARROW, X, CROSS,
+        CIRCLE, RING, DISC,
+        TRIANGLE, SQUARE, ARC,
+        SEMICIRCLE, STAR, CONE;
+
+        public static final Codec<LaserShape> CODEC = EnumCodecs.byId(values(), Enum::name);
+    }
+
+    public static List<Vec3> generate(LaserShape shape,
                                       Vec3 origin, double size, double spacing) {
         return switch (shape) {
             case LINE -> line(origin, size, spacing);

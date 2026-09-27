@@ -32,7 +32,8 @@ public record DodgeAnimationAccessor(float transitionTime,
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<DodgeAnimation> register(AnimationManager.AnimationBuilder builder, IAnimationProperties<DodgeAnimation> property) {
+    public AnimationManager.AnimationAccessor<DodgeAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                       IAnimationProperties<DodgeAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new DodgeAnimation(
                     transitionTime,

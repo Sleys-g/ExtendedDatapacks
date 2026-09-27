@@ -5,6 +5,7 @@ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.system.animations.AnimationRegistryOperations;
 import sleys.efedp.forge.system.skills.RegistryCategoryIcon;
 import sleys.efedp.forge.system.visuals.OverlayPacketCoroutine;
 import sleys.efedp.forge.system.visuals.ShaderPacketCoroutine;
@@ -26,14 +27,13 @@ public class BootstrapClient {
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap Client] Initializing Client Systems...");
         registerClientEvents();
         registerClientBus(modBus);
-        MinecraftForge.EVENT_BUS.addListener(BootstrapClient::registerClientCoroutines);
-
         return modBus;
     }
 
     private static void registerClientEvents() {
         MinecraftForge.EVENT_BUS.register(OverlayAssetPacksBuilder.class);
         MinecraftForge.EVENT_BUS.register(ShaderAssetsPacksBuilder.class);
+        MinecraftForge.EVENT_BUS.addListener(BootstrapClient::registerClientCoroutines);
     }
 
     private static void registerClientBus(IEventBus modBus) {
@@ -42,6 +42,7 @@ public class BootstrapClient {
         modBus.register(WeaponPerStyleModelBakerBuilder.class);
         modBus.register(RegistryCategoryIcon.class);
         modBus.addListener(BootstrapClient::registerReloadListeners);
+        modBus.addListener(AnimationRegistryOperations::onModifierAnimationsClient); /// Animations modification
     }
 
     private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {

@@ -1,18 +1,13 @@
 package sleys.efedp.forge.system.animations.json.animations.types;
 
-import sleys.efedp.forge.system.animations.json.animations.accessor.ActionAnimationAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.DodgeAnimationAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.KnockdownAnimationAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.LongHitAnimationAccessor;
+import sleys.efedp.forge.system.animations.json.animations.accessor.*;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.definitions.AnimationAccessorDefinitionCodec;
 import sleys.efedp.forge.system.animations.json.properties.ActionAnimationProperties;
-import sleys.efedp.forge.system.animations.json.animations.accessor.InvincibleAnimationAccessor;
-import yesman.epicfight.api.animation.types.ActionAnimation;
 
 public enum ActionAnimationAccessorType implements IAnimationAccessorType {
     ACTION("epicfight_edp:action",
-            new AnimationAccessorDefinitionCodec<ActionAnimation>(ActionAnimationAccessor.CODEC, ActionAnimationProperties.codec())
+            new AnimationAccessorDefinitionCodec<>(ActionAnimationAccessor.CODEC, ActionAnimationProperties.codec())
     ),
     DODGE("epicfight_edp:dodge",
             new AnimationAccessorDefinitionCodec<>(DodgeAnimationAccessor.CODEC, ActionAnimationProperties.codec())

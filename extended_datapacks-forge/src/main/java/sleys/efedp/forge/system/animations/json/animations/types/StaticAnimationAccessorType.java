@@ -3,7 +3,7 @@ package sleys.efedp.forge.system.animations.json.animations.types;
 import sleys.efedp.forge.system.animations.json.animations.accessor.*;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.definitions.AnimationAccessorDefinitionCodec;
-import sleys.efedp.forge.system.animations.json.properties.StaticAnimationProperties;
+import sleys.efedp.forge.system.animations.json.properties.*;
 
 public enum StaticAnimationAccessorType implements IAnimationAccessorType {
     STATIC("epicfight_edp:static",

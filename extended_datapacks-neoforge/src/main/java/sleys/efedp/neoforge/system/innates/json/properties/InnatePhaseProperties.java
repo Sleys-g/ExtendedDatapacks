@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@Linked(range = Linked.DependentRange.LOWER, packageId = "sleys.efedp.system.animations.json.properties.phase")
+@Linked(range = Linked.DependentRange.LOWER, packageId = "sleys.efedp.neoforge.system.animations.json.properties.phase")
 public record InnatePhaseProperties(
         Optional<Float> maxStrikes,
         Optional<Float> damageMultiplier,

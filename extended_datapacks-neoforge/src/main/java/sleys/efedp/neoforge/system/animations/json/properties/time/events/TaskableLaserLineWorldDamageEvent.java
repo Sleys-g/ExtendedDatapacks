@@ -3,26 +3,19 @@ package sleys.efedp.neoforge.system.animations.json.properties.time.events;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import sleys.efedp.neoforge.system.animations.json.properties.helpers.LaserEventHelper;
 import sleys.efedp.neoforge.system.animations.json.properties.phase.PhaseStunType;
+import sleys.efedp.neoforge.task.coroutine.ClientLaserLineCoroutine;
+import sleys.efedp.neoforge.task.coroutine.ServerLaserLineCoroutine;
 import sleys.sl.library.execution.task.Coroutine;
-import sleys.sl.library.execution.task.CoroutineTask;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.registry.entries.EpicFightParticles;
 import yesman.epicfight.registry.entries.EpicFightSounds;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
-import yesman.epicfight.world.damagesource.EpicFightDamageSources;
 import yesman.epicfight.world.damagesource.StunType;
 
-import java.util.List;
 import java.util.Optional;
 
 public record TaskableLaserLineWorldDamageEvent(Float damage, Float range,
@@ -80,112 +73,16 @@ public record TaskableLaserLineWorldDamageEvent(Float damage, Float range,
 
         if (level.isClientSide) {
             livingCaster.playSound(EpicFightSounds.LASER_BLAST.get(), 0.5F, 0.2F);
-            var clientCoroutine = new ClientLaserCoroutine(level, points, delay.orElse(0));
+            var clientCoroutine = new ClientLaserLineCoroutine(level, points, delay.orElse(0), SPEED_MULTIPLIER);
             Coroutine.CLIENT.start(clientCoroutine);
             return;
         }
 
-        var serverCoroutine = new ServerLaserCoroutine(
+        var serverCoroutine = new ServerLaserLineCoroutine(
                 level, livingCaster, stunType.orElse(StunType.NONE),
-                points, damage, delay.orElse(0)
+                points, damage, delay.orElse(0),
+                SPEED_MULTIPLIER
         );
         Coroutine.SERVER.start(serverCoroutine);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static class ClientLaserCoroutine extends CoroutineTask {
-        private final Level level;
-        private final List<Vec3> points;
-        private final int delay;
-        private int index = 0;
-
-        private ClientLaserCoroutine(Level level, List<Vec3> points, int delay) {
-            this.level = level;
-            this.points = points;
-            this.delay = delay;
-        }
-
-        @Override
-        protected boolean run() {
-            if (delay == 0) {
-                LaserEventHelper.renderVerticalLazers(level, points, 30);
-                return false;
-            }
-
-            for (int i = 0; i < SPEED_MULTIPLIER && index < points.size(); i++) {
-                this.renderPoint(points.get(index++));
-            }
-
-            boolean hasMore = index < points.size();
-
-            if (hasMore) {
-                this.waitTicks(delay);
-            }
-
-            return hasMore;
-        }
-
-        private void renderPoint(Vec3 base) {
-            LaserEventHelper.impactZoneClient(level, base);
-            level.addAlwaysVisibleParticle(
-                    EpicFightParticles.LASER.get(),
-                    base.x, base.y, base.z, base.x, base.y + 30, base.z
-            );
-        }
-    }
-
-    private static class ServerLaserCoroutine extends CoroutineTask {
-        private final Level level;
-        private final LivingEntity livingCaster;
-        private final StunType stunType;
-        private final List<Vec3> points;
-        private final float damage;
-        private final int delay;
-        private int index = 0;
-
-        private ServerLaserCoroutine(Level level, LivingEntity livingCaster, StunType stunType,
-                                     List<Vec3> points, float damage, int delay) {
-            this.level = level;
-            this.livingCaster = livingCaster;
-            this.stunType = stunType;
-            this.points = points;
-            this.damage = damage;
-            this.delay = delay;
-        }
-
-        @Override
-        protected boolean run() {
-            if (delay == 0) {
-                LaserEventHelper.hurtAlongVerticalLazers(
-                        level, livingCaster, points,
-                        stunType, 30,
-                        0.4F, damage
-                );
-                return false;
-            }
-
-            for (int i = 0; i < SPEED_MULTIPLIER && index < points.size(); i++) {
-                this.damagePoint(points.get(index++));
-            }
-
-            boolean hasMore = index < points.size();
-
-            if (hasMore) {
-                this.waitTicks(delay);
-            }
-
-            return hasMore;
-        }
-
-        private void damagePoint(Vec3 base) {
-            AABB pillar = new AABB(
-                    base.x - 0.4F, base.y, base.z - 0.4F,
-                    base.x + 0.4F, base.y + 30, base.z + 0.4F
-            );
-            level.getEntitiesOfClass(LivingEntity.class, pillar, e -> e != this.livingCaster).forEach(entity -> {
-                entity.hurt(EpicFightDamageSources.witherBeam(this.livingCaster).setStunType(stunType), damage);
-                LaserEventHelper.impactBurstServer(level, entity.position());
-            });
-        }
     }
 }

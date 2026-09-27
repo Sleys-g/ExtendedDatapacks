@@ -84,5 +84,6 @@ public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInv
         var level = livingEntity.level();
         if (this.isInvalid(level, AnimationEvent.Side.BOTH, "On Target Entity Event")) return;
         targetMode.process(doEvents, patch);
+        patch.removeHurtEntities();
     }
 }

@@ -4,6 +4,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
@@ -21,10 +22,12 @@ import sleys.efedp.neoforge.system.combat.ExtendedSkillSlot;
 import sleys.efedp.neoforge.system.combat.charged_attacks.ChargedAttackStyles;
 import sleys.efedp.neoforge.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.neoforge.config.EpicFightEDPConfig;
+import sleys.efedp.neoforge.task.tick.ClientLaserVerticalImpactTask;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.LogicalTasks;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
+import sleys.sl.library.execution.task.TickTaskRegistry;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.skill.SkillCategory;
@@ -51,6 +54,7 @@ public class ExtendedDatapacks {
         NeoForge.EVENT_BUS.register(MechanicsAssignerEvent.class);
         NeoForge.EVENT_BUS.register(ControlDamageEvent.class);
 
+        modBus.addListener(ExtendedDatapacks::registerClientPayload);
         modBus.register(SkillDataKeyCache.class);
         modBus.register(HitParticleCache.class);
         modBus.register(ExtendedDatapacksAttributes.class);
@@ -84,5 +88,13 @@ public class ExtendedDatapacks {
         EpicFightClientEventHooks.Registry.ADD_PATCHED_ENTITY.registerEvent(
                 ExtendedDatapacksPatchesRenders::registerPatchesRenders, ExtendedDatapacks.MODID
         );
+    }
+
+    public static void registerClientPayload(FMLClientSetupEvent event) {
+        event.enqueueWork(ExtendedDatapacks::registryTickTask);
+    }
+
+    private static void registryTickTask() {
+        TickTaskRegistry.register(ClientLaserVerticalImpactTask.TYPE);
     }
 }

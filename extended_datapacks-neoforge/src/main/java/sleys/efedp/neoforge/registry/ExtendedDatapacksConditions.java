@@ -48,4 +48,9 @@ public final class ExtendedDatapacksConditions {
             ResourceLocation.fromNamespaceAndPath(EpicFight.MODID, "charged_attack_event")
                     .getPath(), () -> ChargedAttackCondition::new
     );
+
+    public static final DeferredHolder<Supplier<Condition<?>>, Supplier<Condition<?>>> HAS_SKILL = CONDITIONS.register(
+            ResourceLocation.fromNamespaceAndPath(EpicFight.MODID, "has_skill")
+                    .getPath(), () -> HasSkillCondition::new
+    );
 }

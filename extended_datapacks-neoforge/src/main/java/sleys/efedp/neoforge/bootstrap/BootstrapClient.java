@@ -5,6 +5,7 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.system.animations.AnimationRegistryOperations;
 import sleys.efedp.neoforge.system.skills.RegistryCategoryIcon;
 import sleys.efedp.neoforge.system.visuals.OverlayPacketCoroutine;
 import sleys.efedp.neoforge.system.visuals.ShaderPacketCoroutine;
@@ -28,13 +29,13 @@ public class BootstrapClient {
         registerClientEvents();
         registerClientHookers();
         registerClientBus(modBus);
-        NeoForge.EVENT_BUS.addListener(BootstrapClient::registerClientCoroutines);
         return modBus;
     }
 
     private static void registerClientEvents() {
         NeoForge.EVENT_BUS.register(OverlayAssetPacksBuilder.class);
         NeoForge.EVENT_BUS.register(ShaderAssetsPacksBuilder.class);
+        NeoForge.EVENT_BUS.addListener(BootstrapClient::registerClientCoroutines);
     }
 
     private static void registerClientHookers() {
@@ -46,6 +47,7 @@ public class BootstrapClient {
         modBus.register(WeaponsModelsRegistry.class);
         modBus.register(WeaponPerStyleModelBakerBuilder.class);
         modBus.addListener(BootstrapClient::registerReloadListeners);
+        modBus.addListener(AnimationRegistryOperations::onModifierAnimationsClient); /// Animations modification
     }
 
     private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {

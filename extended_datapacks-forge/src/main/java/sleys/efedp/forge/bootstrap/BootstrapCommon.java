@@ -47,6 +47,7 @@ public class BootstrapCommon {
         modBus.register(ModifyPassivesApplier.class);
         modBus.register(ModifyGuardsApplier.class);
 
-        modBus.register(AnimationRegistryOperations.class); /// BETA
+        modBus.addListener(AnimationRegistryOperations::onRegistryAnimations);   /// Registry Parall
+        modBus.addListener(AnimationRegistryOperations::onVirtualizateAnimations); /// Virtualization Parall
     }
 }

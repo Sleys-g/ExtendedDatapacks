@@ -1,14 +1,9 @@
 package sleys.efedp.forge.system.animations.json.animations.types;
 
-import sleys.efedp.forge.system.animations.json.animations.accessor.AirAttackAnimationAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.AttackAnimationAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.ComboAttackAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.DashAttackAnimationAccessor;
+import sleys.efedp.forge.system.animations.json.animations.accessor.*;
 import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
 import sleys.efedp.forge.system.animations.json.definitions.AnimationAccessorDefinitionCodec;
 import sleys.efedp.forge.system.animations.json.properties.AttackAnimationProperties;
-import sleys.efedp.forge.system.animations.json.animations.accessor.MountAttackAnimationAccessor;
-import sleys.efedp.forge.system.animations.json.animations.accessor.RangedAttackAnimationAccessor;
 
 public enum AttackAnimationAccessorType implements IAnimationAccessorType {
     ATTACK("epicfight_edp:attack",

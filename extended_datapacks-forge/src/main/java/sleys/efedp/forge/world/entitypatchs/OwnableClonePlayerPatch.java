@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.registry.ExtendedDatapacksEntities;
 import sleys.efedp.forge.world.entities.OwnableClonePlayer;
 import sleys.sl.library.annotations.ErrorHandled;

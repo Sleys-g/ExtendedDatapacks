@@ -2,6 +2,7 @@ package sleys.efedp.forge;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sleys.efedp.forge.capability.data.HitParticleCache;
@@ -19,11 +20,12 @@ import sleys.efedp.forge.system.combat.charged_attacks.ChargedAttackStyles;
 import sleys.efedp.forge.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.forge.config.EpicFightEDPConfig;
 import net.minecraftforge.fml.common.Mod;
-import sleys.sl.library.SLLPreferences;
+import sleys.efedp.forge.task.tick.ClientLaserVerticalImpactTask;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
 import sleys.sl.library.execution.policy.LogicalTasks;
+import sleys.sl.library.execution.task.TickTaskRegistry;
 import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -49,6 +51,7 @@ public class ExtendedDatapacks {
         MinecraftForge.EVENT_BUS.register(MechanicsAssignerEvent.class);
         MinecraftForge.EVENT_BUS.register(ControlDamageEvent.class);
 
+        modBus.addListener(ExtendedDatapacks::registerClientPayload);
         modBus.register(HitParticleCache.class);
         modBus.register(ExtendedDatapacksAttributes.class);
         modBus.register(ExtendedDatapacksSkills.class);
@@ -75,5 +78,13 @@ public class ExtendedDatapacks {
         modBus.register(EDPCombatKeyBinding.class);
         modBus.register(ExtendedDatapacksRenders.class);
         modBus.register(ExtendedDatapacksPatchesRenders.class);
+    }
+
+    public static void registerClientPayload(FMLClientSetupEvent event) {
+        event.enqueueWork(ExtendedDatapacks::registryTickTask);
+    }
+
+    private static void registryTickTask() {
+        TickTaskRegistry.register(ClientLaserVerticalImpactTask.TYPE);
     }
 }

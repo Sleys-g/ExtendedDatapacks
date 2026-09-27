@@ -29,7 +29,8 @@ public record GuardAnimationAccessor(float transitionTime, float lockTime, Strin
     }
 
     @Override
-    public AnimationManager.AnimationAccessor<GuardAnimation> register(AnimationManager.AnimationBuilder builder, IAnimationProperties<GuardAnimation> property) {
+    public AnimationManager.AnimationAccessor<GuardAnimation> register(AnimationManager.AnimationBuilder builder,
+                                                                       IAnimationProperties<GuardAnimation> property) {
         return builder.nextAccessor(animationPath, (accessor) -> {
             var animation = new GuardAnimation(
                     transitionTime,
