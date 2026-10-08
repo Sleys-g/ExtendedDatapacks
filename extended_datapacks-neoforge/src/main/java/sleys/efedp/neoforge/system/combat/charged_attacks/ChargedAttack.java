@@ -212,11 +212,7 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
     }
 
     private float getCorrectlyStaminaCost(PlayerPatch<?> patch) {
-        return ExecutionTasks.getAndFallback(
-                ExecutionPolicy.RESIST,
-                () -> calculateStaminaCost(patch),
-                0F
-        );
+        return ExecutionTasks.getAndFallback(() -> calculateStaminaCost(patch), 0F);
     }
 
     @ErrorHandled

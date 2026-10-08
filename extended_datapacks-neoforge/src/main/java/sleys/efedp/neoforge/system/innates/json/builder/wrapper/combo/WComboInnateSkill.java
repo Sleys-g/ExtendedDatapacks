@@ -17,6 +17,7 @@ import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.api.animation.AnimationManager;
+import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.skill.Skill;
@@ -38,6 +39,7 @@ public class WComboInnateSkill extends WeaponInnateSkill {
     private final Map<String, ComboNodeValues> nodes;
     private final List<ComboEntryPointValues> entryPoints;
     private final List<JsonComponentArgs> tooltipComponents;
+    private final boolean resetComboPlayer;
 
     public static WComboInnateSkill.Builder createComboBuilder() {
         return new WComboInnateSkill.Builder(WComboInnateSkill::new)
@@ -51,6 +53,7 @@ public class WComboInnateSkill extends WeaponInnateSkill {
         this.entryPoints = builder.entryPoints;
         this.tooltipComponents = builder.tooltipComponents;
         this.alwaysAllow = builder.alwaysAllow;
+        this.resetComboPlayer = builder.resetComboPlayer;
     }
 
     public void executeOnServer(SkillContainer container, CompoundTag arguments) {
@@ -154,6 +157,8 @@ public class WComboInnateSkill extends WeaponInnateSkill {
         for (int i = 0; i < Math.min(phases.length, this.properties.size()); i++) {
             phases[i].addProperties(this.properties.get(i).entrySet());
         }
+
+        attack.addProperty(AnimationProperty.ActionAnimationProperty.RESET_PLAYER_COMBO_COUNTER, resetComboPlayer);
         return animationAccessor;
     }
 
@@ -180,6 +185,7 @@ public class WComboInnateSkill extends WeaponInnateSkill {
         private final List<ComboEntryPointValues> entryPoints = new ArrayList<>();
         private List<JsonComponentArgs> tooltipComponents;
         private boolean alwaysAllow;
+        private boolean resetComboPlayer;
 
         public Builder(Function<WComboInnateSkill.Builder, ? extends Skill> constructor) {
             super(constructor);
@@ -195,6 +201,11 @@ public class WComboInnateSkill extends WeaponInnateSkill {
 
         public WComboInnateSkill.Builder setAlwaysAllow(Boolean alwaysAllow) {
             this.alwaysAllow = alwaysAllow;
+            return this;
+        }
+
+        public WComboInnateSkill.Builder setResetComboPlayer(Boolean resetComboPlayer) {
+            this.resetComboPlayer = resetComboPlayer;
             return this;
         }
 

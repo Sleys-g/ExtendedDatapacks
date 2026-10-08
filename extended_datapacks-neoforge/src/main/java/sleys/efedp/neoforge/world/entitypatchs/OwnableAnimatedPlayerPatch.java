@@ -51,7 +51,7 @@ public class OwnableAnimatedPlayerPatch extends HumanoidMobPatch<OwnableAnimated
 
     @Override @ErrorHandled
     public void preTick() {
-        ExecutionTasks.run(ExecutionPolicy.RESIST, ErrorPolicy.DEPURATE, TASK_ID, super::preTick); /// Move Entity -> ResultProtocol<Entity>
+        ExecutionTasks.run(super::preTick); /// As HotSpot
         if (this.isLogicalClient()) return;
 
         if (!this.original.getNeedDiscord()) {

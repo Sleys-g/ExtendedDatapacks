@@ -53,27 +53,15 @@ public class EpicFightEDPConfig {
     }
 
     public static boolean getUseStaminaInChargedAttacks() {
-        return ExecutionTasks.getAndFallback(
-                ExecutionPolicy.RESIST,
-                USE_STAMINA_IN_CHARGED_ATTACKS::get,
-                true
-        );
+        return ExecutionTasks.getAndFallback(USE_STAMINA_IN_CHARGED_ATTACKS::get, true);
     }
 
     public static boolean getUseWeightInChargedAttacks() {
-        return ExecutionTasks.getAndFallback(
-                ExecutionPolicy.RESIST,
-                USE_WEIGHT_IN_CHARGED_ATTACKS::get,
-                true
-        );
+        return ExecutionTasks.getAndFallback(USE_WEIGHT_IN_CHARGED_ATTACKS::get, true);
     }
 
     public static float getWeightValueInChargedAttacks() {
-        return ExecutionTasks.getAndFallback(
-                ExecutionPolicy.RESIST,
-                SET_WEIGHT_IN_CHARGED_ATTACKS::get,
-                2.3
-        ).floatValue();
+        return ExecutionTasks.getAndFallback(SET_WEIGHT_IN_CHARGED_ATTACKS::get, 2.3).floatValue();
     }
 
     public static ExecutionPolicy getErrorHandlerEpicFightEDP() {

@@ -12,6 +12,7 @@ import java.util.List;
 
 public record PerComboInnateSkillDefinition(
         String name, boolean disableTooltipProperties,
+        boolean resetComboPlayer,
         List<PerComboAnimationData> perComboAnimationData,
         List<JsonComponentArgs> tooltip
 ) implements IInnateSkillDefinition<WPerComboInnateSkill> {
@@ -19,8 +20,12 @@ public record PerComboInnateSkillDefinition(
     public static final MapCodec<PerComboInnateSkillDefinition> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.STRING.fieldOf("name").forGetter(PerComboInnateSkillDefinition::name),
+
                     Codec.BOOL.optionalFieldOf("disableTooltipProperties", false)
                             .forGetter(PerComboInnateSkillDefinition::disableTooltipProperties),
+
+                    Codec.BOOL.optionalFieldOf("resetComboPlayer", true)
+                            .forGetter(PerComboInnateSkillDefinition::resetComboPlayer),
 
                     PerComboAnimationData.CODEC.codec()
                             .listOf()
@@ -39,6 +44,7 @@ public record PerComboInnateSkillDefinition(
     public WPerComboInnateSkill.Builder createBuilder() {
         return WPerComboInnateSkill
                 .createPerComboBuilder()
+                .setResetComboPlayer(resetComboPlayer)
                 .setTooltipArray(tooltip)
                 .setDisableTooltipProperties(disableTooltipProperties)
                 .setCategory(SkillCategories.WEAPON_INNATE);

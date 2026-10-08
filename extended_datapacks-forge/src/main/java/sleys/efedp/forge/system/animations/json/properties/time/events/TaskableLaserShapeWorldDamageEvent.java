@@ -144,8 +144,10 @@ public record TaskableLaserShapeWorldDamageEvent(Float damage, LaserShapeHelper.
         }
 
         var level = livingCaster.level();
+
         var origin = spawnMode.orElse(SpawnMode.LOCAL).resolvePoints(livingCaster, patch.getTarget(), this);
         List<Vec3> points = LaserShapeHelper.generate(shape, origin, size, spacing.orElse(0.5F));
+        points = LaserShapeHelper.rotateFacingCaster(points, livingCaster.position());
         points = LaserShapeHelper.groundPoints(level, points);
 
         int actualDelay = delay.orElse(0);

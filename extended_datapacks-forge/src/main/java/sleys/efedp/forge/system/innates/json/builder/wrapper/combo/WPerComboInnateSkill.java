@@ -15,6 +15,7 @@ import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.api.animation.AnimationManager;
+import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.skill.SkillBuilder;
@@ -32,6 +33,7 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
     private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues;
     protected final List<JsonComponentArgs> tooltipComponents;
     protected final boolean disableTooltipProperties;
+    private final boolean resetComboPlayer;
 
     public static WPerComboInnateSkill.Builder createPerComboBuilder() {
         return new WPerComboInnateSkill.Builder()
@@ -44,6 +46,7 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
         this.perComboSkillValues = builder.perComboSkillValues;
         this.tooltipComponents = builder.tooltipComponents;
         this.disableTooltipProperties = builder.disableTooltipProperties;
+        this.resetComboPlayer = builder.resetComboPlayer;
     }
 
     public boolean checkExecuteCondition(SkillContainer container) {
@@ -150,6 +153,8 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
         for (int i = 0; i < Math.min(phases.length, this.properties.size()); i++) {
             phases[i].addProperties(this.properties.get(i).entrySet());
         }
+
+        attack.addProperty(AnimationProperty.ActionAnimationProperty.RESET_PLAYER_COMBO_COUNTER, resetComboPlayer);
         return animationAccessor;
     }
 
@@ -157,6 +162,7 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
         private final Map<AnimationManager.AnimationAccessor<? extends DynamicAnimation>, AnimationSkillValues> perComboSkillValues = new HashMap<>();
         private List<JsonComponentArgs> tooltipComponents;
         private boolean disableTooltipProperties;
+        private boolean resetComboPlayer;
 
         public void putPerComboAnimationData(AnimationManager.AnimationAccessor<? extends DynamicAnimation> targetAnimation, AnimationSkillValues animationData) {
             this.perComboSkillValues.put(targetAnimation, animationData);
@@ -164,6 +170,11 @@ public class WPerComboInnateSkill extends WeaponInnateSkill {
 
         public WPerComboInnateSkill.Builder setTooltipArray(List<JsonComponentArgs> tooltipComponents) {
             this.tooltipComponents = tooltipComponents;
+            return this;
+        }
+
+        public WPerComboInnateSkill.Builder setResetComboPlayer(Boolean resetComboPlayer) {
+            this.resetComboPlayer = resetComboPlayer;
             return this;
         }
 

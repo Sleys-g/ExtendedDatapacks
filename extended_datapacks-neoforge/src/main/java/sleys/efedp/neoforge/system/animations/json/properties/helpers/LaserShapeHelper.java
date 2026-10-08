@@ -261,4 +261,46 @@ public final class LaserShapeHelper {
 
         return grounded;
     }
+
+    /**
+     * Take the center most point from a list of positions in space, draw an arrow pointing toward the reference position,
+     * and rotate all the points based on the arrow's angle.
+     * @param points spaces points
+     * @param referencePosition reference point against which the list of points will be adjusted
+     * @return list of points based on the reference position
+     */
+    public static List<Vec3> rotateFacingCaster(List<Vec3> points, Vec3 referencePosition) {
+        if (points.isEmpty()) return points;
+
+        double cx = 0, cz = 0;
+        for (Vec3 p : points) {
+            cx += p.x;
+            cz += p.z;
+        }
+
+        cx /= points.size();
+        cz /= points.size();
+
+        double fx = cx - referencePosition.x;
+        double fz = cz - referencePosition.z;
+
+        if (fx * fx + fz * fz < 1.0E-6) return points;
+
+        double angle = Math.atan2(fx, fz);
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+
+        List<Vec3> result = new ArrayList<>(points.size());
+        for (Vec3 p : points) {
+            double x = p.x - cx;
+            double z = p.z - cz;
+            result.add(new Vec3(
+                    cx + x * cos + z * sin,
+                    p.y,
+                    cz - x * sin + z * cos
+            ));
+        }
+
+        return result;
+    }
 }

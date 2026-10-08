@@ -69,12 +69,7 @@ public class ExtendedDatapacks {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EDP, CONFIG_PATH);
 
-        LogicalTasks.run(
-                LogicalPolicy.LOGICAL_CLIENT, ErrorPolicy.DEPURATE,
-                "Extended Datapacks - Client",
-                () -> ExtendedDatapacks.ExtendedDatapacksClient(modBus, modContainer)
-        );
-//
+        if (LogicalPolicy.LOGICAL_CLIENT.isValidSide()) ExtendedDatapacks.ExtendedDatapacksClient(modBus, modContainer);
 //        SLLPreferences.turnOnGameTest();
     }
 

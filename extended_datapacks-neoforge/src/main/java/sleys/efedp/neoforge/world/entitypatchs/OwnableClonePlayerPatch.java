@@ -51,7 +51,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
 
     @Override @ErrorHandled
     public void preTick() {
-        ExecutionTasks.run(ExecutionPolicy.RESIST, ErrorPolicy.DEPURATE, TASK_ID, super::preTick); /// Move Entity -> ResultProtocol<Entity>
+        ExecutionTasks.run(super::preTick);
         if (this.isLogicalClient()) return;
 
         var owner = this.getOriginal().getOwner();
@@ -72,7 +72,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
         var entityAnimation = entityAnimatorPlayer.getRealAnimation();
 
         if (this.isInvalidAnimation(ownerAnimation)) {
-            ExecutionTasks.run(ExecutionPolicy.RESIST, () -> this.onSyncLivings(patchOwner, ownerAnimator));
+            ExecutionTasks.run(() -> this.onSyncLivings(patchOwner, ownerAnimator));
             return;
         }
 

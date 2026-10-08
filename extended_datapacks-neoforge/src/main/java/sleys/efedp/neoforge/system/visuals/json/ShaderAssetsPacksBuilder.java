@@ -17,7 +17,7 @@ import sleys.sl.library.exceptions.OutrangePacketException;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.util.io.GsonUtilities;
-import sleys.sl.shaders.data.IShaderParameters;
+import sleys.sl.shaders.system.chains.builder.IShaderParameters;
 import yesman.epicfight.world.capabilities.item.Style;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 

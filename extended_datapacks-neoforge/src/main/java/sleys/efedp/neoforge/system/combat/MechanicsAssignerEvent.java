@@ -15,10 +15,7 @@ public class MechanicsAssignerEvent {
     public static void onPlayerTickEvent(PlayerTickEvent.Post event) {
         PlayerPatch<?> playerPatch = PatchPlayerHelper.safeParametricePlayerPatchTickEvent(event);
         if (playerPatch == null) return;
-        ExecutionTasks.operateAndGetResult(
-                ExecutionPolicy.RESIST,
-                playerPatch, MechanicsAssignerEvent::onChargedSlot
-        );
+        MechanicsAssignerEvent.onChargedSlot(playerPatch);
     }
 
     @ErrorHandled
