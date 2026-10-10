@@ -75,5 +75,9 @@ public class BootstrapCommon {
 
         HoldableConditionalInnateSkillsRegistry.initialize(modBus);
         modBus.register(HoldableConditionalInnateSkillsRegistry.class);
+
+        /// V3 Innate
+        TimedSkillsRegistry.initialize(modBus);
+        modBus.register(TimedSkillsRegistry.class);
     }
 }

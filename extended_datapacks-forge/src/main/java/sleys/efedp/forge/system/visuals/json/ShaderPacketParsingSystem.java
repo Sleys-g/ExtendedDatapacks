@@ -3,8 +3,8 @@ package sleys.efedp.forge.system.visuals.json;
 import com.google.gson.JsonObject;
 import sleys.sl.library.util.data.color.RGB;
 import sleys.sl.library.util.io.GsonUtilities;
-import sleys.sl.shaders.chains.ShaderEffectList;
-import sleys.sl.shaders.data.*;
+import sleys.sl.shaders.system.chains.ShaderEffectList;
+import sleys.sl.shaders.system.chains.builder.*;
 
 import java.util.Locale;
 

@@ -86,6 +86,8 @@ Take a look at what is currently implemented and what is coming next!
   - [x] **Taskable Laser Shape World Damage** ✔️
   - [x] **Taskable Entity Clone** ✔️
   - [x] **Taskable Entity Animated** ✔️
+- [x] **Timed Innate Skill** ✔️
+  - [ ] **Controlable Events** ❌
 
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 

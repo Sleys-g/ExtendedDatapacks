@@ -12,12 +12,14 @@ import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.system.visuals.json.ActivationType;
 import sleys.efedp.forge.system.visuals.json.ShaderAssetsPacksBuilder;
 import sleys.sl.library.execution.task.CoroutineTask;
-import sleys.sl.shaders.chains.IChainEffect;
-import sleys.sl.shaders.chains.IPhaseChain;
-import sleys.sl.shaders.chains.ShaderEffectList;
-import sleys.sl.shaders.data.*;
-import sleys.sl.shaders.system.ShaderEventListener;
+import sleys.sl.shaders.listener.chains.ChainEventListener;
+import sleys.sl.shaders.system.IPhaseChain;
 import sleys.sl.shaders.system.ShaderPhaseManager;
+import sleys.sl.shaders.system.chains.ShaderEffectList;
+import sleys.sl.shaders.system.chains.builder.ColoredImpactFrameParams;
+import sleys.sl.shaders.system.chains.builder.IShaderParameters;
+import sleys.sl.shaders.system.chains.builder.ImpactFrameParams;
+import sleys.sl.shaders.system.chains.effects.IChainEffect;
 import yesman.epicfight.api.animation.types.LayerOffAnimation;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -208,7 +210,7 @@ public class ShaderPacketCoroutine extends CoroutineTask {
     }
 
     private boolean isAlreadyActive(IShaderParameters shader, String id) {
-        for (var effect : ShaderEventListener.activeEffects()) {
+        for (var effect : ChainEventListener.activeEffects()) {
             if (effect.effectType() != shader.effectType()) continue;
             var activeId = effect.shaderId();
             if (activeId == null || activeId.isEmpty()) continue;
@@ -239,7 +241,7 @@ public class ShaderPacketCoroutine extends CoroutineTask {
     }
 
     private void clearAllEffects() {
-        for (var chain : ShaderEventListener.activeEffects()) {
+        for (var chain : ChainEventListener.activeEffects()) {
             chain.dispose();
         }
     }
