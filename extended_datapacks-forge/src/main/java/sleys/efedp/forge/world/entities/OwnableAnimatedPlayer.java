@@ -65,6 +65,7 @@ public class OwnableAnimatedPlayer extends PathfinderMob implements OwnableEntit
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
+
         this.entityData.define(OWNER_UUID, Optional.empty());
         this.entityData.define(NEED_DISCARD, false);
     }

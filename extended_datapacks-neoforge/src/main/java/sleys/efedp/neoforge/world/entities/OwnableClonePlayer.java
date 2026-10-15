@@ -166,6 +166,7 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
         LivingEntity owner = this.getOwner();
         if (owner == null) return;
 
+        this.setPose(owner.getPose());
         this.setShiftKeyDown(owner.isShiftKeyDown());
         this.setSprinting(owner.isSprinting());
         this.setSwimming(owner.isSwimming());
@@ -177,6 +178,7 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
 
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack stack = owner.getItemBySlot(slot);
+
             this.setItemSlot(slot, stack.copy());
             this.setDropChance(slot, 0.0F);
         }

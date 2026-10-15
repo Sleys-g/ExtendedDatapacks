@@ -8,8 +8,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import sleys.efedp.forge.registry.ExtendedDatapacksEntities;
 import sleys.efedp.forge.world.entities.OwnableClonePlayer;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ErrorPolicy;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.*;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -22,8 +20,6 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer> {
-
-    private static final String TASK_ID = "Ownable Clone Player Patch";
 
     public OwnableClonePlayerPatch() {
         super(Factions.NEUTRAL);
@@ -51,7 +47,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
 
     @Override  @ErrorHandled
     public void tick(LivingEvent.LivingTickEvent event) {
-        ExecutionTasks.run(ExecutionPolicy.RESIST, ErrorPolicy.DEPURATE, TASK_ID, () -> super.tick(event)); /// Move Entity -> ResultProtocol<Entity>
+        ExecutionTasks.run(() -> super.tick(event));
         if (this.isLogicalClient()) return;
 
         var owner = this.getOriginal().getOwner();
@@ -72,7 +68,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
         var entityAnimation = entityAnimatorPlayer.getRealAnimation();
 
         if (this.isInvalidAnimation(ownerAnimation)) {
-            ExecutionTasks.run(ExecutionPolicy.RESIST, () -> this.onSyncLivings(patchOwner, ownerAnimator));
+            ExecutionTasks.run(() -> this.onSyncLivings(patchOwner, ownerAnimator));
             return;
         }
 
@@ -82,6 +78,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
 
     @ErrorHandled
     private void onSyncLivings(PlayerPatch<?> patchOwner, ServerAnimator ownerAnimator) {
+        if (ownerAnimator.getEntityState() == this.getEntityState()) return;
         if (ownerAnimator.getEntityState().getLevel() == 0) this.playAnimationSynchronized(
                 ownerAnimator.getLivingAnimations().get(patchOwner.currentLivingMotion), 0F
         );
@@ -125,7 +122,17 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
 
     @Override
     public void updateMotion(boolean b) {
-        this.currentLivingMotion = LivingMotions.IDLE;
+        var e = this.original;
+        if (this.animator.getEntityState().getLevel() != 0) return;
+
+        if (e.getHealth() <= 0F)              this.currentLivingMotion = LivingMotions.DEATH;
+        else if (e.isSwimming())              this.currentLivingMotion = LivingMotions.SWIM;
+        else if (!e.onGround() && e.getDeltaMovement().y < -0.5) this.currentLivingMotion = LivingMotions.FALL;
+        else if (e.getDeltaMovement().horizontalDistanceSqr() > 1.0E-4) {
+            if (e.isShiftKeyDown())           this.currentLivingMotion = LivingMotions.SNEAK;
+            else if (e.isSprinting())         this.currentLivingMotion = LivingMotions.RUN;
+            else                              this.currentLivingMotion = LivingMotions.WALK;
+        } else                                this.currentLivingMotion = e.isShiftKeyDown() ? LivingMotions.KNEEL : LivingMotions.IDLE;
     }
 
     public static void initAttributes(EntityAttributeModificationEvent event) {

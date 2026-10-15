@@ -7,8 +7,6 @@ import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
 import sleys.efedp.neoforge.world.entities.OwnableAnimatedPlayer;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ErrorPolicy;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -18,8 +16,6 @@ import yesman.epicfight.world.capabilities.entitypatch.Factions;
 import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
 
 public class OwnableAnimatedPlayerPatch extends HumanoidMobPatch<OwnableAnimatedPlayer> {
-
-    private static final String TASK_ID = "Ownable Animated Player Patch";
 
     public OwnableAnimatedPlayerPatch(OwnableAnimatedPlayer original) {
         super(original, Factions.NEUTRAL);

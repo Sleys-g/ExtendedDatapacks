@@ -20,8 +20,8 @@ public class OwnableWitherGhostPatch extends MobPatch<OwnableWitherGhost> {
     }
 
     @Override
-    public void onJoinWorld(OwnableWitherGhost entity, Level level, boolean worldgenSpawn) {
-        super.onJoinWorld(entity, level, worldgenSpawn);
+    public void onJoinWorld(OwnableWitherGhost entity, Level level, boolean worldGenSpawn) {
+        super.onJoinWorld(entity, level, worldGenSpawn);
 
         if (!this.original.isNoAi()) {
             this.playAnimation(Animations.WITHER_CHARGE, 0.0F);

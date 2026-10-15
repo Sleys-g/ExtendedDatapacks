@@ -7,8 +7,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import sleys.efedp.forge.registry.ExtendedDatapacksEntities;
 import sleys.efedp.forge.world.entities.OwnableAnimatedPlayer;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ErrorPolicy;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -18,8 +16,6 @@ import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 public class OwnableAnimatedPlayerPatch extends HumanoidMobPatch<OwnableAnimatedPlayer> {
-
-    private static final String TASK_ID = "Ownable Animated Player Patch";
 
     public OwnableAnimatedPlayerPatch() {
         super(Factions.NEUTRAL);
@@ -51,7 +47,7 @@ public class OwnableAnimatedPlayerPatch extends HumanoidMobPatch<OwnableAnimated
 
     @Override  @ErrorHandled
     public void tick(LivingEvent.LivingTickEvent event) {
-        ExecutionTasks.run(ExecutionPolicy.RESIST, ErrorPolicy.DEPURATE, TASK_ID, () -> super.tick(event)); /// Move Entity -> ResultProtocol<Entity>
+        ExecutionTasks.run(() -> super.tick(event)); /// As HotSpot
         if (this.isLogicalClient()) return;
 
         if (!this.original.getNeedDiscord()) {
