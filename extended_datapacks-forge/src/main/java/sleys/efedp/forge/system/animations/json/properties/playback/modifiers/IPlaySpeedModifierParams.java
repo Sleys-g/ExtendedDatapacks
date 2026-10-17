@@ -3,7 +3,7 @@ package sleys.efedp.forge.system.animations.json.properties.playback.modifiers;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public sealed interface IPlaySpeedModifierParams permits AirAnimationLoopSpeed, ChargingAnimationSpeed, ChargingLinkedAnimationSpeed, ConstantAnimationSpeed, IPlaySpeedExternalModifierParams {
+public interface IPlaySpeedModifierParams {
 
    <T extends DynamicAnimation> float modify(T self, LivingEntityPatch<?> patch,
                                              float speed, float prevElapsedTime, float elapsedTime);

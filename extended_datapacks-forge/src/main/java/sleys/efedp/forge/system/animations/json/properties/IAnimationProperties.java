@@ -1,8 +1,9 @@
 package sleys.efedp.forge.system.animations.json.properties;
 
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 
-public sealed interface IAnimationProperties<T extends DynamicAnimation> permits
-        ActionAnimationProperties, AttackAnimationProperties, IAnimationExternalProperties, StaticAnimationProperties {
+@Internal
+public interface IAnimationProperties<T extends DynamicAnimation> {
     void applyTo(T animation);
 }

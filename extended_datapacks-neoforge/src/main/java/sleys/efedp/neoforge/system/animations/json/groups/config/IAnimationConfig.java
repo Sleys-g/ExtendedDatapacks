@@ -9,7 +9,7 @@ import sleys.sl.library.annotations.BruteForceOperation;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
-public sealed interface IAnimationConfig<T extends StaticAnimation> permits ConfigActionAnimationGroup, ConfigAttackAnimationGroup, ConfigStaticAnimationGroup, IAnimationExternalConfig {
+public interface IAnimationConfig<T extends StaticAnimation> {
 
     IAnimationGroupType groupType();
     ResourceLocation animation();

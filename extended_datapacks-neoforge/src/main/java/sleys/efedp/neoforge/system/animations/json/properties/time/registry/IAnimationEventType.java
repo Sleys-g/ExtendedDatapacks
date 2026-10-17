@@ -2,10 +2,12 @@ package sleys.efedp.neoforge.system.animations.json.properties.time.registry;
 
 import com.mojang.serialization.MapCodec;
 import sleys.efedp.neoforge.system.animations.json.properties.time.events.IAnimationEventParams;
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
+@Internal
 public interface IAnimationEventType {
     MapCodec<? extends IAnimationEventParams> paramsCodec();
 

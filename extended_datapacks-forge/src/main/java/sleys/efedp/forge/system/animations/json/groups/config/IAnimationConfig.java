@@ -6,10 +6,12 @@ import sleys.efedp.forge.system.animations.json.groups.registry.IAnimationGroupT
 import sleys.efedp.forge.system.animations.json.properties.IAnimationProperties;
 import sleys.sl.epicfight.mixins.AnimationManagerAccessor;
 import sleys.sl.library.annotations.BruteForceOperation;
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
-public sealed interface IAnimationConfig<T extends StaticAnimation> permits ConfigActionAnimationGroup, ConfigAttackAnimationGroup, ConfigStaticAnimationGroup, IAnimationExternalConfig {
+@Internal
+public interface IAnimationConfig<T extends StaticAnimation> {
 
     IAnimationGroupType groupType();
     ResourceLocation animation();

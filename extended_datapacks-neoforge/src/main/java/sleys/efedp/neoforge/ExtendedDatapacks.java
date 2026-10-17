@@ -24,8 +24,6 @@ import sleys.efedp.neoforge.client.keybinding.EDPCombatKeyBinding;
 import sleys.efedp.neoforge.config.EpicFightEDPConfig;
 import sleys.efedp.neoforge.task.tick.ClientLaserVerticalImpactTask;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.LogicalTasks;
-import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
 import sleys.sl.library.execution.task.TickTaskRegistry;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;

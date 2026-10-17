@@ -2,15 +2,18 @@ package sleys.efedp.neoforge.system.animations.json.groups.virtual;
 
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.api.external.IAnimationExternalVirtualization;
 import sleys.efedp.neoforge.system.animations.json.groups.registry.IAnimationGroupType;
 import sleys.efedp.neoforge.system.animations.json.properties.IAnimationProperties;
 import sleys.sl.epicfight.mixins.AnimationManagerAccessor;
 import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
 import sleys.sl.library.annotations.BruteForceOperation;
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
-public sealed interface IAnimationVirtualization<T extends StaticAnimation> permits IAnimationExternalVirtualization, VirtualActionAnimationGroup, VirtualAttackAnimationGroup, VirtualStaticAnimationGroup {
+@Internal
+public interface IAnimationVirtualization<T extends StaticAnimation> {
 
     IAnimationGroupType groupType();
     ResourceLocation realAnimation();

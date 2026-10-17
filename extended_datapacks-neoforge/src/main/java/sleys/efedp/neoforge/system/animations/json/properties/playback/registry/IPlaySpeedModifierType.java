@@ -2,9 +2,11 @@ package sleys.efedp.neoforge.system.animations.json.properties.playback.registry
 
 import com.mojang.serialization.MapCodec;
 import sleys.efedp.neoforge.system.animations.json.properties.playback.modifiers.IPlaySpeedModifierParams;
+import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
+@Internal
 public interface IPlaySpeedModifierType {
     MapCodec<? extends IPlaySpeedModifierParams> paramsCodec();
 
