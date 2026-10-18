@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.sl.library.util.helper.entity.EntityHelper;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -32,7 +32,7 @@ public record SummonEntityOnTargetEvent(ResourceLocation entityType,
     @Override @SuppressWarnings("deprecation")
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Summon Entity On Target Event")) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Summon Entity On Target Event")) {
             return;
         }
 

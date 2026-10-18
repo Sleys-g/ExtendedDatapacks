@@ -10,7 +10,7 @@ import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.world.entities.OwnableAnimatedPlayer;
 import yesman.epicfight.api.animation.AnimationManager;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -37,7 +37,7 @@ public record TaskableEntityAnimatedEvent(ResourceLocation animation,
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
         if (!(livingCaster instanceof Player player)) return; /// Fix funny entity-recursivity call
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Taskable Entity Animated Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Taskable Entity Animated Event")) return;
 
         var level = (ServerLevel) player.level();
         var animatedEntity = new OwnableAnimatedPlayer(

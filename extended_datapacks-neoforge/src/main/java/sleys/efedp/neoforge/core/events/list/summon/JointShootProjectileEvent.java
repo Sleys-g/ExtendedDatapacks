@@ -16,7 +16,7 @@ import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
 import sleys.sl.epicfight.model.JointModelCordReader;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -56,7 +56,7 @@ public record JointShootProjectileEvent(
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Joint Shoot Projectile")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Joint Shoot Projectile")) return;
 
         var level = livingCaster.level();
         var target = patch.getTarget();

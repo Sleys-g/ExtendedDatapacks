@@ -12,7 +12,7 @@ import sleys.efedp.neoforge.core.events.IAnimationEventParams;
 import sleys.efedp.neoforge.core.events.list.taskable.coroutine.ClientLaserFloorCoroutine;
 import sleys.efedp.neoforge.core.events.list.taskable.coroutine.ServerLaserFloorCoroutine;
 import sleys.sl.library.execution.task.Coroutine;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightSounds;
@@ -42,7 +42,7 @@ public record TaskableLaserFloorWorldDamageEvent(Float damage, Optional<StunType
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.BOTH, "Tickable Laser World Floor Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Tickable Laser World Floor Event")) return;
 
         var level = livingCaster.level();
         var center = livingCaster.position();

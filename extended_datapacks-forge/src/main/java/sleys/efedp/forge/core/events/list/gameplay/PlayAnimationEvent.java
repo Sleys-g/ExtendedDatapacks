@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import yesman.epicfight.api.animation.AnimationManager;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -23,7 +23,7 @@ public record PlayAnimationEvent(ResourceLocation animation, Float transition) i
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER,"Play Animation Event")) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER,"Play Animation Event")) {
             return;
         }
 

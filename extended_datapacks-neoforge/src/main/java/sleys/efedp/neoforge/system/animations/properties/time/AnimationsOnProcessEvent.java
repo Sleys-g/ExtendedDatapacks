@@ -2,7 +2,7 @@ package sleys.efedp.neoforge.system.animations.properties.time;
 
 import com.mojang.serialization.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.animations.properties.helpers.AnimationEventSideCodec;
+import sleys.efedp.neoforge.core.ProcessSides;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
 import sleys.efedp.neoforge.core.events.registry.AnimationEventTypeRegistry;
 import sleys.efedp.neoforge.core.events.registry.IAnimationEventType;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType processType,
                                                                   IAnimationEventType type,
-                                                                  AnimationEvent.Side side,
+                                                                  ProcessSides side,
                                                                   IAnimationEventParams params) implements IAnimationEvent<T> {
 
     private enum ProcessType {
@@ -39,7 +39,7 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
                     (livingEntityPatch,
                      assetAccessor,
                      animationParameters) ->
-                            processEvent.type.runEvent(processEvent.params, assetAccessor, livingEntityPatch), processEvent.side
+                            processEvent.type.runEvent(processEvent.params, assetAccessor, livingEntityPatch), processEvent.side.toEpicFightSides()
             );
             animation.addEvents(this.eventType, event);
         }
@@ -79,8 +79,8 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
                         O sideRaw = input.get("side");
                         O paramsRaw = input.get("params");
 
-                        DataResult<AnimationEvent.Side> sideResult = sideRaw != null
-                                ? AnimationEventSideCodec.CODEC.parse(ops, sideRaw)
+                        DataResult<ProcessSides> sideResult = sideRaw != null
+                                ? ProcessSides.PROCESS_SIDES_CODEC.parse(ops, sideRaw)
                                 : DataResult.error(() -> "Missing 'side' field in animation event");
 
                         DataResult<? extends IAnimationEventParams> paramsResult = type
@@ -113,7 +113,7 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
             public <O> RecordBuilder<O> encode(AnimationsOnProcessEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
                 prefix.add("process", ProcessType.CODEC.encodeStart(ops, input.processType()));
                 prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
-                prefix.add("side", AnimationEventSideCodec.CODEC.encodeStart(ops, input.side()));
+                prefix.add("side", ProcessSides.PROCESS_SIDES_CODEC.encodeStart(ops, input.side()));
 
                 if (input.params() != null) {
                     Codec<IAnimationEventParams> paramsCodec = (Codec) input.type().paramsCodec().codec();

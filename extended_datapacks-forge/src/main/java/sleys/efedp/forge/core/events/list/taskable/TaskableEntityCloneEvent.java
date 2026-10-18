@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.world.entities.OwnableClonePlayer;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -35,7 +35,7 @@ public record TaskableEntityCloneEvent(int duration,
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
         if (!(livingCaster instanceof Player player)) return; /// Fix funny entity-recursivity call
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Taskable Entity Clone Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Taskable Entity Clone Event")) return;
 
         var level = (ServerLevel) player.level();
         var cloneEntity = new OwnableClonePlayer(

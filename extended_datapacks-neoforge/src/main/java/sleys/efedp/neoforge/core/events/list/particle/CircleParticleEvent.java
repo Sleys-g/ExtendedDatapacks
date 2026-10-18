@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.neoforge.system.animations.properties.helpers.ParticleShapeHelper;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -27,7 +27,7 @@ public record CircleParticleEvent(ParticleOptions particle, double radius, int p
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Circle Particle Event")) return;
+        if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Circle Particle Event")) return;
 
         List<Vec3> shape = ParticleShapeHelper.circle(radius, points);
         ParticleShapeHelper.spawnAtPoints(caster.level(), particle, caster.position(), shape, 0, false);

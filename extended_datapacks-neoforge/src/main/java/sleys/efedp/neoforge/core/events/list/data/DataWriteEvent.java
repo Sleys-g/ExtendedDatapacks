@@ -2,9 +2,9 @@ package sleys.efedp.neoforge.core.events.list.data;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import sleys.efedp.neoforge.core.ProcessSides;
 import sleys.efedp.neoforge.core.datapackets.write.IDataWriter;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -23,7 +23,7 @@ public record DataWriteEvent(List<IDataWriter> writers) implements IAnimationEve
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Data Write Event")) return;
+        if (this.isInvalid(level, ProcessSides.BOTH, "Data Write Event")) return;
         writers.forEach(iDataWriter -> iDataWriter.writeData(livingEntity));
     }
 }

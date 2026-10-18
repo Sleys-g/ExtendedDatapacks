@@ -14,7 +14,7 @@ import sleys.efedp.neoforge.core.events.list.taskable.coroutine.ClientLaserShape
 import sleys.efedp.neoforge.core.events.list.taskable.coroutine.ServerLaserShapeCoroutine;
 import sleys.sl.library.execution.task.Coroutine;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightSounds;
@@ -140,7 +140,7 @@ public record TaskableLaserShapeWorldDamageEvent(Float damage, LaserShapeHelper.
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
 
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.BOTH, "Taskable Laser Shape World Damage Event")) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Taskable Laser Shape World Damage Event")) {
             return;
         }
 

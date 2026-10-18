@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.system.animations.properties.helpers.ParticleShapeHelper;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -27,7 +27,7 @@ public record FloorParticleEvent(ParticleOptions particle, int points, double ra
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Floor Particles Event")) return;
+        if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Floor Particles Event")) return;
 
         List<Vec3> points_ = ParticleShapeHelper.diskFill(radius, points, caster.getRandom());
         ParticleShapeHelper.spawnAtPoints(caster.level(), particle, caster.position(), points_, 0, false);

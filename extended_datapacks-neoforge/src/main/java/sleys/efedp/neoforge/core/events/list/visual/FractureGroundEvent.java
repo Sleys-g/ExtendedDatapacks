@@ -10,7 +10,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.utils.LevelUtil;
@@ -35,7 +35,7 @@ public record FractureGroundEvent(Vec3 edge, String jointName, Double radius, Fl
         var level = livingEntity.level();
         Vec3 position = livingEntity.position();
 
-        if (this.isInvalid(level, AnimationEvent.Side.CLIENT, "Fracture Ground Event")) {
+        if (this.isInvalid(level, ProcessSides.CLIENT, "Fracture Ground Event")) {
             return;
         }
 

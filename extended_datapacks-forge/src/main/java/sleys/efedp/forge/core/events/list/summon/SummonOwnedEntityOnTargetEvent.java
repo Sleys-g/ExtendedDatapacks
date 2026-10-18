@@ -12,7 +12,7 @@ import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.sl.library.annotations.OpaqueMethod;
 import sleys.sl.library.util.helper.entity.EntityHelper;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -40,7 +40,7 @@ public record SummonOwnedEntityOnTargetEvent(ResourceLocation entityType,
     @Override @SuppressWarnings("deprecation")
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Summon Owned Entity On Target Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Summon Owned Entity On Target Event")) return;
 
         EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(entityType);
         var level = livingCaster.level();

@@ -9,7 +9,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -28,7 +28,7 @@ public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimatio
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Teleport Event")) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Teleport Event")) {
             return;
         }
 

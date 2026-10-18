@@ -10,7 +10,7 @@ import sleys.efedp.neoforge.system.animations.properties.phase.PhaseStunType;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
 import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksTickTaskList;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -110,7 +110,7 @@ public record LaserVerticalImpactDamageEvent(TargetMode targetMode, Float damage
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER, "Laser Vertical Target Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Laser Vertical Target Event")) return;
 
         targetMode.process(patch, this);
         patch.removeHurtEntities();

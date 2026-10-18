@@ -15,7 +15,7 @@ import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.core.datapackets.comparator.NumericComparator;
 import sleys.efedp.neoforge.system.animations.properties.time.AnimationsEventInvocation;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -65,7 +65,7 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.SERVER, "Item Number Data Read Event")) return;
+        if (this.isInvalid(caster.level(), ProcessSides.SERVER, "Item Number Data Read Event")) return;
         if (!(caster.level() instanceof ServerLevel)) return;
 
         if (this.applyMatch(caster)) {

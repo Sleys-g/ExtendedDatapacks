@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraftforge.network.PacketDistributor;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.network.EntityPairingPacketTypes;
@@ -29,7 +29,7 @@ public record FlashWhitePairEvent(int durationTick, int maxOverlay,
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
 
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER,"Flash White Pair Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER,"Flash White Pair Event")) return;
         SPEntityPairingPacket pairingPacket = new SPEntityPairingPacket(livingCaster.getId(), EntityPairingPacketTypes.FLASH_WHITE);
 
         pairingPacket.getBuffer().writeInt(durationTick);          /// Duration Tick

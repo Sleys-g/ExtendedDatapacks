@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import sleys.efedp.neoforge.system.animations.properties.helpers.ParticleShapeHelper;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -41,7 +41,7 @@ public record DirectionalBurstEvent(ParticleOptions particle, int points, double
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.CLIENT, "Directional Burst Particle Event")) return;
+        if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Directional Burst Particle Event")) return;
 
         Vec3 axis = caster.getLookAngle();
         List<Vec3> dirs = switch (shape) {

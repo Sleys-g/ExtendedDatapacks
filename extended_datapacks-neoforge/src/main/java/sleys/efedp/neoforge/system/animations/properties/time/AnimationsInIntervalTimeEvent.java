@@ -2,7 +2,7 @@ package sleys.efedp.neoforge.system.animations.properties.time;
 
 import com.mojang.serialization.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.animations.properties.helpers.AnimationEventSideCodec;
+import sleys.efedp.neoforge.core.ProcessSides;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
 import sleys.efedp.neoforge.core.events.registry.AnimationEventTypeRegistry;
 import sleys.efedp.neoforge.core.events.registry.IAnimationEventType;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimationEventType type,
-                                                                       AnimationEvent.Side side,
+                                                                       ProcessSides side,
                                                                        Float start,
                                                                        Float interval,
                                                                        Float end,
@@ -49,8 +49,8 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
                     O endRaw = input.get("end");
                     O paramsRaw = input.get("params");
 
-                    DataResult<AnimationEvent.Side> sideResult = sideRaw != null
-                            ? AnimationEventSideCodec.CODEC.parse(ops, sideRaw)
+                    DataResult<ProcessSides> sideResult = sideRaw != null
+                            ? ProcessSides.PROCESS_SIDES_CODEC.parse(ops, sideRaw)
                             : DataResult.error(() -> "Missing 'side' field in animation event");
 
                     DataResult<Float> startResult = startRaw != null
@@ -96,7 +96,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsInIntervalTimeEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
                 prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
-                prefix.add("side", AnimationEventSideCodec.CODEC.encodeStart(ops, input.side()));
+                prefix.add("side", ProcessSides.PROCESS_SIDES_CODEC.encodeStart(ops, input.side()));
                 prefix.add("start", Codec.FLOAT.encodeStart(ops, input.start()));
                 prefix.add("interval", Codec.FLOAT.encodeStart(ops, input.interval));
                 prefix.add("end", Codec.FLOAT.encodeStart(ops, input.end));
@@ -130,7 +130,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
                              accessor,
                              runtimeParams) ->
                                     type.runEvent(params, accessor, livingEntityPatch),
-                            side
+                            side.toEpicFightSides()
                     )
             );
         }

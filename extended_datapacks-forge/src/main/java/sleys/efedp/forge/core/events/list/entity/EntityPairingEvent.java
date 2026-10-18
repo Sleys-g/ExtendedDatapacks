@@ -7,7 +7,7 @@ import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.sl.library.annotations.Internal;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.network.EntityPairingPacketTypes;
@@ -62,7 +62,7 @@ public record EntityPairingEvent(PairingTypes types) implements IAnimationEventP
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
 
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER,"Entity Pairing Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER,"Entity Pairing Event")) return;
 
         var pairing = types.precursorPairing;
         if (pairing == null) {

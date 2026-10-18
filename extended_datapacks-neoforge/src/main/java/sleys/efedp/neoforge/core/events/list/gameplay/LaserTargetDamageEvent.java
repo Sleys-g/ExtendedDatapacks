@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import sleys.efedp.neoforge.system.animations.properties.helpers.LaserEventHelper;
 import sleys.efedp.neoforge.system.animations.properties.phase.PhaseStunType;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightSounds;
@@ -37,7 +37,7 @@ public record LaserTargetDamageEvent(Float damage,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.BOTH, "Laser Target Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Laser Target Event")) return;
 
         var livingTarget = patch.getTarget();
         if (livingTarget == null) return;

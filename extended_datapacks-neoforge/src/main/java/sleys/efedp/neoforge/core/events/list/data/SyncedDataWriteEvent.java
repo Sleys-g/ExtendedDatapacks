@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.player.Player;
 import sleys.efedp.neoforge.core.datapackets.write.IDataWriter;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -25,7 +25,7 @@ public record SyncedDataWriteEvent(List<IDataWriter> writers) implements IAnimat
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
         if (!(livingEntity instanceof Player player)) return;
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Write Data Event")) return;
+        if (this.isInvalid(level, ProcessSides.BOTH, "Synced Write Data Event")) return;
         writers.forEach(iDataWriter -> iDataWriter.writeSyncData(player));
     }
 }

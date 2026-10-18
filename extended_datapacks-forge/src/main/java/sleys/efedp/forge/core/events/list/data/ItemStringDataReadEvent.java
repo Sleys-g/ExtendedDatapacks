@@ -12,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.system.animations.properties.time.AnimationsEventInvocation;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -34,7 +34,7 @@ public record ItemStringDataReadEvent(String key,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
-        if (this.isInvalid(caster.level(), AnimationEvent.Side.SERVER, "Item String Data Read Event")) return;
+        if (this.isInvalid(caster.level(), ProcessSides.SERVER, "Item String Data Read Event")) return;
         if (!(caster.level() instanceof ServerLevel)) return;
 
         if (this.applyMatch(caster)) {

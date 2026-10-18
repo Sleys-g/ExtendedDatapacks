@@ -18,7 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -44,7 +44,7 @@ public record ThunderAnimationEvent(Optional<Boolean> changeAmbient) implements 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.SERVER,"Thunder Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER,"Thunder Event")) return;
 
         T animation = accessor.get();
         if (!(animation instanceof AttackAnimation attackAnimation)) return;

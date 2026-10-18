@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import sleys.efedp.neoforge.core.datapackets.ReadDataPacketsGroup;
 import sleys.efedp.neoforge.system.animations.properties.time.AnimationsEventInvocation;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -28,7 +28,7 @@ public record SyncedDirectDataReadEvent(ReadDataPacketsGroup readData,
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
         if (!(livingEntity instanceof Player player)) return;
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Synced Direct Data Read Event")) return;
+        if (this.isInvalid(level, ProcessSides.BOTH, "Synced Direct Data Read Event")) return;
 
         boolean result = readData.syncedEvaluate(player);
         if (result) doEvents.forEach(events -> events.execute(accessor, patch));

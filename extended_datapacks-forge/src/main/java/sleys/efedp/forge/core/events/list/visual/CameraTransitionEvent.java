@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.sl.library.client.events.CameraControllerEvent;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -48,7 +48,7 @@ public record CameraTransitionEvent(
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
-        if (this.isInvalid(patch.getOriginal().level(), AnimationEvent.Side.CLIENT, "Camera Transition Event")) {
+        if (this.isInvalid(patch.getOriginal().level(), ProcessSides.CLIENT, "Camera Transition Event")) {
             return;
         }
 

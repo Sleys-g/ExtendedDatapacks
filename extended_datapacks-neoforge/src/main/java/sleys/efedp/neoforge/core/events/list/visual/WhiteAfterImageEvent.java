@@ -3,7 +3,7 @@ package sleys.efedp.neoforge.core.events.list.visual;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.util.RandomSource;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightParticles;
@@ -16,7 +16,7 @@ public record WhiteAfterImageEvent() implements IAnimationEventParams {
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.CLIENT, "Whiter AfterImage")) {
+        if (this.isInvalid(level, ProcessSides.CLIENT, "Whiter AfterImage")) {
             return;
         }
 

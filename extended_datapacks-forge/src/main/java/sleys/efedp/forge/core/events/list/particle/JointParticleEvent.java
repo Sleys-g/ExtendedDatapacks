@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.sl.epicfight.model.JointModelParticleEngine;
 import sleys.sl.library.client.particle.emitters.SimpleParticleEmitter;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -38,7 +38,7 @@ public record JointParticleEvent(ResourceLocation particle, Vec3 volume,
     @Override @SuppressWarnings("deprecation")
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         ParticleType<?> particleType = BuiltInRegistries.PARTICLE_TYPE.get(particle);
-        if (this.isInvalid(patch.getOriginal().level(), AnimationEvent.Side.CLIENT, "Joint Particle Event")) return;
+        if (this.isInvalid(patch.getOriginal().level(), ProcessSides.CLIENT, "Joint Particle Event")) return;
 
         if (!(particleType instanceof SimpleParticleType simpleParticle)) return;
         LivingEntity livingEntity = patch.getOriginal();

@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
 import sleys.efedp.forge.system.animations.properties.phase.PhaseStunType;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.gameasset.EpicFightSounds;
@@ -33,7 +33,7 @@ public record LaserFloorWorldDamageEvent(Float damage, Optional<StunType> stunTy
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), AnimationEvent.Side.BOTH, "Laser World Floor Event")) return;
+        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Laser World Floor Event")) return;
 
         var level = livingCaster.level();
         Vec3 center = livingCaster.position();

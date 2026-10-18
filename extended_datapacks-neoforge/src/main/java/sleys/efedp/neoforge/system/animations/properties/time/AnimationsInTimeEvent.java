@@ -2,8 +2,8 @@ package sleys.efedp.neoforge.system.animations.properties.time;
 
 import com.mojang.serialization.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.core.ProcessSides;
 import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import sleys.efedp.neoforge.system.animations.properties.helpers.AnimationEventSideCodec;
 import sleys.efedp.neoforge.core.events.registry.AnimationEventTypeRegistry;
 import sleys.efedp.neoforge.core.events.registry.IAnimationEventType;
 import yesman.epicfight.api.animation.property.AnimationEvent;
@@ -12,7 +12,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import java.util.stream.Stream;
 
 public record AnimationsInTimeEvent<T extends StaticAnimation>(IAnimationEventType type,
-                                                               AnimationEvent.Side side,
+                                                               ProcessSides side,
                                                                Float start,
                                                                IAnimationEventParams params) implements IAnimationEvent<T> {
 
@@ -41,8 +41,8 @@ public record AnimationsInTimeEvent<T extends StaticAnimation>(IAnimationEventTy
                     O startRaw = input.get("start");
                     O paramsRaw = input.get("params");
 
-                    DataResult<AnimationEvent.Side> sideResult = sideRaw != null
-                            ? AnimationEventSideCodec.CODEC.parse(ops, sideRaw)
+                    DataResult<ProcessSides> sideResult = sideRaw != null
+                            ? ProcessSides.PROCESS_SIDES_CODEC.parse(ops, sideRaw)
                             : DataResult.error(() -> "Missing 'side' field in animation event");
 
                     DataResult<Float> startResult = startRaw != null
@@ -76,7 +76,7 @@ public record AnimationsInTimeEvent<T extends StaticAnimation>(IAnimationEventTy
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsInTimeEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
                 prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
-                prefix.add("side", AnimationEventSideCodec.CODEC.encodeStart(ops, input.side()));
+                prefix.add("side", ProcessSides.PROCESS_SIDES_CODEC.encodeStart(ops, input.side()));
                 prefix.add("start", Codec.FLOAT.encodeStart(ops, input.start()));
 
                 if (input.params() != null) {
@@ -101,7 +101,7 @@ public record AnimationsInTimeEvent<T extends StaticAnimation>(IAnimationEventTy
                 start, (livingEntityPatch,
                         accessor,
                         runtimeParams) ->
-                        type.runEvent(params, accessor, livingEntityPatch), side
+                        type.runEvent(params, accessor, livingEntityPatch), side.toEpicFightSides()
         );
 
         animation.addEvents(event);

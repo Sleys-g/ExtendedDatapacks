@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.system.animations.properties.time.AnimationsEventInvocation;
 import sleys.sl.library.util.data.codec.EnumCodecs;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -83,7 +83,7 @@ public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInv
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "On Target Entity Event")) return;
+        if (this.isInvalid(level, ProcessSides.BOTH, "On Target Entity Event")) return;
         targetMode.process(doEvents, patch);
     }
 }

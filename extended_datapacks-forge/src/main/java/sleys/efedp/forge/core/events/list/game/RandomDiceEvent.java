@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sleys.efedp.forge.core.events.IAnimationEventParams;
 import sleys.efedp.forge.system.animations.properties.time.AnimationsEventInvocation;
-import yesman.epicfight.api.animation.property.AnimationEvent;
+import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -26,7 +26,7 @@ public record RandomDiceEvent(float chance, List<AnimationsEventInvocation> doEv
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
         var level = livingEntity.level();
-        if (this.isInvalid(level, AnimationEvent.Side.BOTH, "Random Dice Event")) return;
+        if (this.isInvalid(level, ProcessSides.BOTH, "Random Dice Event")) return;
 
         if (ThreadLocalRandom.current().nextFloat(100.0f) < chance) {
             doEvents.forEach(events -> events.execute(accessor, patch));
