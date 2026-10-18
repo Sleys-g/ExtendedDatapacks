@@ -3,13 +3,13 @@ package sleys.efedp.forge.bootstrap;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.api.registry.ExtendedDatapacksRegistry;
-import sleys.efedp.forge.system.animations.json.animations.types.ActionAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.animations.types.AttackAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.animations.types.StaticAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.groups.types.EpicFightAnimationGroups;
-import sleys.efedp.forge.system.animations.json.properties.armature.EpicFightArmatureTypes;
-import sleys.efedp.forge.system.animations.json.properties.playback.types.AnimationPlaySpeedModifiers;
-import sleys.efedp.forge.system.animations.json.properties.time.types.*;
+import sleys.efedp.forge.core.events.types.*;
+import sleys.efedp.forge.system.animations.animations.types.ActionAnimationAccessorType;
+import sleys.efedp.forge.system.animations.animations.types.AttackAnimationAccessorType;
+import sleys.efedp.forge.system.animations.animations.types.StaticAnimationAccessorType;
+import sleys.efedp.forge.system.animations.groups.types.EpicFightAnimationGroups;
+import sleys.efedp.forge.system.animations.properties.armature.EpicFightArmatureTypes;
+import sleys.efedp.forge.system.animations.properties.playback.types.AnimationPlaySpeedModifiers;
 import sleys.sl.library.contract.ExpectedContracts;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -43,19 +43,8 @@ public class Bootstrap {
         BootstrapCommon.Initialize(modBus);
         BootstrapThirdParties.Initialize(modBus);
 
-        LogicalTasks.operate(
-                LogicalPolicy.LOGICAL_CLIENT,
-                ErrorPolicy.DEPURATE,
-                "Bootstrap - Client",
-                modBus, BootstrapClient::Initialize
-        );
-
-        LogicalTasks.operate(
-                LogicalPolicy.DEDICATED_SERVER,
-                ErrorPolicy.DEPURATE,
-                "Bootstrap - Server",
-                modBus, BootstrapServer::Initialize
-        );
+        if (LogicalPolicy.LOGICAL_CLIENT.isValidSide()) BootstrapClient.Initialize(modBus);
+        if (LogicalPolicy.DEDICATED_SERVER.isValidSide()) BootstrapServer.Initialize(modBus);
 
         STATE = SystemState.CLOSED;
     }

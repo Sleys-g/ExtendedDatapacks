@@ -9,23 +9,23 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sleys.efedp.neoforge.capability.data.HitParticleCache;
-import sleys.efedp.neoforge.capability.data.SkillDataKeyCache;
+import sleys.efedp.neoforge.epicfight.data.HitParticleCache;
+import sleys.efedp.neoforge.epicfight.data.SkillDataKeyCache;
 import sleys.efedp.neoforge.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.neoforge.bootstrap.Bootstrap;
-import sleys.efedp.neoforge.client.config.EpicFightEDPClientConfig;
-import sleys.efedp.neoforge.events.ControlDamageEvent;
-import sleys.efedp.neoforge.registry.*;
+import sleys.efedp.neoforge.client.config.ExtendedDatapacksClientConfig;
+import sleys.efedp.neoforge.plataform.events.ControlDamageEvent;
+import sleys.efedp.neoforge.plataform.registry.*;
 import sleys.efedp.neoforge.system.combat.ExtendedSkillCategory;
 import sleys.efedp.neoforge.system.combat.MechanicsAssignerEvent;
 import sleys.efedp.neoforge.system.combat.ExtendedSkillSlot;
 import sleys.efedp.neoforge.system.combat.charged_attacks.ChargedAttackStyles;
-import sleys.efedp.neoforge.client.keybinding.EDPCombatKeyBinding;
-import sleys.efedp.neoforge.config.EpicFightEDPConfig;
-import sleys.efedp.neoforge.task.tick.ClientLaserVerticalImpactTask;
+import sleys.efedp.neoforge.client.keybinding.ExtendedDatapacksCombatKeyBinding;
+import sleys.efedp.neoforge.plataform.config.EpicFightEDPConfig;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.LogicalPolicy;
 import sleys.sl.library.execution.task.TickTaskRegistry;
+import sleys.sl.library.util.data.mod.ModIdentifier;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.skill.SkillCategory;
@@ -41,6 +41,8 @@ public class ExtendedDatapacks {
 
     private static final String CONFIG_PATH = "epicfight_edp/extended_datapack_config.toml";
     private static final String CLIENT_CONFIG_PATH = "epicfight_edp/extended_datapack_client_config.toml";
+
+    public static final ModIdentifier IDENTIFIER = new ModIdentifier(MODID);
 
     public ExtendedDatapacks(IEventBus modBus, ModContainer modContainer) {
         Bootstrap.start(modBus);
@@ -73,9 +75,9 @@ public class ExtendedDatapacks {
 
     @ErrorHandled
     private static void ExtendedDatapacksClient(IEventBus modBus, ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.CLIENT, EpicFightEDPClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ExtendedDatapacksClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
         NeoForge.EVENT_BUS.register(ExtendedDatapacksClientCommands.class);
-        modBus.register(EDPCombatKeyBinding.class);
+        modBus.register(ExtendedDatapacksCombatKeyBinding.class);
         modBus.register(ExtendedDatapacksRenders.class);
 
         EpicFightClientEventHooks.Registry.ADD_PATCHED_ENTITY.registerEvent(
@@ -88,6 +90,6 @@ public class ExtendedDatapacks {
     }
 
     private static void registryTickTask() {
-        TickTaskRegistry.register(ClientLaserVerticalImpactTask.TYPE);
+        TickTaskRegistry.register(ExtendedDatapacksTickTaskList.LASER_VERTICAL_IMPACT);
     }
 }

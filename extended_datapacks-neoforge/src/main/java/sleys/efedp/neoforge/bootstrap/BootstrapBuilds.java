@@ -1,15 +1,15 @@
 package sleys.efedp.neoforge.bootstrap;
 
 import net.neoforged.fml.loading.FMLPaths;
-import sleys.efedp.neoforge.system.innates.json.builder.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.animations.json.builder.AnimationsConfigBuilder;
-import sleys.efedp.neoforge.system.animations.json.builder.AnimationsRegistryBuilder;
-import sleys.efedp.neoforge.system.animations.json.builder.AnimationsVirtualizationBuilder;
-import sleys.efedp.neoforge.system.skills.json.GuardSkillModifierBuilder;
-import sleys.efedp.neoforge.system.skills.json.PassiveSkillModifierBuilder;
-import sleys.efedp.neoforge.system.skills.json.IconSkillModifierBuilder;
-import sleys.efedp.neoforge.system.weapons.json.WeaponCategoryAdderBuilder;
+import sleys.efedp.neoforge.system.animations.builder.AnimationsConfigBuilder;
+import sleys.efedp.neoforge.system.animations.builder.AnimationsRegistryBuilder;
+import sleys.efedp.neoforge.system.animations.builder.AnimationsVirtualizationBuilder;
+import sleys.efedp.neoforge.system.skills.guard.builder.GuardSkillModifierBuilder;
+import sleys.efedp.neoforge.system.skills.passive.builder.PassiveSkillModifierBuilder;
+import sleys.efedp.neoforge.system.skills.icon.builder.IconSkillModifierBuilder;
+import sleys.efedp.neoforge.system.skills.weapon.innate.builder.*;
+import sleys.efedp.neoforge.system.category.builder.WeaponCategoryAdderBuilder;
 import sleys.sl.library.util.io.BuildPathOrFile;
 
 import java.nio.file.Path;

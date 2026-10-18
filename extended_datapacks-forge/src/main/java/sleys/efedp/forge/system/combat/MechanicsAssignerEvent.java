@@ -2,7 +2,7 @@ package sleys.efedp.forge.system.combat;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.forge.registry.ExtendedDatapacksSkills;
+import sleys.efedp.forge.plataform.registry.ExtendedDatapacksSkills;
 import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;

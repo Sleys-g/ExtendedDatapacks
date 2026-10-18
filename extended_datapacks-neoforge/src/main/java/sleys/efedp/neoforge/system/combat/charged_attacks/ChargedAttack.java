@@ -14,10 +14,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.client.keybinding.EDPCombatKeyBinding;
-import sleys.efedp.neoforge.config.EpicFightEDPConfig;
+import sleys.efedp.neoforge.client.keybinding.ExtendedDatapacksCombatKeyBinding;
+import sleys.efedp.neoforge.plataform.config.EpicFightEDPConfig;
 import sleys.efedp.neoforge.system.combat.ExtendedSkillCategory;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksSkills;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksSkills;
 import sleys.sl.epicfight.events.EFPlayerAnimationEvent;
 import sleys.sl.epicfight.events.EFPlayerAttackSpeedEvent;
 import sleys.sl.epicfight.skills.extender.ExtendedPassiveSkill;
@@ -25,7 +25,6 @@ import sleys.sl.epicfight.skills.interfaces.combat.IOnAnimationPhaseEFSkillEvent
 import sleys.sl.epicfight.skills.interfaces.combat.IOnAttackSpeedEFSkillEvent;
 import sleys.sl.epicfight.skills.interfaces.combat.IOnLivingDamageEFSkillEvent;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;
 import sleys.sl.library.network.sync.TagSyncSender;
 import yesman.epicfight.registry.entries.EpicFightAttributes;
@@ -156,7 +155,7 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
         int time = data.getInt(PressedTimeKey);
 
         if (allowIs > getCorrectlyStaminaCost(patchPlayer)) {
-            if (EDPCombatKeyBinding.chargedAttackKeyBinding.isDown()) {
+            if (ExtendedDatapacksCombatKeyBinding.chargedAttackKeyBinding.isDown()) {
                 time++;
                 if (time > MaxTickChargedEvent) time = MaxTickChargedEvent;
                 TagSyncSender.sendInt(

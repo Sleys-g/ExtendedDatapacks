@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksEntities;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.registry.entries.EpicFightAttributes;

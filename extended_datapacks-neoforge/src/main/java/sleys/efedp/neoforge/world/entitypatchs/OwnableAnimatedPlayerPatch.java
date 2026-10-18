@@ -4,7 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksEntities;
 import sleys.efedp.neoforge.world.entities.OwnableAnimatedPlayer;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionTasks;

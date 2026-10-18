@@ -1,15 +1,16 @@
 package sleys.efedp.neoforge.bootstrap;
 
 import net.neoforged.bus.api.IEventBus;
-import sleys.efedp.neoforge.system.animations.json.properties.armature.EpicFightArmatureTypes;
-import sleys.efedp.neoforge.system.animations.json.properties.time.types.*;
+import sleys.efedp.neoforge.system.animations.properties.armature.EpicFightArmatureTypes;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.ExtendedDatapacksRegistry;
-import sleys.efedp.neoforge.system.animations.json.animations.types.AttackAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.animations.types.ActionAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.animations.types.StaticAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.groups.types.EpicFightAnimationGroups;
-import sleys.efedp.neoforge.system.animations.json.properties.playback.types.AnimationPlaySpeedModifiers;
+import sleys.efedp.neoforge.system.animations.animations.types.AttackAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.animations.types.ActionAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.animations.types.StaticAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.groups.types.EpicFightAnimationGroups;
+import sleys.efedp.neoforge.system.animations.properties.playback.types.AnimationPlaySpeedModifiers;
+import sleys.efedp.neoforge.core.events.types.ParticleAnimationsEvents;
+import sleys.efedp.neoforge.core.events.types.*;
 import sleys.sl.library.contract.ExpectedContracts;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
@@ -42,20 +43,8 @@ public class Bootstrap {
         BootstrapBuilds.Initialize();
         BootstrapCommon.Initialize(modBus);
 
-        LogicalTasks.operate(
-                LogicalPolicy.LOGICAL_CLIENT,
-                ErrorPolicy.DEPURATE,
-                "Bootstrap - Client",
-                modBus, BootstrapClient::Initialize
-        );
-
-        LogicalTasks.operate(
-                LogicalPolicy.DEDICATED_SERVER,
-                ErrorPolicy.DEPURATE,
-                "Bootstrap - Server",
-                modBus, BootstrapServer::Initialize
-        );
-
+        if (LogicalPolicy.LOGICAL_CLIENT.isValidSide()) BootstrapClient.Initialize(modBus);
+        if (LogicalPolicy.DEDICATED_SERVER.isValidSide()) BootstrapServer.Initialize(modBus);
         STATE = SystemState.CLOSED;
     }
 

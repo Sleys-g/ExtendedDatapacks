@@ -1,16 +1,16 @@
 package sleys.efedp.neoforge.api.registry;
 
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.neoforge.system.animations.json.animations.registry.AnimationAccessorRegistry;
-import sleys.efedp.neoforge.system.animations.json.groups.registry.AnimationGroupRegistry;
-import sleys.efedp.neoforge.system.animations.json.groups.registry.IAnimationGroupType;
-import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
-import sleys.efedp.neoforge.system.animations.json.properties.armature.registry.IArmatureType;
-import sleys.efedp.neoforge.system.animations.json.properties.playback.registry.IPlaySpeedModifierType;
-import sleys.efedp.neoforge.system.animations.json.properties.playback.registry.PlaySpeedModifierTypeRegistry;
-import sleys.efedp.neoforge.system.animations.json.properties.time.registry.IAnimationEventType;
-import sleys.efedp.neoforge.system.animations.json.properties.time.registry.AnimationEventTypeRegistry;
+import sleys.efedp.neoforge.system.animations.animations.registry.IAnimationAccessorType;
+import sleys.efedp.neoforge.system.animations.animations.registry.AnimationAccessorRegistry;
+import sleys.efedp.neoforge.system.animations.groups.registry.AnimationGroupRegistry;
+import sleys.efedp.neoforge.system.animations.groups.registry.IAnimationGroupType;
+import sleys.efedp.neoforge.system.animations.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.neoforge.system.animations.properties.armature.registry.IArmatureType;
+import sleys.efedp.neoforge.system.animations.properties.playback.registry.IPlaySpeedModifierType;
+import sleys.efedp.neoforge.system.animations.properties.playback.registry.PlaySpeedModifierTypeRegistry;
+import sleys.efedp.neoforge.core.events.registry.IAnimationEventType;
+import sleys.efedp.neoforge.core.events.registry.AnimationEventTypeRegistry;
 
 import java.util.function.BiConsumer;
 

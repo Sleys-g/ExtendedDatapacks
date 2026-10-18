@@ -2,11 +2,9 @@ package sleys.efedp.neoforge.system.combat;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksSkills;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksSkills;
 import sleys.sl.epicfight.util.helper.patch.PatchPlayerHelper;
 import sleys.sl.library.annotations.ErrorHandled;
-import sleys.sl.library.execution.policy.ExecutionTasks;
-import sleys.sl.library.execution.policy.ExecutionPolicy;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 public class MechanicsAssignerEvent {

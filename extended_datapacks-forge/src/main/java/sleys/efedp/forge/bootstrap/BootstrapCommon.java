@@ -5,11 +5,11 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.system.animations.AnimationRegistryOperations;
-import sleys.efedp.forge.system.innates.*;
-import sleys.efedp.forge.system.skills.ModifyGuardsApplier;
-import sleys.efedp.forge.system.skills.ModifyPassivesApplier;
-import sleys.efedp.forge.system.weapons.WeaponCategoriesRegistry;
-import sleys.efedp.forge.system.weapons.json.WeaponItemsPropertiesBuilder;
+import sleys.efedp.forge.system.skills.guard.ModifyGuardsApplier;
+import sleys.efedp.forge.system.skills.passive.ModifyPassivesApplier;
+import sleys.efedp.forge.system.category.WeaponCategoriesRegistry;
+import sleys.efedp.forge.system.items.builder.WeaponItemsPropertiesBuilder;
+import sleys.efedp.forge.system.skills.weapon.innate.*;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 public class BootstrapCommon {

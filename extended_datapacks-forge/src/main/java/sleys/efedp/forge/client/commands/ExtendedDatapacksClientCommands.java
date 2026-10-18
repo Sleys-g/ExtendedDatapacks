@@ -10,10 +10,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.forge.system.visuals.json.OverlayAssetPacksBuilder;
-import sleys.efedp.forge.system.visuals.json.ShaderAssetsPacksBuilder;
-import sleys.efedp.forge.system.weapons.json.WeaponAdvancedSwingTrailBuilder;
-import sleys.efedp.forge.system.weapons.json.WeaponPerStyleModelBakerBuilder;
+import sleys.efedp.forge.system.visuals.overlays.builder.OverlayAssetPacksBuilder;
+import sleys.efedp.forge.system.visuals.shaders.builder.ShaderAssetsPacksBuilder;
+import sleys.efedp.forge.system.visuals.trails.builder.WeaponAdvancedSwingTrailBuilder;
+import sleys.efedp.forge.system.visuals.models.builder.WeaponPerStyleModelBakerBuilder;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 
 @OnlyIn(Dist.CLIENT)

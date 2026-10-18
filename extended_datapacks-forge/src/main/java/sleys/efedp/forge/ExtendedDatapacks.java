@@ -5,27 +5,28 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sleys.efedp.forge.capability.data.HitParticleCache;
+import sleys.efedp.forge.epicfight.data.HitParticleCache;
 import sleys.efedp.forge.client.commands.ExtendedDatapacksClientCommands;
 import sleys.efedp.forge.bootstrap.Bootstrap;
-import sleys.efedp.forge.client.config.EpicFightEDPClientConfig;
-import sleys.efedp.forge.events.ControlDamageEvent;
-import sleys.efedp.forge.registry.*;
+import sleys.efedp.forge.client.config.ExtendedDatapacksClientConfig;
+import sleys.efedp.forge.plataform.events.ControlDamageEvent;
+import sleys.efedp.forge.plataform.registry.*;
 import sleys.efedp.forge.system.combat.MechanicsAssignerEvent;
 import sleys.efedp.forge.system.combat.ExtendedSkillCategory;
 import sleys.efedp.forge.system.combat.ExtendedSkillSlot;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import sleys.efedp.forge.system.combat.charged_attacks.ChargedAttackStyles;
-import sleys.efedp.forge.client.keybinding.EDPCombatKeyBinding;
-import sleys.efedp.forge.config.EpicFightEDPConfig;
+import sleys.efedp.forge.client.keybinding.ExtendedDatapacksCombatKeyBinding;
+import sleys.efedp.forge.plataform.config.EpicFightEDPConfig;
 import net.minecraftforge.fml.common.Mod;
-import sleys.efedp.forge.task.tick.ClientLaserVerticalImpactTask;
+import sleys.efedp.forge.core.events.list.gameplay.tick.ClientLaserVerticalImpactTask;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ErrorPolicy;
 import sleys.sl.library.execution.policy.LogicalPolicy;
 import sleys.sl.library.execution.policy.LogicalTasks;
 import sleys.sl.library.execution.task.TickTaskRegistry;
+import sleys.sl.library.util.data.mod.ModIdentifier;
 import yesman.epicfight.skill.SkillCategory;
 import yesman.epicfight.skill.SkillSlot;
 import yesman.epicfight.world.capabilities.item.Style;
@@ -39,6 +40,8 @@ public class ExtendedDatapacks {
 
     private static final String CONFIG_PATH = "epicfight_edp/extended_datapack_config.toml";
     private static final String CLIENT_CONFIG_PATH = "epicfight_edp/extended_datapack_client_config.toml";
+
+    public static final ModIdentifier IDENTIFIER = new ModIdentifier(MODID);
 
 	public ExtendedDatapacks(FMLJavaModLoadingContext context) {
         final var modBus = context.getModEventBus();
@@ -62,20 +65,15 @@ public class ExtendedDatapacks {
         ExtendedDatapacksEntities.REGISTRY.register(modBus);
         context.registerConfig(ModConfig.Type.COMMON, EpicFightEDPConfig.EPICFIGHT_CONFIG, CONFIG_PATH);
 
-        LogicalTasks.run(
-                LogicalPolicy.LOGICAL_CLIENT, ErrorPolicy.DEPURATE,
-                "Extended Datapacks - Client",
-                () -> ExtendedDatapacks.ExtendedDatapacksClient(modBus, context)
-        );
-//
+        if (LogicalPolicy.LOGICAL_CLIENT.isValidSide()) ExtendedDatapacks.ExtendedDatapacksClient(modBus, context);
 //        SLLPreferences.turnOnGameTest();
 	}
 
     @ErrorHandled
     private static void ExtendedDatapacksClient(IEventBus modBus, FMLJavaModLoadingContext context) {
-        context.registerConfig(ModConfig.Type.CLIENT, EpicFightEDPClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
+        context.registerConfig(ModConfig.Type.CLIENT, ExtendedDatapacksClientConfig.EDP_CLIENT, CLIENT_CONFIG_PATH);
         MinecraftForge.EVENT_BUS.register(ExtendedDatapacksClientCommands.class);
-        modBus.register(EDPCombatKeyBinding.class);
+        modBus.register(ExtendedDatapacksCombatKeyBinding.class);
         modBus.register(ExtendedDatapacksRenders.class);
         modBus.register(ExtendedDatapacksPatchesRenders.class);
     }
@@ -85,6 +83,6 @@ public class ExtendedDatapacks {
     }
 
     private static void registryTickTask() {
-        TickTaskRegistry.register(ClientLaserVerticalImpactTask.TYPE);
+        TickTaskRegistry.register(ExtendedDatapacksTickTaskList.LASER_VERTICAL_IMPACT);
     }
 }

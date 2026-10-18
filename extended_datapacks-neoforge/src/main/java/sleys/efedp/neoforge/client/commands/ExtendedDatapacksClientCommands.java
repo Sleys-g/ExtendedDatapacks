@@ -10,10 +10,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import sleys.efedp.neoforge.system.visuals.json.OverlayAssetPacksBuilder;
-import sleys.efedp.neoforge.system.visuals.json.ShaderAssetsPacksBuilder;
-import sleys.efedp.neoforge.system.weapons.json.WeaponAdvancedSwingTrailBuilder;
-import sleys.efedp.neoforge.system.weapons.json.WeaponPerStyleModelBakerBuilder;
+import sleys.efedp.neoforge.system.visuals.overlays.builder.OverlayAssetPacksBuilder;
+import sleys.efedp.neoforge.system.visuals.shaders.builder.ShaderAssetsPacksBuilder;
+import sleys.efedp.neoforge.system.visuals.trails.builder.WeaponAdvancedSwingTrailBuilder;
+import sleys.efedp.neoforge.system.visuals.models.builder.WeaponPerStyleModelBakerBuilder;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 
 @OnlyIn(Dist.CLIENT)

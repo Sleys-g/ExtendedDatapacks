@@ -14,10 +14,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.client.keybinding.EDPCombatKeyBinding;
-import sleys.efedp.forge.config.EpicFightEDPConfig;
+import sleys.efedp.forge.client.keybinding.ExtendedDatapacksCombatKeyBinding;
+import sleys.efedp.forge.plataform.config.EpicFightEDPConfig;
 import sleys.efedp.forge.system.combat.ExtendedSkillCategory;
-import sleys.efedp.forge.registry.ExtendedDatapacksSkills;
+import sleys.efedp.forge.plataform.registry.ExtendedDatapacksSkills;
 import sleys.sl.epicfight.events.EFPlayerAnimationEvent;
 import sleys.sl.epicfight.events.EFPlayerAttackSpeedEvent;
 import sleys.sl.epicfight.skills.extender.ExtendedPassiveSkill;
@@ -156,7 +156,7 @@ public class ChargedAttack extends ExtendedPassiveSkill implements
         int time = data.getInt(PressedTimeKey);
 
         if (allowIs > getCorrectlyStaminaCost(patchPlayer)) {
-            if (EDPCombatKeyBinding.chargedAttackKeyBinding.isDown()) {
+            if (ExtendedDatapacksCombatKeyBinding.chargedAttackKeyBinding.isDown()) {
                 time++;
                 if (time > MaxTickChargedEvent) time = MaxTickChargedEvent;
                 TagSyncSender.sendInt(

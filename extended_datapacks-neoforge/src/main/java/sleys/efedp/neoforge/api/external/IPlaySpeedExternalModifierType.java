@@ -1,5 +1,5 @@
 package sleys.efedp.neoforge.api.external;
 
-import sleys.efedp.neoforge.system.animations.json.properties.playback.registry.IPlaySpeedModifierType;
+import sleys.efedp.neoforge.system.animations.properties.playback.registry.IPlaySpeedModifierType;
 
 public interface IPlaySpeedExternalModifierType extends IPlaySpeedModifierType {}

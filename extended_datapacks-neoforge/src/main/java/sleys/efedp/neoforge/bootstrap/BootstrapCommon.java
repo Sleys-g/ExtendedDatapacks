@@ -3,13 +3,13 @@ package sleys.efedp.neoforge.bootstrap;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import sleys.efedp.neoforge.system.innates.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.system.animations.AnimationRegistryOperations;
-import sleys.efedp.neoforge.system.skills.ModifyGuardsApplier;
-import sleys.efedp.neoforge.system.skills.ModifyPassivesApplier;
-import sleys.efedp.neoforge.system.weapons.WeaponCategoriesRegistry;
-import sleys.efedp.neoforge.system.weapons.json.WeaponItemsPropertiesBuilder;
+import sleys.efedp.neoforge.system.skills.guard.ModifyGuardsApplier;
+import sleys.efedp.neoforge.system.skills.passive.ModifyPassivesApplier;
+import sleys.efedp.neoforge.system.skills.weapon.innate.*;
+import sleys.efedp.neoforge.system.category.WeaponCategoriesRegistry;
+import sleys.efedp.neoforge.system.items.builder.WeaponItemsPropertiesBuilder;
 import sleys.sl.epicfight.mutator.SkillBuilderHook;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
@@ -77,7 +77,7 @@ public class BootstrapCommon {
         modBus.register(HoldableConditionalInnateSkillsRegistry.class);
 
         /// V3 Innate
-        TimedSkillsRegistry.initialize(modBus);
-        modBus.register(TimedSkillsRegistry.class);
+        TimedInnateSkillsRegistry.initialize(modBus);
+        modBus.register(TimedInnateSkillsRegistry.class);
     }
 }

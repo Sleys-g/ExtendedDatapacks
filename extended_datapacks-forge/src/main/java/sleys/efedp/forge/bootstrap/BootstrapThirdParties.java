@@ -5,7 +5,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.system.thirdparty.combatevolution.RegistryExecutionAnimations;
-import sleys.efedp.forge.system.thirdparty.wom.json.WoMSkillAccessorBuilder;
+import sleys.efedp.forge.system.thirdparty.wom.builder.WoMSkillAccessorBuilder;
 import sleys.sl.library.SLLCore;
 
 public class BootstrapThirdParties {

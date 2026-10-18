@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksEntities;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionPolicy;
 import sleys.sl.library.execution.policy.ExecutionTasks;

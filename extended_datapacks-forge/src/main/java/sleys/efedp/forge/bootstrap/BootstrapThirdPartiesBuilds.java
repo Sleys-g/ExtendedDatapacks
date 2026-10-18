@@ -1,7 +1,7 @@
 package sleys.efedp.forge.bootstrap;
 
 import net.minecraftforge.fml.loading.FMLPaths;
-import sleys.efedp.forge.system.thirdparty.combatevolution.json.ExecutionAnimationBuilder;
+import sleys.efedp.forge.system.thirdparty.combatevolution.builder.ExecutionAnimationBuilder;
 import sleys.sl.library.util.io.BuildPathOrFile;
 
 import java.nio.file.Path;

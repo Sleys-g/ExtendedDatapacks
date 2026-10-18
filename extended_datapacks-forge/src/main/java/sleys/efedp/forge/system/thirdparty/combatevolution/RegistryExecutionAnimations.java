@@ -5,8 +5,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.shelmarow.combat_evolution.api.event.RegisterCustomExecutionEvent;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.thirdparty.combatevolution.json.ExecutionAnimationBuilder;
-import sleys.efedp.forge.system.thirdparty.combatevolution.json.RegistryCombatEvolutionErrorHelper;
+import sleys.efedp.forge.system.thirdparty.combatevolution.builder.ExecutionAnimationBuilder;
+import sleys.efedp.forge.system.thirdparty.combatevolution.builder.RegistryCombatEvolutionErrorHelper;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import yesman.epicfight.api.animation.AnimationManager;
 

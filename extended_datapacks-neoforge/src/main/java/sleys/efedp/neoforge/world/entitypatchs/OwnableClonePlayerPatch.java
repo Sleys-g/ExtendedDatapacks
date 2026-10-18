@@ -5,7 +5,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksEntities;
 import sleys.efedp.neoforge.world.entities.OwnableClonePlayer;
 import sleys.sl.library.annotations.ErrorHandled;
 import sleys.sl.library.execution.policy.ExecutionTasks;

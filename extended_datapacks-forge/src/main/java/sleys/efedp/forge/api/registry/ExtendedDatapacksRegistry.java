@@ -1,16 +1,16 @@
 package sleys.efedp.forge.api.registry;
 
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.animations.json.animations.registry.AnimationAccessorRegistry;
-import sleys.efedp.forge.system.animations.json.animations.registry.IAnimationAccessorType;
-import sleys.efedp.forge.system.animations.json.groups.registry.AnimationGroupRegistry;
-import sleys.efedp.forge.system.animations.json.groups.registry.IAnimationGroupType;
-import sleys.efedp.forge.system.animations.json.properties.armature.registry.ArmatureTypeRegistry;
-import sleys.efedp.forge.system.animations.json.properties.armature.registry.IArmatureType;
-import sleys.efedp.forge.system.animations.json.properties.playback.registry.IPlaySpeedModifierType;
-import sleys.efedp.forge.system.animations.json.properties.playback.registry.PlaySpeedModifierTypeRegistry;
-import sleys.efedp.forge.system.animations.json.properties.time.registry.AnimationEventTypeRegistry;
-import sleys.efedp.forge.system.animations.json.properties.time.registry.IAnimationEventType;
+import sleys.efedp.forge.system.animations.animations.registry.AnimationAccessorRegistry;
+import sleys.efedp.forge.system.animations.animations.registry.IAnimationAccessorType;
+import sleys.efedp.forge.system.animations.groups.registry.AnimationGroupRegistry;
+import sleys.efedp.forge.system.animations.groups.registry.IAnimationGroupType;
+import sleys.efedp.forge.system.animations.properties.armature.registry.ArmatureTypeRegistry;
+import sleys.efedp.forge.system.animations.properties.armature.registry.IArmatureType;
+import sleys.efedp.forge.system.animations.properties.playback.registry.IPlaySpeedModifierType;
+import sleys.efedp.forge.system.animations.properties.playback.registry.PlaySpeedModifierTypeRegistry;
+import sleys.efedp.forge.core.events.registry.AnimationEventTypeRegistry;
+import sleys.efedp.forge.core.events.registry.IAnimationEventType;
 
 import java.util.function.BiConsumer;
 

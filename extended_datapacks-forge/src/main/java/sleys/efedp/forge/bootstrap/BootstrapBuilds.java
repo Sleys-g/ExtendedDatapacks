@@ -2,14 +2,14 @@ package sleys.efedp.forge.bootstrap;
 
 import net.minecraftforge.fml.loading.FMLPaths;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.animations.json.builder.AnimationsConfigBuilder;
-import sleys.efedp.forge.system.animations.json.builder.AnimationsRegistryBuilder;
-import sleys.efedp.forge.system.animations.json.builder.AnimationsVirtualizationBuilder;
-import sleys.efedp.forge.system.innates.json.builder.*;
-import sleys.efedp.forge.system.skills.json.GuardSkillModifierBuilder;
-import sleys.efedp.forge.system.skills.json.PassiveSkillModifierBuilder;
-import sleys.efedp.forge.system.skills.json.IconSkillModifierBuilder;
-import sleys.efedp.forge.system.weapons.json.WeaponCategoryAdderBuilder;
+import sleys.efedp.forge.system.animations.builder.AnimationsConfigBuilder;
+import sleys.efedp.forge.system.animations.builder.AnimationsRegistryBuilder;
+import sleys.efedp.forge.system.animations.builder.AnimationsVirtualizationBuilder;
+import sleys.efedp.forge.system.skills.guard.builder.GuardSkillModifierBuilder;
+import sleys.efedp.forge.system.skills.passive.builder.PassiveSkillModifierBuilder;
+import sleys.efedp.forge.system.skills.icon.builder.IconSkillModifierBuilder;
+import sleys.efedp.forge.system.category.builder.WeaponCategoryAdderBuilder;
+import sleys.efedp.forge.system.skills.weapon.innate.builder.*;
 import sleys.sl.library.util.io.BuildPathOrFile;
 
 import java.nio.file.Path;

@@ -3,7 +3,7 @@ package sleys.efedp.neoforge.world.entitypatchs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import sleys.efedp.neoforge.registry.ExtendedDatapacksEntities;
+import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksEntities;
 import sleys.efedp.neoforge.world.entities.OwnableWitherGhost;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.Animator;
