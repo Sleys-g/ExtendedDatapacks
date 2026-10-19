@@ -1,4 +1,4 @@
-package sleys.efedp.neoforge.core.datapackets.instruction;
+package sleys.efedp.neoforge.core;
 
 import com.mojang.serialization.Codec;
 import sleys.efedp.neoforge.ExtendedDatapacks;

@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import sleys.efedp.neoforge.core.datapackets.DataPacketType;
-import sleys.efedp.neoforge.core.datapackets.instruction.StringInstruction;
+import sleys.efedp.neoforge.core.StringInstruction;
 import sleys.sl.library.network.sync.TagSyncSender;
 
 public record WriteStringData(DataPacketType type, String dataId,

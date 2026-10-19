@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import sleys.efedp.neoforge.core.datapackets.DataPacketType;
-import sleys.efedp.neoforge.core.datapackets.instruction.ArithmeticInstruction;
+import sleys.efedp.neoforge.core.ArithmeticInstruction;
 import sleys.sl.library.network.sync.TagSyncSender;
 
 public record WriteArithmeticData(DataPacketType type, String dataId,

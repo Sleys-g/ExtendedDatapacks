@@ -81,13 +81,60 @@ Take a look at what is currently implemented and what is coming next!
 
 ### 🏗️ Settling debts
 - [x] **Taskable Animation Event** ✔️
-  - [x] **Taskable Laser Line World Damage** ✔️
-  - [x] **Taskable Laser Floor World Damage** ✔️
-  - [x] **Taskable Laser Shape World Damage** ✔️
-  - [x] **Taskable Entity Clone** ✔️
-  - [x] **Taskable Entity Animated** ✔️
-- [x] **Timed Innate Skill** ✔️
-  - [ ] **Controlable Events** ❌
+    - [x] **Taskable Laser Line World Damage** ✔️
+    - [x] **Taskable Laser Floor World Damage** ✔️
+    - [x] **Taskable Laser Shape World Damage** ✔️
+    - [x] **Taskable Entity Clone** ✔️
+    - [x] **Taskable Entity Animated** ✔️
+- [x] **Timed Innate Skill** 🛠️
+    - [x] **Timed Simple Innate Skill** ✔️
+    - [x] **Timed Status Innate Skill** 🛠️
+    - [x] **Timed Combat Innate Skill** 🛠️
+    - [x] **Timed Omni Innate Skill** 🛠️
+    - [ ] **Controlable Events** 🛠️
+        - [ ] **Combat** ❌
+            - [ ] **Animation Phase** ❌
+            - [ ] **Anticipation Animation** ❌
+            - [ ] **Attack Animation** ❌
+            - [ ] **Recovery Animation** ❌
+            - [ ] **Attack Entity** ❌
+            - [ ] **Attack Speed** ❌
+            - [ ] **Deal Pre Damage** ❌
+            - [ ] **Deal Post Damage** ❌
+            - [ ] **Deal Pre Player Damage** ❌
+            - [ ] **Deal Post Player Damage** ❌
+            - [ ] **Take Pre Damage** ❌
+            - [ ] **Take Post Damage** ❌
+            - [ ] **Living Death** ❌
+            - [ ] **Living Kill** ❌
+            - [ ] **Living Incoming Deal Damage** ❌
+            - [ ] **Living Incoming Player Deal Damage** ❌
+            - [ ] **Living Incoming Take Damage** ❌
+            - [ ] **Living Knockback** ❌
+            - [ ] **Living Shield Block** ❌
+            - [ ] **Living Shield Blocked** ❌
+            - [ ] **Living Use Totem** ❌
+            - [ ] **Living Trigger Totem** ❌
+        - [ ] **IA** ❌
+            - [ ] **Target Entity** ❌
+            - [ ] **Client Target Entity** ❌
+            - [ ] **Server Target Entity** ❌
+        - [ ] **Loot** ❌
+            - [ ] **Living Drops** ❌
+            - [ ] **Living Experience Drop** ❌
+        - [ ] **Movement** ❌
+            - [ ] **Living Breath** ❌
+            - [ ] **Living Fall** ❌
+            - [ ] **Movement Input** ❌
+            - [ ] **Player Use Input** ❌
+            - [ ] **Player Client Use Input** ❌
+            - [ ] **Player Server Use Input** ❌
+        - [ ] **Status** ❌
+            - [ ] **Added Mob Effect** ❌
+            - [ ] **Applicable Mob Effect** ❌
+            - [ ] **Expired Mob Effect** ❌
+            - [ ] **Remove Mob Effect** ❌
+            - [ ] **Living Heal** ❌
 
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 

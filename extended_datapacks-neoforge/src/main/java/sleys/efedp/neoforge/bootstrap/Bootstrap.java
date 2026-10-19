@@ -1,6 +1,7 @@
 package sleys.efedp.neoforge.bootstrap;
 
 import net.neoforged.bus.api.IEventBus;
+import sleys.efedp.neoforge.core.control.types.*;
 import sleys.efedp.neoforge.system.animations.properties.armature.EpicFightArmatureTypes;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.ExtendedDatapacksRegistry;
@@ -36,6 +37,7 @@ public class Bootstrap {
         Bootstrap.registryAnimationsAccessors();
         Bootstrap.registryAnimationsEvents();
         Bootstrap.registrySpeedModifiers();
+        Bootstrap.registryControlableEvents();
 
         BootstrapBuilds.Initialize();
         BootstrapCommon.Initialize(modBus);
@@ -79,6 +81,17 @@ public class Bootstrap {
                 VisualAnimationsEvents.class,
                 GameAnimationsEvents.class,
                 TaskableGameplayAnimationsEvents.class
+        );
+    }
+
+    private static void registryControlableEvents() {
+        ExtendedDatapacksRegistry.CONTROLABLE_EVENTS.register(
+                ExtendedDatapacks.MODID,
+                CombatControlableSkillEvents.class,
+                IAControlableSkillEvents.class,
+                LootControlableSkillEvents.class,
+                MovementControlableSkillEvents.class,
+                StatusControlableSkillEvents.class
         );
     }
 
