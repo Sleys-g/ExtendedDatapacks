@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.animations.properties.time.AnimationsEventInvocation;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.EventInvocation;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -26,13 +26,13 @@ import java.util.Objects;
 
 public record ItemStringDataReadEvent(ResourceLocation componentId,
                                       String value,
-                                      List<AnimationsEventInvocation> doEvents) implements IAnimationEventParams {
+                                      List<EventInvocation> doEvents) implements IEventParams {
 
     public static final MapCodec<ItemStringDataReadEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("component_id").forGetter(ItemStringDataReadEvent::componentId),
                     Codec.STRING.fieldOf("value").forGetter(ItemStringDataReadEvent::value),
-                    AnimationsEventInvocation.CODEC.listOf().optionalFieldOf("do", List.of()).forGetter(ItemStringDataReadEvent::doEvents)
+                    EventInvocation.CODEC.listOf().optionalFieldOf("do", List.of()).forGetter(ItemStringDataReadEvent::doEvents)
             ).apply(instance, ItemStringDataReadEvent::new)
     );
 
@@ -44,6 +44,16 @@ public record ItemStringDataReadEvent(ResourceLocation componentId,
 
         if (this.applyMatch(caster, accessor)) {
             doEvents.forEach(events -> events.execute(accessor, patch));
+        }
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity caster) {
+        if (this.isInvalid(caster.level(), ProcessSides.SERVER, "Item String Data Read Event")) return;
+        if (!(caster.level() instanceof ServerLevel)) return;
+
+        if (this.applyMatch(caster, accessor)) {
+            doEvents.forEach(events -> events.execute(accessor, caster));
         }
     }
 

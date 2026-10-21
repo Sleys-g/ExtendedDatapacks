@@ -67,6 +67,7 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
         if (entityAnimatorPlayer == null) return;
         var entityAnimation = entityAnimatorPlayer.getRealAnimation();
 
+
         if (this.isInvalidAnimation(ownerAnimation)) {
             ExecutionTasks.run(() -> this.onSyncLivings(patchOwner, ownerAnimator));
             return;
@@ -123,9 +124,12 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
     @Override
     public void updateMotion(boolean b) {
         var e = this.original;
+
+        if (!e.level().isClientSide) return;
         if (this.animator.getEntityState().getLevel() != 0) return;
 
         if (e.getHealth() <= 0F)              this.currentLivingMotion = LivingMotions.DEATH;
+        else if (e.isUsingItem())             this.currentLivingMotion = LivingMotions.BLOCK;
         else if (e.isSwimming())              this.currentLivingMotion = LivingMotions.SWIM;
         else if (!e.onGround() && e.getDeltaMovement().y < -0.5) this.currentLivingMotion = LivingMotions.FALL;
         else if (e.getDeltaMovement().horizontalDistanceSqr() > 1.0E-4) {

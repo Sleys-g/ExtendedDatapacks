@@ -2,16 +2,17 @@ package sleys.efedp.neoforge.core.events.list.data;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import sleys.efedp.neoforge.core.ProcessSides;
 import sleys.efedp.neoforge.core.datapackets.write.IDataWriter;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 import java.util.List;
 
-public record DataWriteEvent(List<IDataWriter> writers) implements IAnimationEventParams {
+public record DataWriteEvent(List<IDataWriter> writers) implements IEventParams {
 
     public static final MapCodec<DataWriteEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -22,6 +23,13 @@ public record DataWriteEvent(List<IDataWriter> writers) implements IAnimationEve
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
+        var level = livingEntity.level();
+        if (this.isInvalid(level, ProcessSides.BOTH, "Data Write Event")) return;
+        writers.forEach(iDataWriter -> iDataWriter.writeData(livingEntity));
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
         var level = livingEntity.level();
         if (this.isInvalid(level, ProcessSides.BOTH, "Data Write Event")) return;
         writers.forEach(iDataWriter -> iDataWriter.writeData(livingEntity));

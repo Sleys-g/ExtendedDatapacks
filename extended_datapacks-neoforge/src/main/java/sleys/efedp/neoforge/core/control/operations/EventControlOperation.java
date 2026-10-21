@@ -4,48 +4,34 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.neoforged.bus.api.Event;
-import sleys.efedp.neoforge.core.control.ISkillEventParams;
-import sleys.efedp.neoforge.core.datapackets.ReadDataPacketsGroup;
+import sleys.efedp.neoforge.core.control.IControlableEventParams;
 import sleys.sl.library.annotations.Internal;
 import yesman.epicfight.skill.SkillContainer;
 
-import java.util.Optional;
+import java.util.List;
 
 @Internal
-public record EventControlOperation<E extends Event>(ReadDataPacketsGroup readData,
-                                                     Optional<ISkillEventParams<E>> direct,
-                                                     Optional<ISkillEventParams<E>> then,
-                                                     Optional<ISkillEventParams<E>> otherwise) {
+public record EventControlOperation<E extends Event>(List<IControlableEventParams<E>> operations,
+                                                     List<ControlOperationsTriplet<E>> dataOperations) {
 
-    public static <E extends Event> MapCodec<EventControlOperation<E>> codec(MapCodec<? extends ISkillEventParams<E>> paramsCodec) {
-        Codec<ISkillEventParams<E>> codec = ISkillEventParams.paramsCodec(paramsCodec);
+    public static <E extends Event> MapCodec<EventControlOperation<E>> codec(MapCodec<? extends IControlableEventParams<E>> paramsCodec) {
+        Codec<IControlableEventParams<E>> codec = IControlableEventParams.paramsCodec(paramsCodec);
 
         return RecordCodecBuilder.mapCodec(instance ->
                 instance.group(
-                        ReadDataPacketsGroup.CODEC
-                                .fieldOf("read_data")
-                                .forGetter(EventControlOperation::readData),
+                        codec.listOf()
+                                .optionalFieldOf("control", List.of())
+                                .forGetter(EventControlOperation::operations),
 
-                        codec.optionalFieldOf("direct")
-                                .forGetter(EventControlOperation::direct),
-
-                        codec.optionalFieldOf("then")
-                                .forGetter(EventControlOperation::then),
-
-                        codec.optionalFieldOf("otherwise")
-                                .forGetter(EventControlOperation::otherwise)
+                        ControlOperationsTriplet.codec(codec).codec().listOf()
+                                .optionalFieldOf("data_control", List.of())
+                                .forGetter(EventControlOperation::dataOperations)
                 ).apply(instance, EventControlOperation<E>::new)
         );
     }
 
     public void execute(E event, SkillContainer container) {
-        var livingEntity = container.getExecutor().getOriginal();
-
-        direct.ifPresent(params -> params.applyEventParams(event, container));
-
-        boolean result = readData.evaluate(livingEntity);
-        var branch = result ? then : otherwise;
-
-        branch.ifPresent(params -> params.applyEventParams(event, container));
+        operations.forEach(controlable -> controlable.applyEventParams(event, container));
+        dataOperations.forEach(controlable -> controlable.execute(event, container));
     }
 }

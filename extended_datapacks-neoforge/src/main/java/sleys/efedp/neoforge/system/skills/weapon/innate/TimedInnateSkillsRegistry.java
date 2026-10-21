@@ -29,11 +29,11 @@ public class TimedInnateSkillsRegistry {
     public static void initialize(IEventBus modBus) {
         if (initialized) return;
         initialized = true;
-        ExtendedDatapacks.LOGGER.info("[Simple Innate Skill Registry] Registering JSON skills");
+        ExtendedDatapacks.LOGGER.info("[Timed Innate Skill Registry] Registering JSON skills");
 
         var data = TimedInnateSkillBuilder.getTimedInnateSkillBuildData();
         if (data.isEmpty()) {
-            ExtendedDatapacks.LOGGER.info("[Simple Innate Skill Registry] No JSON skills found");
+            ExtendedDatapacks.LOGGER.info("[Timed Innate Skill Registry] No JSON skills found");
             return;
         }
 

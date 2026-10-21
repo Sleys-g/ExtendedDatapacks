@@ -8,7 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.sl.library.util.helper.entity.EntityHelper;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 public record SummonEntityOnTargetEvent(ResourceLocation entityType,
                                         Optional<Float> area,
-                                        Optional<EntityHelper.TargetMethod> targetMode) implements IAnimationEventParams {
+                                        Optional<EntityHelper.TargetMethod> targetMode) implements IEventParams {
 
     public static final MapCodec<SummonEntityOnTargetEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -42,6 +43,11 @@ public record SummonEntityOnTargetEvent(ResourceLocation entityType,
 
         if (area.isPresent()) this.onAreaEffect(area.get(), type, level, livingCaster, livingTarget);
         else this.onSummonEntity(level, type, livingCaster, livingTarget);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Summon Entity On Target Event] Unsupported operation! missing Patch Entity");
     }
 
     private void onAreaEffect(Float areaSize, EntityType<?> entityType, Level level, LivingEntity livingCaster, LivingEntity target) {

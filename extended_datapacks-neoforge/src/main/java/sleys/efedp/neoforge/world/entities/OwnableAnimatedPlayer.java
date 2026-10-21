@@ -63,6 +63,11 @@ public class OwnableAnimatedPlayer extends PathfinderMob implements OwnableEntit
     }
 
     @Override
+    public boolean displayFireAnimation() {
+        return false;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
 

@@ -5,9 +5,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.properties.helpers.ParticleShapeHelper;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.helpers.ParticleShapeHelper;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 public record DirectionalBurstEvent(ParticleOptions particle, int points, double speed,
-                                    BurstShape shape, double angleWidth, double angleHeight) implements IAnimationEventParams {
+                                    BurstShape shape, double angleWidth, double angleHeight) implements IEventParams {
 
     public static final MapCodec<DirectionalBurstEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -41,6 +42,15 @@ public record DirectionalBurstEvent(ParticleOptions particle, int points, double
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
+        this.executeEvent(caster);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity caster) {
+        this.executeEvent(caster);
+    }
+
+    private void executeEvent(LivingEntity caster) {
         if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Directional Burst Particle Event")) return;
 
         Vec3 axis = caster.getLookAngle();

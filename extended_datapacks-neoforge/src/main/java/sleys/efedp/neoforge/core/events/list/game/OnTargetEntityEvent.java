@@ -3,8 +3,10 @@ package sleys.efedp.neoforge.core.events.list.game;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.neoforge.system.animations.properties.time.AnimationsEventInvocation;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import net.minecraft.world.entity.LivingEntity;
+import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.core.events.EventInvocation;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -17,16 +19,16 @@ import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 
-public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInvocation> doEvents) implements IAnimationEventParams {
+public record OnTargetEntityEvent(TargetMode targetMode, List<EventInvocation> doEvents) implements IEventParams {
 
     private enum TargetMode {
         IMPACTED_TARGET(TargetMode::impactedTarget),
         ALL_IMPACTED_TARGET(TargetMode::allImpactedTarget),
         RANDOM_IMPACTED_TARGET(TargetMode::randomImpactedTarget);
 
-        final BiConsumer<List<AnimationsEventInvocation>, LivingEntityPatch<?>> entityProcess;
+        final BiConsumer<List<EventInvocation>, LivingEntityPatch<?>> entityProcess;
 
-        TargetMode(BiConsumer<List<AnimationsEventInvocation>, LivingEntityPatch<?>> entityProcess) {
+        TargetMode(BiConsumer<List<EventInvocation>, LivingEntityPatch<?>> entityProcess) {
             this.entityProcess = entityProcess;
         }
 
@@ -34,18 +36,18 @@ public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInv
                 e -> e.name().toUpperCase(Locale.ROOT)
         );
 
-        public void process(List<AnimationsEventInvocation> doEvents, LivingEntityPatch<?> caster) {
+        public void process(List<EventInvocation> doEvents, LivingEntityPatch<?> caster) {
             entityProcess.accept(doEvents, caster);
         }
 
-        private static void impactedTarget(List<AnimationsEventInvocation> doEvents, LivingEntityPatch<?> caster) {
+        private static void impactedTarget(List<EventInvocation> doEvents, LivingEntityPatch<?> caster) {
             var target = caster.getTarget();
             var targetPatch = EpicFightCapabilities.getEntityPatch(target, LivingEntityPatch.class);
             if (targetPatch == null) return;
             doEvents.forEach(events -> events.execute(null, targetPatch));
         }
 
-        private static void allImpactedTarget(List<AnimationsEventInvocation> doEvents, LivingEntityPatch<?> caster) {
+        private static void allImpactedTarget(List<EventInvocation> doEvents, LivingEntityPatch<?> caster) {
             var targets = caster.getCurrentlyActuallyHitEntities();
             if (targets.isEmpty()) return;
 
@@ -59,7 +61,7 @@ public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInv
             }
         }
 
-        private static void randomImpactedTarget(List<AnimationsEventInvocation> doEvents, LivingEntityPatch<?> caster) {
+        private static void randomImpactedTarget(List<EventInvocation> doEvents, LivingEntityPatch<?> caster) {
             var targets = caster.getCurrentlyActuallyHitEntities();
             if (targets.isEmpty()) return;
 
@@ -75,7 +77,7 @@ public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInv
     public static final MapCodec<OnTargetEntityEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     TargetMode.CODEC.optionalFieldOf("target_mode", TargetMode.IMPACTED_TARGET).forGetter(OnTargetEntityEvent::targetMode),
-                    AnimationsEventInvocation.CODEC.listOf().optionalFieldOf("do", List.of()).forGetter(OnTargetEntityEvent::doEvents)
+                    EventInvocation.CODEC.listOf().optionalFieldOf("do", List.of()).forGetter(OnTargetEntityEvent::doEvents)
             ).apply(instance, OnTargetEntityEvent::new)
     );
 
@@ -86,5 +88,10 @@ public record OnTargetEntityEvent(TargetMode targetMode, List<AnimationsEventInv
         if (this.isInvalid(level, ProcessSides.BOTH, "On Target Entity Event")) return;
         targetMode.process(doEvents, patch);
         patch.removeHurtEntities();
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[On Target Entity Event] Unsupported operation! missing Patch Entity");
     }
 }

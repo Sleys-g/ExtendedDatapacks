@@ -1,8 +1,8 @@
 package sleys.efedp.neoforge.api.registry;
 
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.core.control.registry.ControlableSkillEventTypeRegistry;
-import sleys.efedp.neoforge.core.control.registry.IControlableSkillEventType;
+import sleys.efedp.neoforge.core.control.registry.ControlableEventTypeRegistry;
+import sleys.efedp.neoforge.core.control.registry.IControlableEventType;
 import sleys.efedp.neoforge.system.animations.animations.registry.IAnimationAccessorType;
 import sleys.efedp.neoforge.system.animations.animations.registry.AnimationAccessorRegistry;
 import sleys.efedp.neoforge.system.animations.groups.registry.AnimationGroupRegistry;
@@ -11,18 +11,19 @@ import sleys.efedp.neoforge.system.animations.properties.armature.registry.Armat
 import sleys.efedp.neoforge.system.animations.properties.armature.registry.IArmatureType;
 import sleys.efedp.neoforge.system.animations.properties.playback.registry.IPlaySpeedModifierType;
 import sleys.efedp.neoforge.system.animations.properties.playback.registry.PlaySpeedModifierTypeRegistry;
-import sleys.efedp.neoforge.core.events.registry.IAnimationEventType;
-import sleys.efedp.neoforge.core.events.registry.AnimationEventTypeRegistry;
+import sleys.efedp.neoforge.core.events.registry.IEventType;
+import sleys.efedp.neoforge.core.events.registry.EventTypeRegistry;
 
 import java.util.function.BiConsumer;
 
 public enum ExtendedDatapacksRegistry {
-    ANIMATIONS_EVENTS(ExtendedDatapacksRegistry::onRegisterAnimationsEvents),
-    ANIMATION_PLAYBACK(ExtendedDatapacksRegistry::onRegisterPlaySpeedModifier),
+    EVENTS(ExtendedDatapacksRegistry::onRegisterEvents),
+    CONTROLABLE_EVENTS(ExtendedDatapacksRegistry::onRegisterControlableEvents),
+
+    ANIMATION_ARMATURE(ExtendedDatapacksRegistry::onRegisterAnimationsArmatures),
     ANIMATION_ACCESSOR(ExtendedDatapacksRegistry::onRegisterAnimationsAccessor),
     ANIMATION_GROUP(ExtendedDatapacksRegistry::onRegisterAnimationsGroups),
-    ANIMATION_ARMATURE(ExtendedDatapacksRegistry::onRegisterAnimationsArmatures),
-    CONTROLABLE_EVENTS(ExtendedDatapacksRegistry::onRegisterControlableEvents)
+    ANIMATION_PLAYBACK(ExtendedDatapacksRegistry::onRegisterPlaySpeedModifier)
 
     ;private final BiConsumer<String, Class<? extends Enum<?>>> registryProcess;
 
@@ -39,16 +40,29 @@ public enum ExtendedDatapacksRegistry {
         for (var enumClass : enumClasses) this.registryProcess.accept(modId, enumClass);
     }
 
-    private static void onRegisterAnimationsEvents(String modId, Class<? extends Enum<?>> enumClass) {
-        if (!IAnimationEventType.class.isAssignableFrom(enumClass)) {
+    private static void onRegisterEvents(String modId, Class<? extends Enum<?>> enumClass) {
+        if (!IEventType.class.isAssignableFrom(enumClass)) {
             ExtendedDatapacks.LOGGER.warn(
-                    "[<E> - Animation Event] The namespace '{}' attempted to register a class '{}' that is not an instance of IAnimationEventType; therefore, registration was prevented...",
+                    "[<E> - Event] The namespace '{}' attempted to register a class '{}' that is not an instance of IAnimationEventType; therefore, registration was prevented...",
                     modId, enumClass.getSimpleName()
             );
             return;
         }
 
-        AnimationEventTypeRegistry.register(modId, enumClass);
+        EventTypeRegistry.register(modId, enumClass);
+    }
+
+    private static void onRegisterControlableEvents(String modId, Class<? extends Enum<?>> enumClass) {
+        if (!IControlableEventType.class.isAssignableFrom(enumClass)) {
+            ExtendedDatapacks.LOGGER.warn(
+                    "[<E> - Controlable Events] The namespace '{}' attempted to register a class '{}' that is not an instance of IControlableSkillEventType; therefore, registration was prevented...",
+                    modId, enumClass.getSimpleName()
+            );
+
+            return;
+        }
+
+        ControlableEventTypeRegistry.register(modId, enumClass);
     }
 
     private static void onRegisterPlaySpeedModifier(String modId, Class<? extends Enum<?>> enumClass) {
@@ -101,18 +115,5 @@ public enum ExtendedDatapacksRegistry {
         }
 
         ArmatureTypeRegistry.register(modId, enumClass);
-    }
-
-    private static void onRegisterControlableEvents(String modId, Class<? extends Enum<?>> enumClass) {
-        if (!IControlableSkillEventType.class.isAssignableFrom(enumClass)) {
-            ExtendedDatapacks.LOGGER.warn(
-                    "[<E> - Controlable Events] The namespace '{}' attempted to register a class '{}' that is not an instance of IControlableSkillEventType; therefore, registration was prevented...",
-                    modId, enumClass.getSimpleName()
-            );
-
-            return;
-        }
-
-        ControlableSkillEventTypeRegistry.register(modId, enumClass);
     }
 }

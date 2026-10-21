@@ -4,11 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.neoforge.helpers.LaserEventHelper;
 import sleys.efedp.neoforge.system.animations.properties.phase.PhaseStunType;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.core.events.list.taskable.coroutine.ClientLaserFloorCoroutine;
 import sleys.efedp.neoforge.core.events.list.taskable.coroutine.ServerLaserFloorCoroutine;
 import sleys.sl.library.execution.task.Coroutine;
@@ -26,7 +27,7 @@ import java.util.Optional;
 public record TaskableLaserFloorWorldDamageEvent(Float damage, Optional<StunType> stunType,
                                                  Float radius, Integer count,
                                                  Optional<Integer> delay,
-                                                 Optional<Integer> pointsPerTick) implements IAnimationEventParams {
+                                                 Optional<Integer> pointsPerTick) implements IEventParams {
 
     public static final MapCodec<TaskableLaserFloorWorldDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -42,6 +43,15 @@ public record TaskableLaserFloorWorldDamageEvent(Float damage, Optional<StunType
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
+        this.executeEvent(livingCaster);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        this.executeEvent(livingEntity);
+    }
+
+    private void executeEvent(LivingEntity livingCaster) {
         if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Tickable Laser World Floor Event")) return;
 
         var level = livingCaster.level();

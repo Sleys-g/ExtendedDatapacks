@@ -17,13 +17,12 @@ public class MechanicsAssignerEvent {
     }
 
     @ErrorHandled
-    private static PlayerPatch<?> onChargedSlot(PlayerPatch<?> playerPatch) {
+    private static void onChargedSlot(PlayerPatch<?> playerPatch) {
         var chargedSlot = playerPatch.getSkill(ExtendedSkillSlot.CHARGED_ATTACK);
         var chargedSkill = ExtendedDatapacksSkills.CHARGED_ATTACK;
         var chargedSlotSkill = chargedSlot.getSkill();
         if (chargedSlotSkill == null && !chargedSlot.hasSkill(chargedSkill.get())) {
             chargedSlot.setSkill(chargedSkill.get());
         }
-        return playerPatch;
     }
 }

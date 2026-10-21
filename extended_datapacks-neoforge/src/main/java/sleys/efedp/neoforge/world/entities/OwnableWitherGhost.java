@@ -56,6 +56,11 @@ public class OwnableWitherGhost extends WitherGhostClone implements OwnableEntit
     }
 
     @Override
+    public boolean displayFireAnimation() {
+        return false;
+    }
+
+    @Override
     public boolean hurt(DamageSource damagesource, float damage) {
         if (!damagesource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
         return super.hurt(damagesource, damage);

@@ -13,8 +13,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.core.datapackets.comparator.NumericComparator;
-import sleys.efedp.neoforge.system.animations.properties.time.AnimationsEventInvocation;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.EventInvocation;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -27,7 +27,7 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
                                       NumericComparator numericComparator,
                                       String key,
                                       Number value, Number max, Number min,
-                                      List<AnimationsEventInvocation> doEvents) implements IAnimationEventParams {
+                                      List<EventInvocation> doEvents) implements IEventParams {
 
     public static final MapCodec<ItemNumberDataReadEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -48,7 +48,7 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
                                     event.min() != null ? event.min().doubleValue() : null
                             )),
 
-                    AnimationsEventInvocation.CODEC.listOf().optionalFieldOf("do", List.of())
+                    EventInvocation.CODEC.listOf().optionalFieldOf("do", List.of())
                             .forGetter(ItemNumberDataReadEvent::doEvents)
 
             ).apply(instance, (componentId, comparator, key,
@@ -70,6 +70,16 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
 
         if (this.applyMatch(caster)) {
             doEvents.forEach(event -> event.execute(accessor, patch));
+        }
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity caster) {
+        if (this.isInvalid(caster.level(), ProcessSides.SERVER, "Item Number Data Read Event")) return;
+        if (!(caster.level() instanceof ServerLevel)) return;
+
+        if (this.applyMatch(caster)) {
+            doEvents.forEach(event -> event.execute(accessor, caster));
         }
     }
 

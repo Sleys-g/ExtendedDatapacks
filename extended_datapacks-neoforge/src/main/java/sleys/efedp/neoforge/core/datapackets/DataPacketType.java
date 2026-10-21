@@ -4,6 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import sleys.efedp.neoforge.core.datapackets.get.GetArithmeticData;
+import sleys.efedp.neoforge.core.datapackets.get.GetLogicalData;
+import sleys.efedp.neoforge.core.datapackets.get.GetStringData;
+import sleys.efedp.neoforge.core.datapackets.get.IDataGet;
 import sleys.efedp.neoforge.core.datapackets.read.IDataRead;
 import sleys.efedp.neoforge.core.datapackets.read.ReadArithmeticData;
 import sleys.efedp.neoforge.core.datapackets.read.ReadLogicalData;
@@ -34,6 +38,11 @@ public enum DataPacketType {
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadArithmeticData.codecFor(this);
         }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetArithmeticData.codecFor(this);
+        }
     },
     INT("int", Codec.INT) {
         public void write(TagSyncSender.SyncMethod sync, LivingEntity livingEntity, String id, Object v) {
@@ -52,6 +61,11 @@ public enum DataPacketType {
         @Override
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadArithmeticData.codecFor(this);
+        }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetArithmeticData.codecFor(this);
         }
     },
     FLOAT("float", Codec.FLOAT) {
@@ -72,6 +86,11 @@ public enum DataPacketType {
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadArithmeticData.codecFor(this);
         }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetArithmeticData.codecFor(this);
+        }
     },
     DOUBLE("double", Codec.DOUBLE) {
         public void write(TagSyncSender.SyncMethod sync, LivingEntity livingEntity, String id, Object v) {
@@ -90,6 +109,11 @@ public enum DataPacketType {
         @Override
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadArithmeticData.codecFor(this);
+        }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetArithmeticData.codecFor(this);
         }
     },
     LONG("long", Codec.LONG) {
@@ -110,6 +134,11 @@ public enum DataPacketType {
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadArithmeticData.codecFor(this);
         }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetArithmeticData.codecFor(this);
+        }
     },
     BOOL("bool", Codec.BOOL) {
         public void write(TagSyncSender.SyncMethod sync, LivingEntity livingEntity, String id, Object v) {
@@ -128,6 +157,11 @@ public enum DataPacketType {
         @Override
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadLogicalData.codecFor(this);
+        }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetLogicalData.codecFor(this);
         }
     },
     STRING("string", Codec.STRING) {
@@ -148,6 +182,11 @@ public enum DataPacketType {
         public MapCodec<? extends IDataRead> readCodec() {
             return ReadStringData.codecFor(this);
         }
+
+        @Override
+        public MapCodec<? extends IDataGet> getCodec() {
+            return GetStringData.codecFor(this);
+        }
     };
 
     private final String id;
@@ -162,6 +201,7 @@ public enum DataPacketType {
     public abstract Object read(CompoundTag tag, String dataId);
     public abstract MapCodec<? extends IDataWriter> writeCodec();
     public abstract MapCodec<? extends IDataRead> readCodec();
+    public abstract MapCodec<? extends IDataGet> getCodec();
 
     public Codec<?> valueCodec() {
         return valueCodec;

@@ -71,27 +71,28 @@ public class Bootstrap {
     }
 
     private static void registryAnimationsEvents() {
-        ExtendedDatapacksRegistry.ANIMATIONS_EVENTS.register(
+        ExtendedDatapacksRegistry.EVENTS.register(
                 ExtendedDatapacks.MODID,
-                DataAnimationsEvents.class,
-                EntityAnimationsEvents.class,
-                GameplayAnimationsEvents.class,
-                ParticleAnimationsEvents.class,
-                SummonAnimationsEvents.class,
-                VisualAnimationsEvents.class,
-                GameAnimationsEvents.class,
-                TaskableGameplayAnimationsEvents.class
+                DataEvents.class,
+                EntityEvents.class,
+                GameplayEvents.class,
+                ParticleEvents.class,
+                SummonEvents.class,
+                VisualEvents.class,
+                GameEvents.class,
+                TaskableGameplayEvents.class
         );
     }
 
     private static void registryControlableEvents() {
         ExtendedDatapacksRegistry.CONTROLABLE_EVENTS.register(
                 ExtendedDatapacks.MODID,
-                CombatControlableSkillEvents.class,
-                IAControlableSkillEvents.class,
-                LootControlableSkillEvents.class,
-                MovementControlableSkillEvents.class,
-                StatusControlableSkillEvents.class
+                CombatControlableEvents.class,
+                IAControlableEvents.class,
+                LootControlableEvents.class,
+                MovementControlableEvents.class,
+                StatusControlableEvents.class,
+                TickControlableEvents.class
         );
     }
 

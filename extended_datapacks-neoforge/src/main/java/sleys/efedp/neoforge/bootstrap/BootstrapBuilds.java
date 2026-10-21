@@ -55,6 +55,7 @@ public class BootstrapBuilds {
 
         /// V3
         buildConfigTracker("innate_skill_builder", "timed_innate_skill", TimedInnateSkillBuilder::startToTracking);
+        buildConfigTracker("innate_skill_builder", "timed_status_innate_skill", TimedAdvancedInnateSkillBuilder::startToTracking);
     }
 
     private static void startAnimationsBuilds() {

@@ -3,9 +3,9 @@ package sleys.efedp.neoforge.system.animations.properties.time;
 import com.mojang.serialization.*;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.core.ProcessSides;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
-import sleys.efedp.neoforge.core.events.registry.AnimationEventTypeRegistry;
-import sleys.efedp.neoforge.core.events.registry.IAnimationEventType;
+import sleys.efedp.neoforge.core.events.IEventParams;
+import sleys.efedp.neoforge.core.events.registry.EventTypeRegistry;
+import sleys.efedp.neoforge.core.events.registry.IEventType;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimationEventType type,
+public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IEventType type,
                                                                        ProcessSides side,
                                                                        Float start,
                                                                        Float interval,
                                                                        Float end,
-                                                                       IAnimationEventParams params) implements IAnimationEvent<T> {
+                                                                       IEventParams params) implements IAnimationEvent<T> {
 
     public static <T extends StaticAnimation> Codec<AnimationsInIntervalTimeEvent<T>> codec() {
         return new MapCodec<AnimationsInIntervalTimeEvent<T>>() {
@@ -42,7 +42,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
                     return DataResult.error(() -> "Missing 'type' field in animation event");
                 }
 
-                return AnimationEventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
+                return EventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
                     O sideRaw = input.get("side");
                     O startRaw = input.get("start");
                     O intervalRaw = input.get("interval");
@@ -65,7 +65,7 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
                             ? Codec.FLOAT.parse(ops, endRaw)
                             : DataResult.error(() -> "Missing 'end' field in animation event");
 
-                    DataResult<? extends IAnimationEventParams> paramsResult = type
+                    DataResult<? extends IEventParams> paramsResult = type
                             .paramsCodec()
                             .codec()
                             .parse(ops, paramsRaw != null ? paramsRaw : ops.emptyMap());
@@ -95,14 +95,14 @@ public record AnimationsInIntervalTimeEvent<T extends StaticAnimation>(IAnimatio
             @Override
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsInIntervalTimeEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
-                prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
+                prefix.add("type", EventTypeRegistry.CODEC.encodeStart(ops, input.type()));
                 prefix.add("side", ProcessSides.PROCESS_SIDES_CODEC.encodeStart(ops, input.side()));
                 prefix.add("start", Codec.FLOAT.encodeStart(ops, input.start()));
                 prefix.add("interval", Codec.FLOAT.encodeStart(ops, input.interval));
                 prefix.add("end", Codec.FLOAT.encodeStart(ops, input.end));
 
                 if (input.params() != null) {
-                    Codec<IAnimationEventParams> paramsCodec = (Codec) input.type().paramsCodec().codec();
+                    Codec<IEventParams> paramsCodec = (Codec) input.type().paramsCodec().codec();
                     prefix.add("params", paramsCodec.encodeStart(ops, input.params()));
                 }
                 return prefix;

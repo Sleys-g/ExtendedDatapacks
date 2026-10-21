@@ -3,10 +3,12 @@ package sleys.efedp.neoforge.core.events.list.gameplay;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.helpers.LaserEventHelper;
 import sleys.efedp.neoforge.system.animations.properties.phase.PhaseStunType;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.sl.epicfight.model.JointModelCordReader;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -24,7 +26,7 @@ public record LaserJointTargetDamageEvent(Float damage,
                                           float poseTime,
                                           Optional<Double> CasterLateral,
                                           Optional<Double> CasterVertical,
-                                          Optional<Double> CasterAvance) implements IAnimationEventParams {
+                                          Optional<Double> CasterAvance) implements IEventParams {
 
     public static final MapCodec<LaserJointTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -73,5 +75,10 @@ public record LaserJointTargetDamageEvent(Float damage,
             entity.hurt(EpicFightDamageSources.witherBeam(livingCaster).setStunType(stunType.orElse(StunType.NONE)), damage);
             LaserEventHelper.impactBurstServer(level, entity.position());
         });
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Joint Target Laser Event] Unsupported operation! missing Patch Entity");
     }
 }

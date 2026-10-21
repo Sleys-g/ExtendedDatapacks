@@ -4,11 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.neoforge.helpers.LaserEventHelper;
 import sleys.efedp.neoforge.system.animations.properties.phase.PhaseStunType;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -19,7 +20,7 @@ import yesman.epicfight.world.damagesource.StunType;
 import java.util.Optional;
 
 public record LaserFloorWorldDamageEvent(Float damage, Optional<StunType> stunType,
-                                         Float radius, Integer count) implements IAnimationEventParams {
+                                         Float radius, Integer count) implements IEventParams {
 
     public static final MapCodec<LaserFloorWorldDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -33,8 +34,16 @@ public record LaserFloorWorldDamageEvent(Float damage, Optional<StunType> stunTy
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Laser World Floor Event")) return;
+        this.executeEvent(livingCaster);
+    }
 
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingCaster) {
+        this.executeEvent(livingCaster);
+    }
+
+    private void executeEvent(LivingEntity livingCaster) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Laser World Floor Event")) return;
         var level = livingCaster.level();
         Vec3 center = livingCaster.position();
         var random = level.getRandom();

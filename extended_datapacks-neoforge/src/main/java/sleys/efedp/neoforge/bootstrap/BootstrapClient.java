@@ -24,12 +24,11 @@ import sleys.sl.library.execution.task.Coroutine;
 public class BootstrapClient {
 
     @ErrorHandled
-    protected static IEventBus Initialize(IEventBus modBus) {
+    protected static void Initialize(IEventBus modBus) {
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap Client] Initializing Client Systems...");
         registerClientEvents();
         registerClientHookers();
         registerClientBus(modBus);
-        return modBus;
     }
 
     private static void registerClientEvents() {

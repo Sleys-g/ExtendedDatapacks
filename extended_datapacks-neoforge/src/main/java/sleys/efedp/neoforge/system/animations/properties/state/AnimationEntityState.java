@@ -22,7 +22,7 @@ public record AnimationEntityState<T extends StaticAnimation>(
         Optional<Boolean> updateLivingMotion,
         Optional<Integer> hurtLevel,
         Optional<Integer> phaseLevel
-) implements IEntityState<T> {
+) implements IAnimationEntityState<T> {
 
     public static <T extends StaticAnimation> MapCodec<AnimationEntityState<T>> codec() {
         return RecordCodecBuilder.mapCodec(instance ->

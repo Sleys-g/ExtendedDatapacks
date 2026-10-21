@@ -6,7 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.world.entities.OwnableWitherGhost;
 import sleys.sl.library.util.helper.entity.EntityHelper;
 import sleys.efedp.neoforge.core.ProcessSides;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public record SummonOwnedWitherGhostEvent(Optional<Float> damage,
                                           Optional<Float> area,
                                           Optional<Boolean> allowAreaDamage,
-                                          Optional<EntityHelper.TargetMethod> targetMode) implements IAnimationEventParams {
+                                          Optional<EntityHelper.TargetMethod> targetMode) implements IEventParams {
 
     public static final MapCodec<SummonOwnedWitherGhostEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -41,6 +42,11 @@ public record SummonOwnedWitherGhostEvent(Optional<Float> damage,
         var livingTarget = patch.getTarget();
         if (area.isPresent()) this.onAreaEffect(area.get(), level, livingCaster, livingTarget);
         else this.onSummonEntity(level, livingCaster, livingTarget);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Summon Owner Whiter On Target Event] Unsupported operation! missing Patch Entity");
     }
 
     private void onAreaEffect(Float areaSize, Level level, LivingEntity livingCaster, LivingEntity target) {

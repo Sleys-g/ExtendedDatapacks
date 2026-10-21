@@ -5,9 +5,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.properties.helpers.ParticleShapeHelper;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.helpers.ParticleShapeHelper;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -16,7 +17,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import java.util.List;
 
 public record SmallExplosionEvent(ParticleOptions particle, int points,
-                                  double speed, double spread) implements IAnimationEventParams {
+                                  double speed, double spread) implements IEventParams {
 
     public static final MapCodec<SmallExplosionEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -30,6 +31,15 @@ public record SmallExplosionEvent(ParticleOptions particle, int points,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
+        executeEvent(caster);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity caster) {
+        executeEvent(caster);
+    }
+
+    private void executeEvent(LivingEntity caster) {
         if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Small Explosion Particle Event")) return;
 
         List<Vec3> dirs = ParticleShapeHelper.sphereFibonacci(spread, points);

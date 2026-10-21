@@ -79,5 +79,8 @@ public class BootstrapCommon {
         /// V3 Innate
         TimedInnateSkillsRegistry.initialize(modBus);
         modBus.register(TimedInnateSkillsRegistry.class);
+
+        TimedStatusInnateSkillsRegistry.initialize(modBus);
+        modBus.register(TimedStatusInnateSkillsRegistry.class);
     }
 }

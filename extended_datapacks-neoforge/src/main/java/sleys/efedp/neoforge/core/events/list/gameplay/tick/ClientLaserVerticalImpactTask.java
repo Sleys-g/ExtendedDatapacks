@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.neoforge.helpers.LaserEventHelper;
 import sleys.sl.library.execution.task.ITickTask;
 import yesman.epicfight.registry.entries.EpicFightSounds;
 

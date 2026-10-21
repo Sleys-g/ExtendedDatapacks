@@ -20,6 +20,7 @@ public final class ExtendedDatapacksEntities {
                             .fireImmune()
                             .sized(0.9F, 3.5F)
                             .clientTrackingRange(10)
+                            .fireImmune()
                             .build("ownable_wither_ghost")
             );
 
@@ -28,6 +29,7 @@ public final class ExtendedDatapacksEntities {
                     () -> EntityType.Builder.<OwnableClonePlayer>of(OwnableClonePlayer::new, MobCategory.MISC)
                             .sized(0.6F, 1.8F)
                             .clientTrackingRange(10)
+                            .fireImmune()
                             .build("ownable_clone_player")
             );
 
@@ -36,6 +38,7 @@ public final class ExtendedDatapacksEntities {
                     () -> EntityType.Builder.<OwnableAnimatedPlayer>of(OwnableAnimatedPlayer::new, MobCategory.MISC)
                             .sized(0.6F, 1.8F)
                             .clientTrackingRange(10)
+                            .fireImmune()
                             .build("ownable_animated_player")
             );
 }

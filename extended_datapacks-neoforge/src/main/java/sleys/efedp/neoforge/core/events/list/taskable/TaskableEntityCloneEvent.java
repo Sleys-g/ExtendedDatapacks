@@ -4,9 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.ExtendedDatapacks;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.world.entities.OwnableClonePlayer;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -19,7 +21,7 @@ public record TaskableEntityCloneEvent(int duration,
                                        Optional<Float> damageFactor,
                                        Optional<Double> lateralOffset,
                                        Optional<Double> verticalOffset,
-                                       Optional<Double> avanceOffset) implements IAnimationEventParams {
+                                       Optional<Double> avanceOffset) implements IEventParams {
 
     public static final MapCodec<TaskableEntityCloneEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -44,5 +46,10 @@ public record TaskableEntityCloneEvent(int duration,
         );
         damageFactor.ifPresent(cloneEntity::setMultiplier);
         level.addFreshEntity(cloneEntity);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Taskable Entity Clone Event] Unsupported operation! missing Patch Entity");
     }
 }

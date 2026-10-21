@@ -4,9 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.neoforge.core.events.IAnimationEventParams;
+import sleys.efedp.neoforge.core.events.IEventParams;
 import sleys.efedp.neoforge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 public record TranslateEvent(Optional<Double> lateral,
                              Optional<Double> vertical,
-                             Optional<Double> avance) implements IAnimationEventParams {
+                             Optional<Double> avance) implements IEventParams {
 
     public static final MapCodec<TranslateEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -29,10 +30,16 @@ public record TranslateEvent(Optional<Double> lateral,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), ProcessSides.CLIENT,"Translate Event")) {
-            return;
-        }
+        this.executeEvent(livingCaster);
+    }
 
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingCaster) {
+        this.executeEvent(livingCaster);
+    }
+
+    private void executeEvent(LivingEntity livingCaster) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.CLIENT,"Translate Event")) return;
         var yaw = livingCaster.getYRot();
         var offset = new Vec3(lateral.orElse(0.0), vertical.orElse(0.0), avance.orElse(0.0));
         var localPosition = offset.yRot(-yaw * Mth.DEG_TO_RAD);

@@ -1,6 +1,6 @@
 package sleys.efedp.neoforge.world.entities;
 
-import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sleys.efedp.neoforge.core.events.list.entity.FlashWhitePairEvent;
 import sleys.efedp.neoforge.plataform.registry.ExtendedDatapacksEntities;
 import yesman.epicfight.registry.entries.EpicFightAttributes;
 
@@ -25,6 +26,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, IControlableEntityDamage {
+
+    private static final FlashWhitePairEvent FLASH_WHITE_PAIR_EVENT = new FlashWhitePairEvent(
+            8, 30, 10, false
+    );
 
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID =
             SynchedEntityData.defineId(
@@ -34,10 +39,10 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
 
     private static final double FOLLOW_STRENGTH = 0.45D;
     private static final double MAX_FOLLOW_SPEED = 0.8D;
+    private static final double TELEPORT_DISTANCE_SQ = 10.0D * 10.0D;
 
     private Vec3 spawnOffset = Vec3.ZERO;
     private long despawnAtGameTime = -1L;
-
     private float MULTIPLIER = 1f;
 
     public OwnableClonePlayer(EntityType<? extends OwnableClonePlayer> entityType, Level level) {
@@ -53,8 +58,17 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
         this.spawnOffset = offset;
         this.setPos(position.add(offset.yRot(-owner.getYRot() * Mth.DEG_TO_RAD)));
 
-        this.lookAt(EntityAnchorArgument.Anchor.FEET, owner.getLookAngle());
+        this.setYRot(owner.getYRot());
+        this.yRotO = owner.getYRot();
+        this.setXRot(0.0F);
+        this.xRotO = 0.0F;
+
         this.setDuration(durationTicks);
+    }
+
+    @Override
+    public boolean displayFireAnimation() {
+        return false;
     }
 
     @Override
@@ -127,10 +141,32 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
             return;
         }
 
-        this.tickOwnerMovement();
+        Vec3 targetPosition = this.getTargetPosition(owner);
+        if (this.distanceToSqr(targetPosition) > TELEPORT_DISTANCE_SQ) {
+            this.teleportTo(targetPosition.x, targetPosition.y, targetPosition.z);
+            this.setDeltaMovement(Vec3.ZERO);
+
+            FLASH_WHITE_PAIR_EVENT.executeEvent(this);
+            this.triggerFlashWhiteAndParticles();
+        }
+
+        if (!owner.isShiftKeyDown()) this.tickOwnerMovement();
         this.tickOwnerRotation();
         this.tickOwnerState();
         this.tickOwnerEquipment();
+    }
+
+    public void triggerFlashWhiteAndParticles() {
+        if (this.level().isClientSide) return;
+        if (this.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(
+                    ParticleTypes.PORTAL,
+                    this.getX(), this.getY() + (this.getBbHeight() / 2.0D), this.getZ(),
+                    15,
+                    0.3D, 0.5D, 0.3D,
+                    0.05D
+            );
+        }
     }
 
     protected void tickOwnerMovement() {
@@ -138,16 +174,21 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
         if (owner == null) return;
 
         Vec3 targetPosition = this.getTargetPosition(owner);
-
         Vec3 difference = targetPosition.subtract(this.position());
         Vec3 horizontalDifference = new Vec3(difference.x, 0.0D, difference.z);
 
         Vec3 currentMovement = this.getDeltaMovement();
         Vec3 velocity = horizontalDifference.scale(FOLLOW_STRENGTH);
-        if (velocity.lengthSqr() > MAX_FOLLOW_SPEED * MAX_FOLLOW_SPEED) velocity = velocity.normalize().scale(MAX_FOLLOW_SPEED);
+
+        if (velocity.lengthSqr() > MAX_FOLLOW_SPEED * MAX_FOLLOW_SPEED) {
+            velocity = velocity.normalize().scale(MAX_FOLLOW_SPEED);
+        }
 
         double yVelocity = currentMovement.y;
-        if (!this.onGround()) yVelocity = Mth.clamp(difference.y * FOLLOW_STRENGTH, -MAX_FOLLOW_SPEED, MAX_FOLLOW_SPEED);
+        if (!this.onGround()) {
+            yVelocity = Mth.clamp(difference.y * FOLLOW_STRENGTH, -MAX_FOLLOW_SPEED, MAX_FOLLOW_SPEED);
+        }
+
         this.setDeltaMovement(velocity.x, yVelocity, velocity.z);
     }
 
@@ -155,11 +196,14 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
         LivingEntity owner = this.getOwner();
         if (owner == null) return;
 
-        this.setYRot(owner.getYRot());
-        this.setXRot(owner.getXRot());
+        float ownerYaw = owner.getYRot();
+        this.setYRot(ownerYaw);
+        this.yRotO = ownerYaw;
 
-        this.yRotO = this.getYRot();
-        this.xRotO = this.getXRot();
+        this.setXRot(0.0F);
+        this.xRotO = 0.0F;
+        this.yHeadRot = ownerYaw;
+        this.yHeadRotO = ownerYaw;
     }
 
     protected void tickOwnerState() {
@@ -178,7 +222,6 @@ public class OwnableClonePlayer extends PathfinderMob implements OwnableEntity, 
 
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack stack = owner.getItemBySlot(slot);
-
             this.setItemSlot(slot, stack.copy());
             this.setDropChance(slot, 0.0F);
         }

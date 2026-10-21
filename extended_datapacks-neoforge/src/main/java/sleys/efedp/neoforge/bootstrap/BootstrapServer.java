@@ -8,9 +8,8 @@ import sleys.sl.library.annotations.ErrorHandled;
 public class BootstrapServer {
 
     @ErrorHandled
-    protected static IEventBus Initialize(IEventBus modBus) {
+    protected static void Initialize(IEventBus modBus) {
         BootstrapServer.registerServerEvents();
-        return modBus;
     }
 
     private static void registerServerEvents() {
