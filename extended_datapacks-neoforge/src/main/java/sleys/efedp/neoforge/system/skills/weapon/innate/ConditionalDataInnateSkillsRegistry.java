@@ -6,15 +6,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.ConditionalDataInnateSkillBuilder;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.data.ConditionalDataAnimationData;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.FriendlyCountConverter;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.AnimationSkillValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.data.ConditionalType;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.ConditionalDataSkillValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.wrapper.conditional.WConditionalDataInnateSkill;
+import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.neoforge.system.skills.weapon.innate.data.ConditionalDataAnimationData;
+import sleys.efedp.neoforge.system.skills.weapon.innate.data.ConditionalType;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.FriendlyCountConverter;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.RegistryErrorHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.AnimationSkillValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.ConditionalDataSkillValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.wrapper.conditional.WConditionalDataInnateSkill;
 import sleys.efedp.neoforge.system.skills.weapon.innate.definitions.ConditionalDataInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -37,7 +37,7 @@ public class ConditionalDataInnateSkillsRegistry {
         initialized = true;
         ExtendedDatapacks.LOGGER.info("[Data Conditional Innate Skills Registry] Registering JSON skills");
 
-        var data = ConditionalDataInnateSkillBuilder.getDatapacketInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.DATA_CONDITIONAL_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Data Conditional Innate Skills Registry] No JSON skills found");
             return;

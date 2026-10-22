@@ -106,13 +106,11 @@ public class Bootstrap {
         ExpectedContracts.require(
                 ExtendedDatapacks.MODID, ExtendedDatapacks.VERSION,
                 """
-                        Changes have been introduced to the Innate Skills system. All dependents using this area are
-                        requested to update their implementations accordingly. If Innate Skills are not used, this
-                        message can be safely ignored.
+                        For internal virtualization (InJar) modifications, the folder name changes from 'virtualizate' to 'virtualization'.
+                        Within 'innate_skill_builder', for all declared skills, the 'modid' data field is renamed to 'mod_id'.
                         
-                        The registration and behavior of Innate Skills have been substantially revised to simplify
-                        their implementation and remove unnecessary references. This change makes the previous
-                        Phase-based system incompatible with current and newer versions.
+                        If you do not apply these renames, your virtualized animations within InJar will fail, as will your skills defined in 'innate_skill_builder'.
+                        If you do not use any of these features, please ignore this message.
                         
                         You can review the changes here: https://github.com/Sleys-g/ExtendedDatapacks/wiki/Recent-Changes
                         """

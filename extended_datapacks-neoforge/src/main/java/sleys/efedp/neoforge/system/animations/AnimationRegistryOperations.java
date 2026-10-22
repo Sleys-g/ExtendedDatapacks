@@ -3,11 +3,9 @@ package sleys.efedp.neoforge.system.animations;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import sleys.efedp.neoforge.api.registry.RegistryAnimationsTrackers;
 import sleys.efedp.neoforge.system.animations.groups.config.ConfigAnimationsErrorPool;
 import sleys.efedp.neoforge.system.animations.groups.config.IAnimationConfig;
-import sleys.efedp.neoforge.system.animations.builder.AnimationsConfigBuilder;
-import sleys.efedp.neoforge.system.animations.builder.AnimationsRegistryBuilder;
-import sleys.efedp.neoforge.system.animations.builder.AnimationsVirtualizationBuilder;
 import sleys.efedp.neoforge.system.animations.definitions.AnimationConfigDefinition;
 import sleys.efedp.neoforge.system.animations.definitions.AnimationAccessorDefinition;
 import sleys.efedp.neoforge.system.animations.animations.accessor.IAnimationAccessor;
@@ -27,19 +25,19 @@ import java.util.stream.Stream;
 public class AnimationRegistryOperations {
 
     public static void onRegistryAnimations(AnimationManager.AnimationRegistryEvent event) {
-        AnimationsRegistryBuilder
-                .getAnimationDefinitionsData()
+        RegistryAnimationsTrackers.ANIMATION
+                .getDefinitionData()
                 .forEach((modId, definitionList) ->
-                event.newBuilder(modId, animationBuilder ->
-                        definitionList.forEach(def -> registerDef(animationBuilder, def))
-                )
-        );
+                        event.newBuilder(modId, animationBuilder ->
+                                definitionList.forEach(def -> registerDef(animationBuilder, def))
+                        )
+                );
     }
 
     public static void onVirtualizeAnimations(RegisterEvent event) {
         if (!event.getRegistry().equals(EpicFightRegistries.SKILL)) return;
-        AnimationsVirtualizationBuilder
-                .getAnimationVirtualizationData()
+        RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION
+                .getDefinitionData()
                 .forEach((modId, virtualizationList) ->
                 virtualizationList.forEach(AnimationRegistryOperations::virtualizationDef)
        );
@@ -55,15 +53,15 @@ public class AnimationRegistryOperations {
 
     public static void onModifierAnimations() {
         /// Config
-        AnimationsConfigBuilder
-                .getAnimationConfigData()
+        RegistryAnimationsTrackers.ANIMATION_CONFIGURATION
+                .getDefinitionData()
                 .forEach((modId, configList) ->
                         configList.forEach(AnimationRegistryOperations::configDef)
                 );
 
         /// Config Virtual
-        AnimationsVirtualizationBuilder
-                .getAnimationVirtualizationData()
+        RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION
+                .getDefinitionData()
                 .forEach((modId, virtualizationList) ->
                         virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
                 );

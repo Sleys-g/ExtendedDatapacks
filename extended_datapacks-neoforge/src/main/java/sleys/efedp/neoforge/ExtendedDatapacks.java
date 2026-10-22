@@ -37,7 +37,7 @@ public class ExtendedDatapacks {
     public static final Logger LOGGER = LogManager.getLogger(ExtendedDatapacks.class);
 
     public static final String MODID = "epicfight_edp";
-    public static final String VERSION = "2.4.6";
+    public static final String VERSION = "2.5.6";
 
     private static final String CONFIG_PATH = "epicfight_edp/extended_datapack_config.toml";
     private static final String CLIENT_CONFIG_PATH = "epicfight_edp/extended_datapack_client_config.toml";

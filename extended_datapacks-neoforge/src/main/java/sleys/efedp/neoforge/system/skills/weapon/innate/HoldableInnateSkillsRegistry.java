@@ -6,9 +6,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.HoldableInnateSkillBuilder;
+import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.RegistryErrorHelper;
 import sleys.efedp.neoforge.system.skills.weapon.innate.definitions.HoldableInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -31,7 +31,7 @@ public class HoldableInnateSkillsRegistry {
         initialized = true;
         ExtendedDatapacks.LOGGER.info("[Holdable Innate Skill Registry] Registering JSON skills");
 
-        var data = HoldableInnateSkillBuilder.getHoldableInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.HOLDABLE_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Holdable Innate Skill Registry] No JSON skills found");
             return;

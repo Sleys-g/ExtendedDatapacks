@@ -3,8 +3,8 @@ package sleys.efedp.neoforge.system.skills.weapon.innate.definitions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.data.ConditionalDataAnimationData;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.wrapper.conditional.WConditionalDataInnateSkill;
+import sleys.efedp.neoforge.system.skills.weapon.innate.data.ConditionalDataAnimationData;
+import sleys.efedp.neoforge.system.skills.weapon.innate.wrapper.conditional.WConditionalDataInnateSkill;
 import sleys.sl.library.util.io.JsonComponentArgs;
 
 import javax.annotation.Nullable;

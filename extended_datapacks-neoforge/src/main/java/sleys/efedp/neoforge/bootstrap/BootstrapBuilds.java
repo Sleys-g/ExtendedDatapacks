@@ -2,14 +2,13 @@ package sleys.efedp.neoforge.bootstrap;
 
 import net.neoforged.fml.loading.FMLPaths;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.animations.builder.AnimationsConfigBuilder;
-import sleys.efedp.neoforge.system.animations.builder.AnimationsRegistryBuilder;
-import sleys.efedp.neoforge.system.animations.builder.AnimationsVirtualizationBuilder;
+import sleys.efedp.neoforge.api.registry.RegistryAnimationsTrackers;
+import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
 import sleys.efedp.neoforge.system.skills.guard.builder.GuardSkillModifierBuilder;
 import sleys.efedp.neoforge.system.skills.passive.builder.PassiveSkillModifierBuilder;
 import sleys.efedp.neoforge.system.skills.icon.builder.IconSkillModifierBuilder;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.*;
 import sleys.efedp.neoforge.system.category.builder.WeaponCategoryAdderBuilder;
+import sleys.sl.library.annotations.LegacyFunction;
 import sleys.sl.library.util.io.BuildPathOrFile;
 
 import java.nio.file.Path;
@@ -18,7 +17,7 @@ import java.util.function.Consumer;
 public class BootstrapBuilds {
 
     protected static void Initialize() {
-        ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing Builds & start To Tracking...");
+        ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing Builds & Start To Tracking...");
         startSkillBuilds();
         startInnateSkillsBuilds();
         startAnimationsBuilds();
@@ -33,6 +32,7 @@ public class BootstrapBuilds {
         tracker.accept(dir);
     }
 
+    @LegacyFunction(since = "2.5.5", value = "They will move to DFU in the future")
     private static void startSkillBuilds() {
         buildConfigTracker("skill_builder", "passive_skills", PassiveSkillModifierBuilder::startToTracking);
         buildConfigTracker("skill_builder", "guard_skills", GuardSkillModifierBuilder::startToTracking);
@@ -41,26 +41,22 @@ public class BootstrapBuilds {
     }
 
     private static void startInnateSkillsBuilds() {
-        buildConfigTracker("innate_skill_builder", "simple_innate_skill", SimpleInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "holdable_innate_skill", HoldableInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "conditional_innate_skill", ConditionalInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "stacks_conditional_innate_skill", ConditionalStackInnateSkillBuilder::startToTracking);
-
-        /// V2
-        buildConfigTracker("innate_skill_builder", "data_conditional_innate_skill", ConditionalDataInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "sequential_innate_skill", SequentialInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "per_combo_innate_skill", PerComboInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "combo_innate_skill", ComboInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "holdable_conditional_innate_skill", HoldableConditionalInnateSkillBuilder::startToTracking);
-
-        /// V3
-        buildConfigTracker("innate_skill_builder", "timed_innate_skill", TimedInnateSkillBuilder::startToTracking);
-        buildConfigTracker("innate_skill_builder", "timed_status_innate_skill", TimedAdvancedInnateSkillBuilder::startToTracking);
+        RegistryInnateSkillTrackers.SIMPLE_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.HOLDABLE_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.CONDITIONAL_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.STACKS_CONDITIONAL_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.DATA_CONDITIONAL_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.SEQUENTIAL_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.PER_COMBO_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.COMBO_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.HOLDABLE_CONDITIONAL_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.TIMED_INNATE_SKILL.startToTracking();
+        RegistryInnateSkillTrackers.TIMED_ADVANCED_INNATE_SKILL.startToTracking();
     }
 
     private static void startAnimationsBuilds() {
-        buildConfigTracker("animations", "registry", AnimationsRegistryBuilder::startToTracking);
-        buildConfigTracker("animations", "config", AnimationsConfigBuilder::startToTracking);
-        buildConfigTracker("animations", "virtualization", AnimationsVirtualizationBuilder::startToTracking);
+        RegistryAnimationsTrackers.ANIMATION.startToTracking();
+        RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION.startToTracking();
+        RegistryAnimationsTrackers.ANIMATION_CONFIGURATION.startToTracking();
     }
 }

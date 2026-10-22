@@ -6,15 +6,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.ComboInnateSkillBuilder;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.data.ConditionalType;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.AnimationSkillValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.ComboEntryPointValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.ComboNodeValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.ComboTransitionValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.wrapper.combo.WComboInnateSkill;
+import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.neoforge.system.skills.weapon.innate.data.ConditionalType;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.RegistryErrorHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.AnimationSkillValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.ComboEntryPointValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.ComboNodeValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.ComboTransitionValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.wrapper.combo.WComboInnateSkill;
 import sleys.efedp.neoforge.system.skills.weapon.innate.definitions.ComboInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -37,7 +37,7 @@ public class ComboInnateSkillsRegistry {
         initialized = true;
         ExtendedDatapacks.LOGGER.info("[Combo Innate Skills Registry] Registering JSON skills");
 
-        var data = ComboInnateSkillBuilder.getComboInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.COMBO_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Combo Innate Skills Registry] No JSON skills found");
             return;

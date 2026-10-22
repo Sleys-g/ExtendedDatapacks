@@ -6,12 +6,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.SequentialInnateSkillBuilder;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.FriendlyCountConverter;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.values.AnimationSkillValues;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.wrapper.sequential.WSequentialInnateSkill;
+import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.FriendlyCountConverter;
+import sleys.efedp.neoforge.system.skills.weapon.innate.helper.RegistryErrorHelper;
+import sleys.efedp.neoforge.system.skills.weapon.innate.values.AnimationSkillValues;
+import sleys.efedp.neoforge.system.skills.weapon.innate.wrapper.sequential.WSequentialInnateSkill;
 import sleys.efedp.neoforge.system.skills.weapon.innate.definitions.SequentialInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -34,7 +34,7 @@ public class SequentialInnateSkillsRegistry {
         initialized = true;
         ExtendedDatapacks.LOGGER.info("[Sequential Innate Skill Registry] Registering JSON skills");
 
-        var data = SequentialInnateSkillBuilder.getSequentialInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.SEQUENTIAL_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Sequential Innate Skill Registry] No JSON skills found");
             return;

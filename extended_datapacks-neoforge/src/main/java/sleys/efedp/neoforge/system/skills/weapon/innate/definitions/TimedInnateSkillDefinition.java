@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.wrapper.timed.WTimedInnateSkill;
+import sleys.efedp.neoforge.system.skills.weapon.innate.wrapper.timed.WTimedInnateSkill;
 import sleys.efedp.neoforge.system.skills.weapon.innate.properties.InnatePhaseProperties;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.api.animation.AnimationManager;

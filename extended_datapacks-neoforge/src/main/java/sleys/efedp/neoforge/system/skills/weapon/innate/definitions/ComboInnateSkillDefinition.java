@@ -3,9 +3,9 @@ package sleys.efedp.neoforge.system.skills.weapon.innate.definitions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.wrapper.combo.WComboInnateSkill;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.data.ComboEntryPointData;
-import sleys.efedp.neoforge.system.skills.weapon.innate.builder.data.ComboNodeData;
+import sleys.efedp.neoforge.system.skills.weapon.innate.wrapper.combo.WComboInnateSkill;
+import sleys.efedp.neoforge.system.skills.weapon.innate.data.ComboEntryPointData;
+import sleys.efedp.neoforge.system.skills.weapon.innate.data.ComboNodeData;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.skill.SkillCategories;
 
