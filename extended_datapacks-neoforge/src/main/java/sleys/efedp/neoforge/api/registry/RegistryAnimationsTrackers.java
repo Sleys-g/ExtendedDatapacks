@@ -10,8 +10,9 @@ import java.nio.file.Path;
 
 public final class RegistryAnimationsTrackers {
 
-    public static final GenericRegistryBuilder<AnimationAccessorDefinition<?>> ANIMATION = new GenericRegistryBuilder<>(
+    public static final GenericRegistryBuilder<AnimationAccessorDefinition<?>> ANIMATION_REGISTRY = new GenericRegistryBuilder<>(
             AnimationAccessorDefinition.CODEC,
+            GenericRegistryBuilder.BuilderContext.WITH_MOD_ID,
             "animations/registry",
             "Animations Registry",
             getConfigAnimationTracker("registry")
@@ -19,6 +20,7 @@ public final class RegistryAnimationsTrackers {
 
     public static final GenericRegistryBuilder<AnimationVirtualizationDefinition<?>> ANIMATION_VIRTUALIZATION = new GenericRegistryBuilder<>(
             AnimationVirtualizationDefinition.CODEC,
+            GenericRegistryBuilder.BuilderContext.WITHOUT_MOD_ID,
             "animations/virtualization",
             "Animations Virtualization",
             getConfigAnimationTracker("virtualization")
@@ -26,6 +28,7 @@ public final class RegistryAnimationsTrackers {
 
     public static final GenericRegistryBuilder<AnimationConfigDefinition<?>> ANIMATION_CONFIGURATION = new GenericRegistryBuilder<>(
             AnimationConfigDefinition.CODEC,
+            GenericRegistryBuilder.BuilderContext.WITHOUT_MOD_ID,
             "animations/config",
             "Animations Config",
             getConfigAnimationTracker("config")

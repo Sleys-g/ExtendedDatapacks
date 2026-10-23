@@ -1,6 +1,7 @@
 package sleys.efedp.neoforge.api.registry;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -22,19 +23,30 @@ import java.util.stream.Stream;
 
 public class GenericRegistryBuilder<T> {
 
+    private static final List<String> MOD_ID_FIELDS = List.of("mod_id", "modid", "modId", "modID");
     private static final String CONFIG_SOURCE = "config";
     private static final String JSON_EXTENSION = ".json";
 
     private final Map<String, List<T>> definitions = new HashMap<>();
     private final Codec<T> codec;
+    private final BuilderContext context;
 
     private final String resourceFolder;
     private final String logTag;
     private final Path configFolder;
 
-    public GenericRegistryBuilder(Codec<T> codec, String resourceFolder,
-                                  String logTag, Path configFolder) {
+    public enum BuilderContext {
+        WITH_MOD_ID,
+        WITHOUT_MOD_ID;
+    }
+
+    public GenericRegistryBuilder(Codec<T> codec,
+                                  BuilderContext context,
+                                  String resourceFolder,
+                                  String logTag,
+                                  Path configFolder) {
         this.codec = codec;
+        this.context = context;
         this.resourceFolder = resourceFolder;
         this.logTag = logTag;
         this.configFolder = configFolder;
@@ -102,24 +114,63 @@ public class GenericRegistryBuilder<T> {
             json = JsonParser.parseReader(reader);
         }
 
-        if (CONFIG_SOURCE.equals(source)) {
-            if (!json.isJsonObject() || !json.getAsJsonObject().has("mod_id")) {
+        if (context == BuilderContext.WITH_MOD_ID) {
+            if (CONFIG_SOURCE.equals(source) && json.isJsonObject()) {
                 ExtendedDatapacks.LOGGER.warn(
-                        "[{}] Skipping {}: config files require a \"mod_id\" field", logTag, file
+                        "[{}] Attempting to load the file {}: from the configuration folder", logTag, file
                 );
+
+                String modId = this.resolveModId(file, json);
+                if (modId != null) {
+                    ExtendedDatapacks.LOGGER.info(
+                            "[{}] Loading from config folder... Registering under namespace: {}", logTag, modId
+                    );
+
+                    registerEntry(file, modId, json);
+                } else {
+                    ExtendedDatapacks.LOGGER.warn(
+                            "[{}] Skipping {}: it was not possible to reach the modid in any way.", logTag, file
+                    );
+                }
+
                 return;
             }
 
-            String modKey = json.getAsJsonObject().get("mod_id").getAsString();
-            ExtendedDatapacks.LOGGER.info(
-                    "[{}] Loading from config folder... Registering under namespace: {}", logTag, modKey
-            );
-            registerEntry(file, modKey, json);
-            return;
+            ExtendedDatapacks.LOGGER.info("[{}] Loading from In-Jar folder... Registering under namespace: {}", logTag, source);
+            registerEntry(file, source, json);
         }
 
-        ExtendedDatapacks.LOGGER.info("[{}] Loading from In-Jar folder... Registering under namespace: {}", logTag, source);
-        registerEntry(file, source, json);
+        if (context == BuilderContext.WITHOUT_MOD_ID) {
+            if (CONFIG_SOURCE.equals(source)) {
+                ExtendedDatapacks.LOGGER.info("[{}] Loading from config folder... Without namespace as file: {}", logTag, file);
+                registerEntry(file, source, json);
+                return;
+            }
+
+            ExtendedDatapacks.LOGGER.info("[{}] Loading from In-Jar folder... Without namespace as file: {}", logTag, file);
+            registerEntry(file, source, json);
+        }
+    }
+
+    private String resolveModId(Path file, JsonElement json) {
+        if (!json.isJsonObject()) return null;
+
+        JsonObject object = json.getAsJsonObject();
+        for (String field : MOD_ID_FIELDS) {
+            JsonElement element = object.get(field);
+            if (element == null || !element.isJsonPrimitive()) continue;
+
+            String value = element.getAsString();
+            if (value.isBlank()) continue;
+
+            if (!field.equals("mod_id")) {
+                ExtendedDatapacks.LOGGER.warn(
+                        "[{}] {} uses the legacy \"{}\" field, please migrate to \"mod_id\"", logTag, file, field
+                );
+            }
+            return value;
+        }
+        return null;
     }
 
     private void registerEntry(Path file, String modId, JsonElement json) {

@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class AnimationRegistryOperations {
 
     public static void onRegistryAnimations(AnimationManager.AnimationRegistryEvent event) {
-        RegistryAnimationsTrackers.ANIMATION
+        RegistryAnimationsTrackers.ANIMATION_REGISTRY
                 .getDefinitionData()
                 .forEach((modId, definitionList) ->
                         event.newBuilder(modId, animationBuilder ->
