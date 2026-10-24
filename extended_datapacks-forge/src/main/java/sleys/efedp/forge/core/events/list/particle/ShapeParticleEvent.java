@@ -6,9 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.system.animations.properties.helpers.ParticleShapeHelper;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.helpers.ParticleShapeHelper;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -20,7 +21,7 @@ import java.util.Locale;
 import java.util.stream.IntStream;
 
 public record ShapeParticleEvent(ParticleOptions particle, ParticleShape shape,
-                                 double sizeX, double sizeY, double sizeZ, int points) implements IAnimationEventParams {
+                                 double sizeX, double sizeY, double sizeZ, int points) implements IEventParams {
 
     public static final MapCodec<ShapeParticleEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -43,6 +44,15 @@ public record ShapeParticleEvent(ParticleOptions particle, ParticleShape shape,
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
+        this.executeEvent(caster);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity caster) {
+        this.executeEvent(caster);
+    }
+
+    private void executeEvent(LivingEntity caster) {
         if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Shape Particles Event")) return;
 
         RandomSource rand = caster.getRandom();

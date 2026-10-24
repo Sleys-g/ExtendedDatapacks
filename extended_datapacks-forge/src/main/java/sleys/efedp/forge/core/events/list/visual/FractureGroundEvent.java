@@ -5,11 +5,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -18,7 +20,7 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public record FractureGroundEvent(Vec3 edge, String jointName, Double radius, Float poseTime) implements IAnimationEventParams {
+public record FractureGroundEvent(Vec3 edge, String jointName, Double radius, Float poseTime) implements IEventParams {
 
     public static final MapCodec<FractureGroundEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -73,5 +75,10 @@ public record FractureGroundEvent(Vec3 edge, String jointName, Double radius, Fl
                 livingEntity, level, slamStartPos, radius,
                 false, false
         ); 
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Fracture Ground Event] Unsupported operation! missing Patch Entity");
     }
 }

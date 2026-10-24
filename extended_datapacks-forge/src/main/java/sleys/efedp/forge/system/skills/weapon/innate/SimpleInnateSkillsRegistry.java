@@ -4,10 +4,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.SimpleInnateSkillBuilder;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.wrapper.simple.WSimpleInnateSkill;
+import sleys.efedp.forge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.RegistryErrorHelper;
+import sleys.efedp.forge.system.skills.weapon.innate.wrapper.simple.WSimpleInnateSkill;
 import sleys.efedp.forge.system.skills.weapon.innate.definitions.SimpleInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -26,7 +26,7 @@ public class SimpleInnateSkillsRegistry {
     public static void initialize(SkillBuildEvent build) {
         ExtendedDatapacks.LOGGER.info("[Simple Innate Skill Registry] Registering JSON skills");
 
-        var data = SimpleInnateSkillBuilder.getSimpleInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.SIMPLE_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Simple Innate Skill Registry] No JSON skills found");
             return;

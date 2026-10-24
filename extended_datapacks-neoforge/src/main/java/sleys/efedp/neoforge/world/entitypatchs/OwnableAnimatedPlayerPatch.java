@@ -47,7 +47,7 @@ public class OwnableAnimatedPlayerPatch extends HumanoidMobPatch<OwnableAnimated
 
     @Override @ErrorHandled
     public void preTick() {
-        ExecutionTasks.run(super::preTick); /// As HotSpot
+        ExecutionTasks.run(super::preTick);
         if (this.isLogicalClient()) return;
 
         if (!this.original.getNeedDiscord()) {

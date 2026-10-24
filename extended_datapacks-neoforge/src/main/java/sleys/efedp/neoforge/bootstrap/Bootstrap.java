@@ -43,7 +43,7 @@ public class Bootstrap {
         BootstrapCommon.Initialize(modBus);
 
         if (LogicalPolicy.LOGICAL_CLIENT.isValidSide()) BootstrapClient.Initialize(modBus);
-        if (LogicalPolicy.DEDICATED_SERVER.isValidSide()) BootstrapServer.Initialize(modBus);
+        if (LogicalPolicy.DEDICATED_SERVER.isValidSide()) BootstrapServer.Initialize();
         STATE = SystemState.CLOSED;
     }
 

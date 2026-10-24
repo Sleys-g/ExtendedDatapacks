@@ -6,9 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserShapeHelper;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.helpers.LaserEventHelper;
+import sleys.efedp.forge.helpers.LaserShapeHelper;
 import sleys.efedp.forge.system.animations.properties.phase.PhaseStunType;
 import sleys.efedp.forge.core.events.list.taskable.coroutine.ClientLaserShapeCoroutine;
 import sleys.efedp.forge.core.events.list.taskable.coroutine.ServerLaserShapeCoroutine;
@@ -30,7 +31,7 @@ public record TaskableLaserShapeWorldDamageEvent(Float damage, LaserShapeHelper.
                                                  Optional<StunType> stunType,
                                                  Optional<Double> originLateral,
                                                  Optional<Double> originVertical,
-                                                 Optional<Double> originAvance) implements IAnimationEventParams {
+                                                 Optional<Double> originAvance) implements IEventParams {
 
     private static final int SPEED_MULTIPLIER = 5;
     private static final int LASER_HEIGHT = 30;
@@ -168,5 +169,10 @@ public record TaskableLaserShapeWorldDamageEvent(Float damage, LaserShapeHelper.
         );
 
         Coroutine.SERVER.start(serverCoroutine);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Taskable Laser Shape World Damage Event] Unsupported operation! missing Patch Entity");
     }
 }

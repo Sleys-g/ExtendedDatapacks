@@ -4,7 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.forge.helpers.LaserEventHelper;
 import sleys.sl.library.execution.task.CoroutineTask;
 import yesman.epicfight.world.damagesource.EpicFightDamageSources;
 import yesman.epicfight.world.damagesource.StunType;

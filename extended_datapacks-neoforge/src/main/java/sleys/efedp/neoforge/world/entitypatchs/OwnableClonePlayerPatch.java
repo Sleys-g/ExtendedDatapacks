@@ -67,7 +67,6 @@ public class OwnableClonePlayerPatch extends HumanoidMobPatch<OwnableClonePlayer
         if (entityAnimatorPlayer == null) return;
         var entityAnimation = entityAnimatorPlayer.getRealAnimation();
 
-
         if (this.isInvalidAnimation(ownerAnimation)) {
             ExecutionTasks.run(() -> this.onSyncLivings(patchOwner, ownerAnimator));
             return;

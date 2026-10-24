@@ -2,7 +2,7 @@ package sleys.efedp.forge.core.events.list.taskable.coroutine;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.forge.helpers.LaserEventHelper;
 import sleys.sl.library.execution.task.CoroutineTask;
 import yesman.epicfight.particle.EpicFightParticles;
 

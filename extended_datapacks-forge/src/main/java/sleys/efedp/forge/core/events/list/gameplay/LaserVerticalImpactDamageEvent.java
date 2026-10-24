@@ -5,8 +5,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.helpers.LaserEventHelper;
 import sleys.efedp.forge.system.animations.properties.phase.PhaseStunType;
 import sleys.efedp.forge.plataform.registry.ExtendedDatapacksTickTaskList;
 import sleys.sl.library.util.data.codec.EnumCodecs;
@@ -23,7 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 
 public record LaserVerticalImpactDamageEvent(TargetMode targetMode, Float damage,
-                                             Optional<StunType> stunType) implements IAnimationEventParams {
+                                             Optional<StunType> stunType) implements IEventParams {
 
     private enum TargetMode {
         IMPACTED_TARGET(TargetMode::impactedTarget),
@@ -114,5 +115,10 @@ public record LaserVerticalImpactDamageEvent(TargetMode targetMode, Float damage
 
         targetMode.process(patch, this);
         patch.removeHurtEntities();
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Target Vertical Impact Laser Event] Unsupported operation! missing Patch Entity");
     }
 }

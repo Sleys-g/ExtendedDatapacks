@@ -5,9 +5,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.system.animations.properties.helpers.ParticleShapeHelper;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.helpers.ParticleShapeHelper;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
@@ -16,7 +17,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import java.util.List;
 
 public record ColumnEvent(ParticleOptions particle, double radius, double height,
-                          int rings, int pointsPerRing) implements IAnimationEventParams {
+                          int rings, int pointsPerRing) implements IEventParams {
 
     public static final MapCodec<ColumnEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -30,6 +31,15 @@ public record ColumnEvent(ParticleOptions particle, double radius, double height
 
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var caster = patch.getOriginal();
+        this.executeEvent(caster);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity caster) {
+        this.executeEvent(caster);
+    }
+
+    private void executeEvent(LivingEntity caster) {
         if (this.isInvalid(caster.level(), ProcessSides.CLIENT, "Column Particle Event")) return;
 
         List<Vec3> shape = ParticleShapeHelper.cone(radius, radius, height, rings, pointsPerRing);

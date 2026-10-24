@@ -80,7 +80,7 @@ public class BootstrapCommon {
         TimedInnateSkillsRegistry.initialize(modBus);
         modBus.register(TimedInnateSkillsRegistry.class);
 
-        TimedStatusInnateSkillsRegistry.initialize(modBus);
-        modBus.register(TimedStatusInnateSkillsRegistry.class);
+        TimedAdvancedInnateSkillsRegistry.initialize(modBus);
+        modBus.register(TimedAdvancedInnateSkillsRegistry.class);
     }
 }

@@ -5,9 +5,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.efedp.forge.world.entities.OwnableAnimatedPlayer;
 import yesman.epicfight.api.animation.AnimationManager;
 import sleys.efedp.forge.core.ProcessSides;
@@ -21,7 +23,7 @@ public record TaskableEntityAnimatedEvent(ResourceLocation animation,
                                           Optional<Float> damageFactor,
                                           Optional<Double> lateralOffset,
                                           Optional<Double> verticalOffset,
-                                          Optional<Double> avanceOffset) implements IAnimationEventParams {
+                                          Optional<Double> avanceOffset) implements IEventParams {
 
     public static final MapCodec<TaskableEntityAnimatedEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -46,5 +48,10 @@ public record TaskableEntityAnimatedEvent(ResourceLocation animation,
         );
         damageFactor.ifPresent(animatedEntity::setMultiplier);
         level.addFreshEntity(animatedEntity);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Taskable Animated Clone Event] Unsupported operation! missing Patch Entity");
     }
 }

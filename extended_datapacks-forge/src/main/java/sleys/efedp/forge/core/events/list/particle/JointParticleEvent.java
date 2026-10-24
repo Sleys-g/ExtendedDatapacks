@@ -9,7 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.sl.epicfight.model.JointModelParticleEngine;
 import sleys.sl.library.client.particle.emitters.SimpleParticleEmitter;
 import sleys.efedp.forge.core.ProcessSides;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public record JointParticleEvent(ResourceLocation particle, Vec3 volume,
                                  List<Vec3> offSets, Vec3 motion, double step,
-                                 String joint, float amount) implements IAnimationEventParams {
+                                 String joint, float amount) implements IEventParams {
 
     public static final MapCodec<JointParticleEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -35,13 +35,23 @@ public record JointParticleEvent(ResourceLocation particle, Vec3 volume,
             ).apply(instance, JointParticleEvent::new)
     );
 
-    @Override @SuppressWarnings("deprecation")
+    @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
-        ParticleType<?> particleType = BuiltInRegistries.PARTICLE_TYPE.get(particle);
-        if (this.isInvalid(patch.getOriginal().level(), ProcessSides.CLIENT, "Joint Particle Event")) return;
+        var livingEntity = patch.getOriginal();
+        this.executeEvent(livingEntity);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        this.executeEvent(livingEntity);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void executeEvent(LivingEntity livingEntity) {
+        var particleType = BuiltInRegistries.PARTICLE_TYPE.get(particle);
+        if (this.isInvalid(livingEntity.level(), ProcessSides.CLIENT, "Joint Particle Event")) return;
 
         if (!(particleType instanceof SimpleParticleType simpleParticle)) return;
-        LivingEntity livingEntity = patch.getOriginal();
         JointModelParticleEngine.generateParticles(
                 livingEntity, joint,
                 offSets, step,

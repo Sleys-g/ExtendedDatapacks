@@ -3,8 +3,9 @@ package sleys.efedp.forge.core.events.list.visual;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.sl.library.client.events.CameraControllerEvent;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -24,7 +25,7 @@ public record CameraTransitionEvent(
         CameraControllerEvent.CameraInterpolation outInterpolation,
         Long outTransitionTime,
         Boolean isAbsolute
-) implements IAnimationEventParams {
+) implements IEventParams {
 
     public static final Codec<CameraControllerEvent.CameraInterpolation> INTERPOLATION_CODEC = Codec.STRING.xmap(
             s -> CameraControllerEvent.CameraInterpolation.valueOf(s.toUpperCase(Locale.ROOT)),
@@ -49,6 +50,19 @@ public record CameraTransitionEvent(
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         if (this.isInvalid(patch.getOriginal().level(), ProcessSides.CLIENT, "Camera Transition Event")) {
+            return;
+        }
+
+        CameraControllerEvent.startTransition(
+                id, offset, startYaw, targetYaw,
+                inInterpolation, inTransitionTime, holdTime,
+                outInterpolation, outTransitionTime, isAbsolute
+        );
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        if (this.isInvalid(livingEntity.level(), ProcessSides.CLIENT, "Camera Transition Event")) {
             return;
         }
 

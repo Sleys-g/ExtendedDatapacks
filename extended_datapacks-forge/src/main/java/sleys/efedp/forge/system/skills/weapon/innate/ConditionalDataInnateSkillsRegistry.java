@@ -4,15 +4,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.ConditionalDataInnateSkillBuilder;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.data.ConditionalDataAnimationData;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.FriendlyCountConverter;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.values.AnimationSkillValues;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.data.ConditionalType;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.values.ConditionalDataSkillValues;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.wrapper.conditional.WConditionalDataInnateSkill;
+import sleys.efedp.forge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.forge.system.skills.weapon.innate.data.ConditionalDataAnimationData;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.FriendlyCountConverter;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.RegistryErrorHelper;
+import sleys.efedp.forge.system.skills.weapon.innate.values.AnimationSkillValues;
+import sleys.efedp.forge.system.skills.weapon.innate.data.ConditionalType;
+import sleys.efedp.forge.system.skills.weapon.innate.values.ConditionalDataSkillValues;
+import sleys.efedp.forge.system.skills.weapon.innate.wrapper.conditional.WConditionalDataInnateSkill;
 import sleys.efedp.forge.system.skills.weapon.innate.definitions.ConditionalDataInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -31,7 +31,7 @@ public class ConditionalDataInnateSkillsRegistry {
     public static void initialize(SkillBuildEvent build) {
         ExtendedDatapacks.LOGGER.info("[Data Conditional Innate Skills Registry] Registering JSON skills");
 
-        var data = ConditionalDataInnateSkillBuilder.getDatapacketInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.DATA_CONDITIONAL_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Data Conditional Innate Skills Registry] No JSON skills found");
             return;

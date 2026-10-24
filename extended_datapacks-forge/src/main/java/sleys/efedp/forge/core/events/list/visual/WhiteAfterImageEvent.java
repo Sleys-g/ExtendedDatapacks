@@ -2,19 +2,30 @@ package sleys.efedp.forge.core.events.list.visual;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.util.RandomSource;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import net.minecraft.world.entity.LivingEntity;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public record WhiteAfterImageEvent() implements IAnimationEventParams {
+public record WhiteAfterImageEvent() implements IEventParams {
+
     public static final MapCodec<EntityAfterImageEvent> CODEC = MapCodec.unit(EntityAfterImageEvent::new);
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingEntity = patch.getOriginal();
+        this.executeEvent(livingEntity);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        this.executeEvent(livingEntity);
+    }
+
+    private void executeEvent(LivingEntity livingEntity) {
         var level = livingEntity.level();
         if (this.isInvalid(level, ProcessSides.CLIENT, "Whiter AfterImage")) {
             return;

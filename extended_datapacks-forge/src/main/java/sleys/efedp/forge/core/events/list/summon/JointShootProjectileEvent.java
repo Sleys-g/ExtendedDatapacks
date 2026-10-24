@@ -13,7 +13,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.sl.epicfight.model.JointModelCordReader;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import sleys.efedp.forge.core.ProcessSides;
@@ -35,7 +35,7 @@ public record JointShootProjectileEvent(
         float damage,
         boolean gravity,
         boolean piercing
-) implements IAnimationEventParams {
+) implements IEventParams {
 
     public static final MapCodec<JointShootProjectileEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -76,6 +76,11 @@ public record JointShootProjectileEvent(
         if (projectile instanceof AbstractArrow arrow) this.applyAbstractArrowProperties(arrow);
 
         level.addFreshEntity(projectile);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Joint Shoot Projectile Event] Unsupported operation! missing Patch Entity");
     }
 
     @SuppressWarnings("deprecation")

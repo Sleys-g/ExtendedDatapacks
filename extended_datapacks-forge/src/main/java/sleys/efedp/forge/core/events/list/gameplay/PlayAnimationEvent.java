@@ -4,14 +4,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import net.minecraft.world.entity.LivingEntity;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.core.events.IEventParams;
 import yesman.epicfight.api.animation.AnimationManager;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public record PlayAnimationEvent(ResourceLocation animation, Float transition) implements IAnimationEventParams {
+public record PlayAnimationEvent(ResourceLocation animation, Float transition) implements IEventParams {
 
     public static final MapCodec<PlayAnimationEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -28,5 +30,10 @@ public record PlayAnimationEvent(ResourceLocation animation, Float transition) i
         }
 
         patch.getServerAnimator().playAnimation(AnimationManager.byKey(animation), transition);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Play Animation] Unsupported operation! missing Patch Entity");
     }
 }

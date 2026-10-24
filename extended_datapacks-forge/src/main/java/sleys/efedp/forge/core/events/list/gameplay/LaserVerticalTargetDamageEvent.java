@@ -3,9 +3,11 @@ package sleys.efedp.forge.core.events.list.gameplay;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.forge.ExtendedDatapacks;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.helpers.LaserEventHelper;
 import sleys.efedp.forge.system.animations.properties.phase.PhaseStunType;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -18,7 +20,7 @@ import yesman.epicfight.world.damagesource.StunType;
 import java.util.Optional;
 
 public record LaserVerticalTargetDamageEvent(Float damage,
-                                             Optional<StunType> stunType) implements IAnimationEventParams {
+                                             Optional<StunType> stunType) implements IEventParams {
 
     public static final MapCodec<LaserVerticalTargetDamageEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -53,5 +55,10 @@ public record LaserVerticalTargetDamageEvent(Float damage,
             entity.hurt(EpicFightDamageSources.witherBeam(livingCaster).setStunType(stunType.orElse(StunType.NONE)), damage);
             LaserEventHelper.impactBurstServer(level, entity.position());
         });
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Target Vertical Laser Event] Unsupported operation! missing Patch Entity");
     }
 }

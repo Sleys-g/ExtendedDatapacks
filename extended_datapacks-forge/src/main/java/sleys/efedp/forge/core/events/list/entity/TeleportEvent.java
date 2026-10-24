@@ -5,9 +5,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -16,7 +17,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 import java.util.Locale;
 
-public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimationEventParams {
+public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IEventParams {
 
     public static final MapCodec<TeleportEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -28,10 +29,16 @@ public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimatio
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Teleport Event")) {
-            return;
-        }
+        this.applyTeleport(livingCaster, patch);
+    }
 
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingCaster) {
+        this.applyTeleport(livingCaster, null);
+    }
+
+    private void applyTeleport(LivingEntity livingCaster, LivingEntityPatch<?> patch) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER, "Teleport Event")) return;
         switch (mode) {
             case LOCAL -> {
                 var yaw = livingCaster.getYRot();
@@ -45,6 +52,7 @@ public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimatio
             }
 
             case TARGET -> {
+                if (patch == null) return;
                 var target = patch.getTarget();
                 if (target != null) {
                     var finalPos = target.position().add(offset);
@@ -53,6 +61,7 @@ public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimatio
             }
 
             case TARGET_FRONT -> {
+                if (patch == null) return;
                 var target = patch.getTarget();
                 if (target != null) {
                     var targetYaw = target.getYRot();
@@ -63,6 +72,7 @@ public record TeleportEvent(Vec3 offset, TeleportMode mode) implements IAnimatio
             }
 
             case TARGET_BEHIND -> {
+                if (patch == null) return;
                 var target = patch.getTarget();
                 if (target != null) {
                     var targetYaw = target.getYRot();

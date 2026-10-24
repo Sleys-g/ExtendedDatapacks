@@ -3,9 +3,10 @@ package sleys.efedp.forge.core.events.list.taskable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.helpers.LaserEventHelper;
 import sleys.efedp.forge.system.animations.properties.phase.PhaseStunType;
 import sleys.efedp.forge.core.events.list.taskable.coroutine.ClientLaserLineCoroutine;
 import sleys.efedp.forge.core.events.list.taskable.coroutine.ServerLaserLineCoroutine;
@@ -28,7 +29,7 @@ public record TaskableLaserLineWorldDamageEvent(Float damage, Float range,
                                                 Optional<Double> OriginAvance,
                                                 Optional<Double> EndLateral,
                                                 Optional<Double> EndVertical,
-                                                Optional<Double> EndAvance) implements IAnimationEventParams {
+                                                Optional<Double> EndAvance) implements IEventParams {
 
     private static final int SPEED_MULTIPLIER = 5;
 
@@ -53,8 +54,16 @@ public record TaskableLaserLineWorldDamageEvent(Float damage, Float range,
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
-        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Tickable Laser World Line Damage Event")) return;
+        this.executeEvent(livingCaster);
+    }
 
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        this.executeEvent(livingEntity);
+    }
+
+    private void executeEvent(LivingEntity livingCaster) {
+        if (this.isInvalid(livingCaster.level(), ProcessSides.BOTH, "Tickable Laser World Line Damage Event")) return;
         var level = livingCaster.level();
 
         var casterPos = livingCaster.position().add(LaserEventHelper.resolveLocalOffset(

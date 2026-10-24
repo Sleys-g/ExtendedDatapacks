@@ -47,7 +47,7 @@ public class OwnableAnimatedPlayerPatch extends HumanoidMobPatch<OwnableAnimated
 
     @Override  @ErrorHandled
     public void tick(LivingEvent.LivingTickEvent event) {
-        ExecutionTasks.run(() -> super.tick(event)); /// As HotSpot
+        ExecutionTasks.run(() -> super.tick(event));
         if (this.isLogicalClient()) return;
 
         if (!this.original.getNeedDiscord()) {

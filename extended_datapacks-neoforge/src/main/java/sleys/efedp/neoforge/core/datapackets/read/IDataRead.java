@@ -29,5 +29,6 @@ public sealed interface IDataRead permits ReadArithmeticData, ReadLogicalData, R
     }
 
     MapCodec<IDataRead> CODEC = DataPacketType.CODEC.dispatchMap(
-            "type", IDataRead::type, DataPacketType::readCodec);
+            "type", IDataRead::type, DataPacketType::readCodec
+    );
 }

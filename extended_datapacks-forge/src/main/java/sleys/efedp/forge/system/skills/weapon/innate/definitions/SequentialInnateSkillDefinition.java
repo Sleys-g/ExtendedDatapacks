@@ -3,8 +3,8 @@ package sleys.efedp.forge.system.skills.weapon.innate.definitions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.data.AnimationData;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.wrapper.sequential.WSequentialInnateSkill;
+import sleys.efedp.forge.system.skills.weapon.innate.data.AnimationData;
+import sleys.efedp.forge.system.skills.weapon.innate.wrapper.sequential.WSequentialInnateSkill;
 import sleys.sl.library.util.io.JsonComponentArgs;
 import yesman.epicfight.skill.SkillCategories;
 

@@ -1,30 +1,17 @@
 package sleys.efedp.forge.core.control;
 
-import net.minecraft.world.level.Level;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraftforge.eventbus.api.Event;
-import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.core.ProcessSides;
 import sleys.sl.library.annotations.Internal;
-import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.skill.SkillContainer;
 
 @Internal
-public interface IControlableEventParams {
+public interface IControlableEventParams<E extends Event> {
+    void applyEventParams(E event, SkillContainer container);
 
-    <T extends Event> void execute(T event, PlayerPatch<?> patch);
-
-    default boolean isInvalid(Level level, ProcessSides expectedSide, String task) {
-        return !expectedSide.validateSideOrLog(level, task, IControlableEventParams::invalidSideLog);
-    }
-
-    private static void invalidSideLog(ProcessSides expectedSide, String task) {
-        switch (expectedSide) {
-            case CLIENT -> ExtendedDatapacks.LOGGER.error(
-                    "[Controlable Events Functions] The event controller: {}, can only be executed on the client side", task);
-            case SERVER -> ExtendedDatapacks.LOGGER.error(
-                    "[Controlable Events Functions] The event controller: {}, can only be executed on the server side", task);
-            case LOCAL_CLIENT -> ExtendedDatapacks.LOGGER.error(
-                    "[Controlable Events Functions] The event controller: {}, can only be executed on the logical client side", task);
-            case BOTH -> {}
-        }
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    static <E extends Event> Codec<IControlableEventParams<E>> paramsCodec(MapCodec<? extends IControlableEventParams<E>> codec) {
+        return (Codec) codec.codec();
     }
 }

@@ -188,7 +188,7 @@ public class WTimedAdvancedInnateSkill extends WeaponInnateSkill implements
                 this::registryAnimationsData
         ).ifFailure(e ->
                 ExtendedDatapacks.LOGGER.error(
-                        "[Timed - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
+                        "[Timed Advanced - Innate Skill] Fatal error caught during property assignment attempt... For Skill: {}, under NameSpaces: {}",
                         this.registryName.getPath(), this.registryName.getNamespace()
                 )
         );

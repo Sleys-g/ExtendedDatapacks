@@ -3,6 +3,7 @@ package sleys.efedp.forge.bootstrap;
 import net.minecraftforge.eventbus.api.IEventBus;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.api.registry.ExtendedDatapacksRegistry;
+import sleys.efedp.forge.core.control.types.*;
 import sleys.efedp.forge.core.events.types.*;
 import sleys.efedp.forge.system.animations.animations.types.ActionAnimationAccessorType;
 import sleys.efedp.forge.system.animations.animations.types.AttackAnimationAccessorType;
@@ -36,14 +37,14 @@ public class Bootstrap {
         Bootstrap.registryAnimationsAccessors();
         Bootstrap.registryAnimationsEvents();
         Bootstrap.registrySpeedModifiers();
+        Bootstrap.registryControlableEvents();
 
         BootstrapBuilds.Initialize();
         BootstrapCommon.Initialize(modBus);
         BootstrapThirdParties.Initialize(modBus);
 
         if (LogicalPolicy.LOGICAL_CLIENT.isValidSide()) BootstrapClient.Initialize(modBus);
-        if (LogicalPolicy.DEDICATED_SERVER.isValidSide()) BootstrapServer.Initialize(modBus);
-
+        if (LogicalPolicy.DEDICATED_SERVER.isValidSide()) BootstrapServer.Initialize();
         STATE = SystemState.CLOSED;
     }
 
@@ -71,16 +72,28 @@ public class Bootstrap {
     }
 
     private static void registryAnimationsEvents() {
-        ExtendedDatapacksRegistry.ANIMATIONS_EVENTS.register(
+        ExtendedDatapacksRegistry.EVENTS.register(
                 ExtendedDatapacks.MODID,
-                DataAnimationsEvents.class,
-                EntityAnimationsEvents.class,
-                GameplayAnimationsEvents.class,
-                ParticleAnimationsEvents.class,
-                SummonAnimationsEvents.class,
-                VisualAnimationsEvents.class,
-                GameAnimationsEvents.class,
-                TaskableGameplayAnimationsEvents.class
+                DataEvents.class,
+                EntityEvents.class,
+                GameplayEvents.class,
+                ParticleEvents.class,
+                SummonEvents.class,
+                VisualEvents.class,
+                GameEvents.class,
+                TaskableGameplayEvents.class
+        );
+    }
+
+    private static void registryControlableEvents() {
+        ExtendedDatapacksRegistry.CONTROLABLE_EVENTS.register(
+                ExtendedDatapacks.MODID,
+                CombatControlableEvents.class,
+                IAControlableEvents.class,
+                LootControlableEvents.class,
+                MovementControlableEvents.class,
+                StatusControlableEvents.class,
+                TickControlableEvents.class
         );
     }
 
@@ -94,13 +107,11 @@ public class Bootstrap {
         ExpectedContracts.require(
                 ExtendedDatapacks.MODID, ExtendedDatapacks.VERSION,
                 """
-                        Changes have been introduced to the Innate Skills system. All dependents using this area are
-                        requested to update their implementations accordingly. If Innate Skills are not used, this
-                        message can be safely ignored.
+                        For internal virtualization (InJar) modifications, the folder name changes from 'virtualizate' to 'virtualization'.
+                        Within 'innate_skill_builder', for all declared skills, the 'modid' data field is renamed to 'mod_id'.
                         
-                        The registration and behavior of Innate Skills have been substantially revised to simplify
-                        their implementation and remove unnecessary references. This change makes the previous
-                        Phase-based system incompatible with current and newer versions.
+                        If you do not apply these renames, your virtualized animations within InJar will fail, as will your skills defined in 'innate_skill_builder'.
+                        If you do not use any of these features, please ignore this message.
                         
                         You can review the changes here: https://github.com/Sleys-g/ExtendedDatapacks/wiki/Recent-Changes
                         """

@@ -3,8 +3,9 @@ package sleys.efedp.forge.core.events.list.entity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.LivingEntity;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.sl.library.annotations.Internal;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import sleys.efedp.forge.core.ProcessSides;
@@ -17,7 +18,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 
-public record EntityPairingEvent(PairingTypes types) implements IAnimationEventParams {
+public record EntityPairingEvent(PairingTypes types) implements IEventParams {
 
     public static final MapCodec<EntityPairingEvent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -71,5 +72,10 @@ public record EntityPairingEvent(PairingTypes types) implements IAnimationEventP
         }
 
         types.trackingAndOperate(patch);
+    }
+
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingEntity) {
+        ExtendedDatapacks.LOGGER.warn("[Entity Pairing Event] Unsupported operation! missing Patch Entity");
     }
 }

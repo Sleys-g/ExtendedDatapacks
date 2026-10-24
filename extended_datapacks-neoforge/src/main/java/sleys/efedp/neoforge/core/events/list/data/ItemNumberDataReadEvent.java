@@ -120,7 +120,6 @@ public record ItemNumberDataReadEvent(ResourceLocation componentId,
             return false;
         }
 
-
         if (value == null) {
             if (max == null) {
                 ExtendedDatapacks.LOGGER.warn(

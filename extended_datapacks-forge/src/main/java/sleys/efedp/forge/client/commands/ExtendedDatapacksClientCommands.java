@@ -62,6 +62,8 @@ public class ExtendedDatapacksClientCommands {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         var itemCapability = EpicFightCapabilities.getItemCapability(player.getMainHandItem());
+        var patchPlayer = EpicFightCapabilities.getPlayerPatch(player);
+        if (patchPlayer == null) return 0;
         if (itemCapability.isEmpty()) return 0;
         player.displayClientMessage(Component.literal("Your handed weapon passive is: " + itemCapability.get().getPassiveSkill()), false);
         return 1;
@@ -89,22 +91,22 @@ public class ExtendedDatapacksClientCommands {
         return 1;
     }
 
-    private static int reloadOverlayConfigClient(CommandContext<CommandSourceStack> context) {
-        Minecraft mc = net.minecraft.client.Minecraft.getInstance();
-        LocalPlayer player = mc.player;
-        if (player == null) return 0;
-        player.displayClientMessage(Component.literal("Reassigning Overlay configuration!"), false);
-        OverlayAssetPacksBuilder.reinitializeOverlayAssetPack();
-        player.displayClientMessage(Component.literal("Done!"), false);
-        return 1;
-    }
-
     private static int reloadItemModelsConfigClient(CommandContext<CommandSourceStack> context) {
         Minecraft mc = net.minecraft.client.Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         player.displayClientMessage(Component.literal("Reassigning Item Model configuration!"), false);
         WeaponPerStyleModelBakerBuilder.reinitializeWeaponPerStyle();
+        player.displayClientMessage(Component.literal("Done!"), false);
+        return 1;
+    }
+
+    private static int reloadOverlayConfigClient(CommandContext<CommandSourceStack> context) {
+        Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return 0;
+        player.displayClientMessage(Component.literal("Reassigning Overlay configuration!"), false);
+        OverlayAssetPacksBuilder.reinitializeOverlayAssetPack();
         player.displayClientMessage(Component.literal("Done!"), false);
         return 1;
     }

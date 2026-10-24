@@ -42,7 +42,7 @@ public record ItemStringDataReadEvent(ResourceLocation componentId,
         if (this.isInvalid(caster.level(), ProcessSides.SERVER, "Item String Data Read Event")) return;
         if (!(caster.level() instanceof ServerLevel)) return;
 
-        if (this.applyMatch(caster, accessor)) {
+        if (this.applyMatch(caster)) {
             doEvents.forEach(events -> events.execute(accessor, patch));
         }
     }
@@ -52,12 +52,12 @@ public record ItemStringDataReadEvent(ResourceLocation componentId,
         if (this.isInvalid(caster.level(), ProcessSides.SERVER, "Item String Data Read Event")) return;
         if (!(caster.level() instanceof ServerLevel)) return;
 
-        if (this.applyMatch(caster, accessor)) {
+        if (this.applyMatch(caster)) {
             doEvents.forEach(events -> events.execute(accessor, caster));
         }
     }
 
-    private <T extends StaticAnimation> boolean applyMatch(LivingEntity entity, AssetAccessor<T> accessor) {
+    private boolean applyMatch(LivingEntity entity) {
         var componentType = BuiltInRegistries.DATA_COMPONENT_TYPE.get(componentId);
         if (componentType == null) {
             ExtendedDatapacks.LOGGER.warn("[Item String Data Read Event] The requested data component was not found in the registry: {}", componentId);
@@ -68,7 +68,7 @@ public record ItemStringDataReadEvent(ResourceLocation componentId,
         Object actual = stack.get(componentType);
         if (actual == null) {
             ExtendedDatapacks.LOGGER.warn(
-                    "[Item String Data Read Event] The result of the data retrieval operation is null, the animation cannot proceed: {}", accessor.registryName()
+                    "[Item String Data Read Event] The result of the data retrieval operation is null, the animation cannot proceed: {}", componentType
             );
             return false;
         }

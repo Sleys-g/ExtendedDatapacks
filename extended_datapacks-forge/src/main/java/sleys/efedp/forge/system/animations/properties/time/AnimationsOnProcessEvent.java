@@ -3,9 +3,9 @@ package sleys.efedp.forge.system.animations.properties.time;
 import com.mojang.serialization.*;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.core.ProcessSides;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
-import sleys.efedp.forge.core.events.registry.AnimationEventTypeRegistry;
-import sleys.efedp.forge.core.events.registry.IAnimationEventType;
+import sleys.efedp.forge.core.events.IEventParams;
+import sleys.efedp.forge.core.events.registry.EventTypeRegistry;
+import sleys.efedp.forge.core.events.registry.IEventType;
 import sleys.sl.library.util.data.codec.EnumCodecs;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty;
@@ -15,9 +15,9 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType processType,
-                                                                  IAnimationEventType type,
+                                                                  IEventType type,
                                                                   ProcessSides side,
-                                                                  IAnimationEventParams params) implements IAnimationEvent<T> {
+                                                                  IEventParams params) implements IAnimationEvent<T> {
 
     private enum ProcessType {
         ON_BEGIN(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS),
@@ -75,7 +75,7 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
                         return DataResult.error(() -> "Missing 'type' field in animation event");
                     }
 
-                    return AnimationEventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
+                    return EventTypeRegistry.CODEC.parse(ops, typeRaw).flatMap(type -> {
                         O sideRaw = input.get("side");
                         O paramsRaw = input.get("params");
 
@@ -83,7 +83,7 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
                                 ? ProcessSides.PROCESS_SIDES_CODEC.parse(ops, sideRaw)
                                 : DataResult.error(() -> "Missing 'side' field in animation event");
 
-                        DataResult<? extends IAnimationEventParams> paramsResult = type
+                        DataResult<? extends IEventParams> paramsResult = type
                                 .paramsCodec()
                                 .codec()
                                 .parse(ops, paramsRaw != null ? paramsRaw : ops.emptyMap());
@@ -116,11 +116,11 @@ public record AnimationsOnProcessEvent<T extends StaticAnimation>(ProcessType pr
             @SuppressWarnings({"unchecked", "rawtypes"})
             public <O> RecordBuilder<O> encode(AnimationsOnProcessEvent<T> input, DynamicOps<O> ops, RecordBuilder<O> prefix) {
                 prefix.add("process", ProcessType.CODEC.encodeStart(ops, input.processType()));
-                prefix.add("type", AnimationEventTypeRegistry.CODEC.encodeStart(ops, input.type()));
+                prefix.add("type", EventTypeRegistry.CODEC.encodeStart(ops, input.type()));
                 prefix.add("side", ProcessSides.PROCESS_SIDES_CODEC.encodeStart(ops, input.side()));
 
                 if (input.params() != null) {
-                    Codec<IAnimationEventParams> paramsCodec = (Codec) input.type().paramsCodec().codec();
+                    Codec<IEventParams> paramsCodec = (Codec) input.type().paramsCodec().codec();
                     prefix.add("params", paramsCodec.encodeStart(ops, input.params()));
                 }
                 return prefix;

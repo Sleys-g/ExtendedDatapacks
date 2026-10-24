@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import sleys.efedp.forge.plataform.registry.ExtendedDatapacksTickTaskList;
-import sleys.efedp.forge.system.animations.properties.helpers.LaserEventHelper;
+import sleys.efedp.forge.helpers.LaserEventHelper;
 import sleys.sl.library.execution.task.ITickTask;
 import sleys.sl.library.execution.task.TickTaskType;
 import yesman.epicfight.gameasset.EpicFightSounds;

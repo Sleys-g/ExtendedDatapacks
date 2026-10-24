@@ -4,12 +4,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.ConditionalStackInnateSkillBuilder;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.data.ConditionalType;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.AnimationBuilderHelper;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.helper.RegistryErrorHelper;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.values.AnimationSkillValues;
-import sleys.efedp.forge.system.skills.weapon.innate.builder.wrapper.conditional.WConditionalStackInnateSkill;
+import sleys.efedp.forge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.forge.system.skills.weapon.innate.data.ConditionalType;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.AnimationBuilderHelper;
+import sleys.efedp.forge.system.skills.weapon.innate.helper.RegistryErrorHelper;
+import sleys.efedp.forge.system.skills.weapon.innate.values.AnimationSkillValues;
+import sleys.efedp.forge.system.skills.weapon.innate.wrapper.conditional.WConditionalStackInnateSkill;
 import sleys.efedp.forge.system.skills.weapon.innate.definitions.ConditionalStackInnateSkillDefinition;
 import sleys.sl.library.exceptions.RegistryObjectException;
 import sleys.sl.library.execution.policy.ErrorPolicy;
@@ -30,7 +30,7 @@ public class ConditionalStackInnateSkillsRegistry {
     public static void initialize(SkillBuildEvent build) {
         ExtendedDatapacks.LOGGER.info("[Conditional Stack Innate Skill Registry] Registering JSON skills");
 
-        var data = ConditionalStackInnateSkillBuilder.getStacksConditionalInnateSkillBuildData();
+        var data = RegistryInnateSkillTrackers.STACKS_CONDITIONAL_INNATE_SKILL.getDefinitionData();
         if (data.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Conditional Stack Innate Skill Registry] No JSON skills found");
             return;

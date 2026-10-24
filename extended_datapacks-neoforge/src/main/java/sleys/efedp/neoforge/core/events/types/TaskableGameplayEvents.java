@@ -10,7 +10,7 @@ public enum TaskableGameplayEvents implements IEventType {
     TASKABLE_LASER_FLOOR_WORLD_DAMAGE(TaskableLaserFloorWorldDamageEvent.CODEC),
     TASKABLE_LASER_SHAPE_WORLD_DAMAGE(TaskableLaserShapeWorldDamageEvent.CODEC),
     TASKABLE_ENTITY_CLONE(TaskableEntityCloneEvent.CODEC),
-    TASKABLE_ENTITY_ANIMATED(TaskableEntityEvent.CODEC)
+    TASKABLE_ENTITY_ANIMATED(TaskableEntityAnimatedEvent.CODEC)
 
     ;private final MapCodec<? extends IEventParams> codec;
 

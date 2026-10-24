@@ -25,5 +25,7 @@ public interface IDataGet {
         return !this.isValid(livingEntity);
     }
 
-    MapCodec<IDataGet> CODEC = DataPacketType.CODEC.dispatchMap("type", IDataGet::type, DataPacketType::getCodec);
+    MapCodec<IDataGet> CODEC = DataPacketType.CODEC.dispatchMap(
+            "type", IDataGet::type, DataPacketType::getCodec
+    );
 }

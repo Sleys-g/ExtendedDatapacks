@@ -1,6 +1,5 @@
 package sleys.efedp.neoforge.bootstrap;
 
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
 import sleys.efedp.neoforge.system.animations.AnimationRegistryOperations;
 import sleys.sl.library.annotations.ErrorHandled;
@@ -8,7 +7,7 @@ import sleys.sl.library.annotations.ErrorHandled;
 public class BootstrapServer {
 
     @ErrorHandled
-    protected static void Initialize(IEventBus modBus) {
+    protected static void Initialize() {
         BootstrapServer.registerServerEvents();
     }
 

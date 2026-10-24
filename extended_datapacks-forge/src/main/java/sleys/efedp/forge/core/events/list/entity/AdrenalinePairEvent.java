@@ -1,23 +1,36 @@
 package sleys.efedp.forge.core.events.list.entity;
 
 import com.mojang.serialization.MapCodec;
-import sleys.efedp.forge.core.events.IAnimationEventParams;
+import net.minecraft.world.entity.LivingEntity;
+import sleys.efedp.forge.core.events.IEventParams;
 import sleys.efedp.forge.core.ProcessSides;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.network.EntityPairingPacketTypes;
+import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPEntityPairingPacket;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public record AdrenalinePairEvent() implements IAnimationEventParams {
+public record AdrenalinePairEvent() implements IEventParams {
 
     public static final MapCodec<AdrenalinePairEvent> CODEC = MapCodec.unit(AdrenalinePairEvent::new);
 
     @Override
     public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntityPatch<?> patch) {
         var livingCaster = patch.getOriginal();
+        this.executeEvent(livingCaster);
+    }
 
+    @Override
+    public <T extends StaticAnimation> void execute(AssetAccessor<T> accessor, LivingEntity livingCaster) {
+        this.executeEvent(livingCaster);
+    }
+
+    private void executeEvent(LivingEntity livingCaster) {
         if (this.isInvalid(livingCaster.level(), ProcessSides.SERVER,"Adrenaline Pairing Event")) return;
-        patch.sendToAllPlayersTrackingMe(new SPEntityPairingPacket(livingCaster.getId(), EntityPairingPacketTypes.ADRENALINE_ACTIVATED));
+        EpicFightNetworkManager.sendToAllPlayerTrackingThisEntity(
+                new SPEntityPairingPacket(livingCaster.getId(), EntityPairingPacketTypes.ADRENALINE_ACTIVATED),
+                livingCaster
+        );
     }
 }
