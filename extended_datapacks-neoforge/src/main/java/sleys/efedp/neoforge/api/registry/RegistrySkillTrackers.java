@@ -1,6 +1,7 @@
 package sleys.efedp.neoforge.api.registry;
 
 import net.neoforged.fml.loading.FMLPaths;
+import sleys.efedp.neoforge.system.skills.guard.definitions.GuardSkillModifierDefinitions;
 import sleys.efedp.neoforge.system.skills.passive.definitions.PassiveSkillModifierDefinitions;
 import sleys.sl.library.util.io.BuildPathOrFile;
 
@@ -14,6 +15,14 @@ public final class RegistrySkillTrackers {
             "skill_builder/passive_skills",
             "Passive Skill Adder",
             getConfigSkillTracker("passive_skills")
+    );
+
+    public static final GenericRegistryBuilder<GuardSkillModifierDefinitions> GUARD_SKILL_MODIFIER = new GenericRegistryBuilder<>(
+            GuardSkillModifierDefinitions.CODEC,
+            GenericRegistryBuilder.BuilderContext.WITHOUT_MOD_ID,
+            "skill_builder/guard_skills",
+            "Guard Skill Modifier",
+            getConfigSkillTracker("guard_skills")
     );
 
     private static Path getConfigSkillTracker(String subfolder) {
