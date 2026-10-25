@@ -2,7 +2,9 @@ package sleys.efedp.neoforge.system.skills.passive;
 
 import net.minecraft.resources.ResourceLocation;
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.skills.passive.builder.PassiveSkillModifierBuilder;
+import sleys.efedp.neoforge.api.registry.RegistrySkillTrackers;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.skill.SkillBuilder;
 import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
@@ -11,6 +13,7 @@ import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -18,77 +21,72 @@ import java.util.Set;
 public class ModifyPassivesApplier {
 
     public static void addAnyParameterToSkill(ResourceLocation skillRegistry, SkillBuilder<?> skillBuilder) {
-        if (skillRegistry == null) return;
+        if (skillRegistry == null || isExcludedSkillBuilder(skillBuilder)) return;
 
-        switch (skillBuilder) {
-            case null -> {
-                return;
-            }
-            case GuardSkill.Builder ignored -> {
-                return;
-            }
-            case ConditionalWeaponInnateSkill.Builder ignored -> {
-                return;
-            }
-            case SimpleWeaponInnateSkill.Builder ignored -> {
-                return;
-            }
-            case WeaponInnateSkill.Builder<?> ignored -> {
-                return;
-            }
-            default -> {}
-        }
+        Set<WeaponCategory> weaponCategorySet = findWeaponCategorySet(skillBuilder);
+        if (weaponCategorySet == null) return;
 
-        var dataList = PassiveSkillModifierBuilder.get(skillRegistry.toString());
-        if (dataList == null || dataList.isEmpty()) return;
-        for (var data : dataList) {
-            var weaponCategory = data.getParseWeaponCategory();
-            var skillID = data.getParseSkill();
-            if (!data.isSameSkill(skillRegistry, skillID)) continue;
-            Set<WeaponCategory> set = ModifyPassivesApplier.findWeaponCategorySet(skillBuilder);
-            if (set != null) {
-                try {
-                    set.add(weaponCategory);
-                } catch (Exception e) {
-                    ExtendedDatapacks.LOGGER.fatal("[Passive Skill Mutator] A fatal error occurred while trying to assign WeaponCategory {}", weaponCategory, e);
-                    ExtendedDatapacks.LOGGER.warn("[Passive Skill Mutator] Caught error, ignore this message");
+
+        for (var dataSet : RegistrySkillTrackers.PASSIVE_SKILL_MODIFIER.getDefinitionData().values()) {
+            for (var dataDefinition : dataSet) {
+                for (var data : dataDefinition.skillBuilder()) {
+                    if (!data.isSameSkill(skillRegistry)) continue;
+
+                    var weaponCategory = data.getParseWeaponCategory();
+                    if (weaponCategory == null) continue;
+
+                    ExecutionTasks.runAndGetResult(ExecutionPolicy.RESIST, () -> weaponCategorySet.add(weaponCategory))
+                            .peek(valid -> ExtendedDatapacks.LOGGER.info(
+                                    "[Passive Skill Adder] The Passive Skill {} was successfully modified to add the weapon category {} to it.",
+                                    data.skillId(), weaponCategory
+                            ))
+                            .peekError(error -> ExtendedDatapacks.LOGGER.warn(
+                                    "[Passive Skill Adder] An error occurred while trying to assign WeaponCategory {}...",
+                                    weaponCategory, error
+                            ));
                 }
-            } else {
-                    ExtendedDatapacks.LOGGER.warn("[Passive Skill Mutator] Set<WeaponCategory> not found");
             }
         }
     }
 
+    private static boolean isExcludedSkillBuilder(SkillBuilder<?> skillBuilder) {
+        return switch (skillBuilder) {
+            case null -> true;
+            case GuardSkill.Builder ignored -> true;
+            case ConditionalWeaponInnateSkill.Builder ignored -> true;
+            case SimpleWeaponInnateSkill.Builder ignored -> true;
+            case WeaponInnateSkill.Builder<?> ignored -> true;
+            default -> false;
+        };
+    }
+
     @Nullable
-    public static Set<WeaponCategory> findWeaponCategorySet(Object builder) {
+    private static Set<WeaponCategory> findWeaponCategorySet(Object builder) {
         Class<?> clazz = builder.getClass();
         while (clazz != null && clazz != Object.class) {
             for (var field : clazz.getDeclaredFields()) {
-
-                if (!Set.class.isAssignableFrom(field.getType())) {
-                    ExtendedDatapacks.LOGGER.warn("[Passive Skill Mutator] There is no Set<WeaponCategory> field, the bet failed");
-                    continue;
-                }
+                if (!Set.class.isAssignableFrom(field.getType())) continue;
 
                 var genericType = field.getGenericType();
-                if (genericType instanceof ParameterizedType paramType) {
-                    Type[] args = paramType.getActualTypeArguments();
-                    if (args.length == 1 && args[0] == WeaponCategory.class) {
+                if (!(genericType instanceof ParameterizedType paramType)) continue;
 
-                        try {
-                            field.setAccessible(true);
-                            var value = field.get(builder);
+                Type[] args = paramType.getActualTypeArguments();
+                if (!(args.length == 1 && args[0] == WeaponCategory.class)) continue;
 
-                            if (value instanceof Set<?> set) {
-                                @SuppressWarnings("unchecked") Set<WeaponCategory> weaponSet = (Set<WeaponCategory>) set;
-                                return weaponSet;
-                            }
-                        } catch (IllegalAccessException ignored) {}
-                    }
-                }
+                return ExecutionTasks.get(ExecutionPolicy.RESIST, () -> ModifyPassivesApplier.weaponCategories(field, builder));
             }
+
             clazz = clazz.getSuperclass();
         }
+
         return null;
+    }
+
+    private static Set<WeaponCategory> weaponCategories(Field field, Object builder) throws IllegalAccessException {
+        field.setAccessible(true);
+        if (!(field.get(builder) instanceof Set<?> set)) return null;
+
+        @SuppressWarnings("unchecked") Set<WeaponCategory> weaponSet = (Set<WeaponCategory>) set;
+        return weaponSet;
     }
 }

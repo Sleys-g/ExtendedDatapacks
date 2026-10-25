@@ -4,8 +4,8 @@ import net.neoforged.fml.loading.FMLPaths;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.RegistryAnimationsTrackers;
 import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
+import sleys.efedp.neoforge.api.registry.RegistrySkillTrackers;
 import sleys.efedp.neoforge.system.skills.guard.builder.GuardSkillModifierBuilder;
-import sleys.efedp.neoforge.system.skills.passive.builder.PassiveSkillModifierBuilder;
 import sleys.efedp.neoforge.system.skills.icon.builder.IconSkillModifierBuilder;
 import sleys.efedp.neoforge.system.category.builder.WeaponCategoryAdderBuilder;
 import sleys.sl.library.annotations.LegacyFunction;
@@ -34,7 +34,7 @@ public class BootstrapBuilds {
 
     @LegacyFunction(since = "2.5.5", value = "They will move to DFU in the future")
     private static void startSkillBuilds() {
-        buildConfigTracker("skill_builder", "passive_skills", PassiveSkillModifierBuilder::startToTracking);
+        RegistrySkillTrackers.PASSIVE_SKILL_MODIFIER.startToTracking();
         buildConfigTracker("skill_builder", "guard_skills", GuardSkillModifierBuilder::startToTracking);
         buildConfigTracker("skill_builder", "category_icon", IconSkillModifierBuilder::startToTracking);
         buildConfigTracker("weapon_builder", "category", WeaponCategoryAdderBuilder::startToTracking);
