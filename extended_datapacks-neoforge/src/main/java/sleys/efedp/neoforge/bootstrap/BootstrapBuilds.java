@@ -5,7 +5,6 @@ import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.RegistryAnimationsTrackers;
 import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
 import sleys.efedp.neoforge.api.registry.RegistrySkillTrackers;
-import sleys.efedp.neoforge.system.skills.icon.builder.IconSkillModifierBuilder;
 import sleys.efedp.neoforge.system.category.builder.WeaponCategoryAdderBuilder;
 import sleys.sl.library.annotations.LegacyFunction;
 import sleys.sl.library.util.io.BuildPathOrFile;
@@ -35,7 +34,7 @@ public class BootstrapBuilds {
     private static void startSkillBuilds() {
         RegistrySkillTrackers.PASSIVE_SKILL_MODIFIER.startToTracking();
         RegistrySkillTrackers.GUARD_SKILL_MODIFIER.startToTracking();
-        buildConfigTracker("skill_builder", "category_icon", IconSkillModifierBuilder::startToTracking);
+        RegistrySkillTrackers.CATEGORY_SKILL_ICON.startToTracking();
         buildConfigTracker("weapon_builder", "category", WeaponCategoryAdderBuilder::startToTracking);
     }
 
