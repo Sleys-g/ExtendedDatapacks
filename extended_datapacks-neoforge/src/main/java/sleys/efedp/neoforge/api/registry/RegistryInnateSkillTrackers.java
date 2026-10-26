@@ -103,7 +103,7 @@ public final class RegistryInnateSkillTrackers {
                     TimedAdvancedInnateSkillDefinition.CODEC.codec(),
                     GenericRegistryBuilder.BuilderContext.WITH_MOD_ID,
                     "innate_skill_builder/timed_advanced_innate_skill",
-                    "Timed Status Innate Skills",
+                    "Timed Adbvanced Innate Skills",
                     getConfigInnateSkillTracker("timed_advanced_innate_skill")
             );
 

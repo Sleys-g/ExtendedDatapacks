@@ -91,7 +91,7 @@ public class GenericRegistryBuilder<T> {
                 if (!isJson(file)) continue;
 
                 ExtendedDatapacks.LOGGER.info(
-                        "[{}] Data file detected In-Jar, loading for {} -> {}", logTag, modId, file.getFileName()
+                        "[{}] Data file detected In-Jar, loading for {} -> {}", logTag, modId, formatPath(file)
                 );
 
                 loadSafely(file, modId);
@@ -104,7 +104,7 @@ public class GenericRegistryBuilder<T> {
                 ExecutionPolicy.RESIST,
                 () -> loadFile(file, source)
         ).ifFailure(e -> ExtendedDatapacks.LOGGER.warn(
-                "[{}] Error reading: {}", logTag, file, e
+                "[{}] Error reading: {}", logTag, formatPath(file), e
         ));
     }
 
@@ -117,7 +117,7 @@ public class GenericRegistryBuilder<T> {
         if (context == BuilderContext.WITH_MOD_ID) {
             if (CONFIG_SOURCE.equals(source) && json.isJsonObject()) {
                 ExtendedDatapacks.LOGGER.warn(
-                        "[{}] Attempting to load the file {}: from the configuration folder", logTag, file
+                        "[{}] Attempting to load the file {}: from the configuration folder", logTag, formatPath(file)
                 );
 
                 String modId = this.resolveModId(file, json);
@@ -129,7 +129,7 @@ public class GenericRegistryBuilder<T> {
                     registerEntry(file, modId, json);
                 } else {
                     ExtendedDatapacks.LOGGER.warn(
-                            "[{}] Skipping {}: it was not possible to reach the modid in any way.", logTag, file
+                            "[{}] Skipping {}: it was not possible to reach the modid in any way.", logTag, formatPath(file)
                     );
                 }
 
@@ -142,12 +142,12 @@ public class GenericRegistryBuilder<T> {
 
         if (context == BuilderContext.WITHOUT_MOD_ID) {
             if (CONFIG_SOURCE.equals(source)) {
-                ExtendedDatapacks.LOGGER.info("[{}] Loading from config folder... Without namespace as file: {}", logTag, file);
+                ExtendedDatapacks.LOGGER.info("[{}] Loading from config folder... Without namespace as file: {}", logTag, formatPath(file));
                 registerEntry(file, source, json);
                 return;
             }
 
-            ExtendedDatapacks.LOGGER.info("[{}] Loading from In-Jar folder... Without namespace as file: {}", logTag, file);
+            ExtendedDatapacks.LOGGER.info("[{}] Loading from In-Jar folder... Without namespace as file: {}", logTag, formatPath(file));
             registerEntry(file, source, json);
         }
     }
@@ -165,7 +165,7 @@ public class GenericRegistryBuilder<T> {
 
             if (!field.equals("mod_id")) {
                 ExtendedDatapacks.LOGGER.warn(
-                        "[{}] {} uses the legacy \"{}\" field, please migrate to \"mod_id\"", logTag, file, field
+                        "[{}] {} uses the legacy \"{}\" field, please migrate to \"mod_id\"", logTag, formatPath(file), field
                 );
             }
             return value;
@@ -175,23 +175,36 @@ public class GenericRegistryBuilder<T> {
 
     private void registerEntry(Path file, String modId, JsonElement json) {
         codec.parse(JsonOps.INSTANCE, json).resultOrPartial(err -> ExtendedDatapacks.LOGGER.error(
-                "[{}] Failed to parse {} -> {}: {}", logTag, modId, file.getFileName(), err)
+                "[{}] Failed to parse {} -> {}: {}", logTag, modId, formatPath(file), err)
         ).ifPresent(def -> {
             definitions.computeIfAbsent(modId, k -> new ArrayList<>()).add(def);
             ExtendedDatapacks.LOGGER.info(
-                    "[{}] Successful file parse for {} under the namespace: {}", logTag, file.getFileName(), modId
+                    "[{}] Successful file parse for {} under the namespace: {}", logTag, formatPath(file), modId
             );
         });
     }
 
     private boolean isJson(Path path) {
         var result = path.toString().endsWith(JSON_EXTENSION);
-        if (!result) ExtendedDatapacks.LOGGER.warn("[{}] The file {} was detected, but it does not have a valid extension!", logTag, path);
+        if (!result) ExtendedDatapacks.LOGGER.warn("[{}] The file {} was detected, but it does not have a valid extension!", logTag, formatPath(path));
         return result;
     }
 
     private void reportMissingSource(String source) {
         ExtendedDatapacks.LOGGER.info("[{}] No data files found for this registry in: {}", logTag, source);
+    }
+
+    private String formatPath(Path file) {
+        return ExecutionTasks.getAndFallback(ExecutionPolicy.RESIST, () -> this.getResolvedPath(file), file.toString());
+    }
+
+    private String getResolvedPath(Path file) {
+        Path root = Path.of("").toAbsolutePath();
+        Path absoluteFile = file.toAbsolutePath();
+        if (absoluteFile.startsWith(root)) {
+            return root.relativize(absoluteFile).toString();
+        }
+        return file.toString();
     }
 
     public Map<String, List<T>> getDefinitionData() {
