@@ -1,9 +1,11 @@
 package sleys.efedp.neoforge.system.category;
 
 import sleys.efedp.neoforge.ExtendedDatapacks;
-import sleys.efedp.neoforge.system.category.builder.WeaponCategoryAdderBuilder;
+import sleys.efedp.neoforge.api.registry.RegistryWeaponTrackers;
+import sleys.efedp.neoforge.system.category.definitions.WeaponCategoryRegistryDefinitions;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,7 +32,19 @@ public class WeaponCategoriesRegistry implements WeaponCategory {
         if (INITIALIZED) return;
 
         ExtendedDatapacks.LOGGER.info("[Weapon Category Registry] Starting initialization of JSON weapon categories");
-        List<WeaponCategoryAdderBuilder.CategoryData> allCategories = WeaponCategoryAdderBuilder.getCategoryData();
+
+        Map<String, List<WeaponCategoryRegistryDefinitions>> rawDefinitions = RegistryWeaponTrackers
+                .WEAPON_CATEGORY_REGISTRY
+                .getDefinitionData();
+
+        List<WeaponCategoryRegistryDefinitions.CategoryData> allCategories = new ArrayList<>();
+
+        for (Map.Entry<String, List<WeaponCategoryRegistryDefinitions>> entry : rawDefinitions.entrySet()) {
+            String modId = entry.getKey();
+            for (WeaponCategoryRegistryDefinitions def : entry.getValue()) {
+                allCategories.addAll(def.toCategoryData(modId));
+            }
+        }
 
         if (allCategories.isEmpty()) {
             ExtendedDatapacks.LOGGER.info("[Weapon Category Registry] No JSON categories found to register");
@@ -40,8 +54,8 @@ public class WeaponCategoriesRegistry implements WeaponCategory {
 
         Map<String, List<String>> categoriesByModId = allCategories.stream()
                 .collect(Collectors.groupingBy(
-                        WeaponCategoryAdderBuilder.CategoryData::modId,
-                        Collectors.mapping(WeaponCategoryAdderBuilder.CategoryData::categoryId, Collectors.toList())
+                        WeaponCategoryRegistryDefinitions.CategoryData::modId,
+                        Collectors.mapping(WeaponCategoryRegistryDefinitions.CategoryData::categoryId, Collectors.toList())
                 ));
 
         int totalRegistered = 0;
@@ -53,15 +67,8 @@ public class WeaponCategoriesRegistry implements WeaponCategory {
 
             for (String categoryId : categories) {
                 categoryId = categoryId.toUpperCase(Locale.ROOT);
-                try {
-                    WeaponCategory.ENUM_MANAGER.getOrThrow(categoryId);
-                    ExtendedDatapacks.LOGGER.warn("[Weapon Category Registry] Category '{}' already exists, skipping", categoryId);
-                    totalSkipped++;
-                } catch (Exception e) {
-                    new JsonWeaponCategory(modId, categoryId);
-                    ExtendedDatapacks.LOGGER.info("[Weapon Category Registry] Registered '{}' for mod '{}'", categoryId, modId);
-                    totalRegistered++;
-                }
+                try { totalSkipped = ifAlreadyRegistered(categoryId, totalSkipped); }
+                catch (Exception ignored) { totalRegistered = ifNeedRegister(modId, categoryId, totalRegistered); }
             }
         }
 
@@ -71,6 +78,18 @@ public class WeaponCategoriesRegistry implements WeaponCategory {
         );
 
         INITIALIZED = true;
+    }
+
+    private static int ifAlreadyRegistered(String categoryId, int totalSkipped) {
+        WeaponCategory.ENUM_MANAGER.getOrThrow(categoryId);
+        ExtendedDatapacks.LOGGER.warn("[Weapon Category Registry] Category '{}' already exists, skipping", categoryId);
+        return totalSkipped + 1;
+    }
+
+    private static int ifNeedRegister(String modId, String categoryId, int totalRegistered) {
+        new JsonWeaponCategory(modId, categoryId);
+        ExtendedDatapacks.LOGGER.info("[Weapon Category Registry] Registered '{}' for mod '{}'", categoryId, modId);
+        return totalRegistered + 1;
     }
 
     public static class JsonWeaponCategory implements WeaponCategory {

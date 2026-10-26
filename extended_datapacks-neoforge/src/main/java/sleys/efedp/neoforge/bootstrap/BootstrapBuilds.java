@@ -1,41 +1,29 @@
 package sleys.efedp.neoforge.bootstrap;
 
-import net.neoforged.fml.loading.FMLPaths;
 import sleys.efedp.neoforge.ExtendedDatapacks;
 import sleys.efedp.neoforge.api.registry.RegistryAnimationsTrackers;
 import sleys.efedp.neoforge.api.registry.RegistryInnateSkillTrackers;
 import sleys.efedp.neoforge.api.registry.RegistrySkillTrackers;
-import sleys.efedp.neoforge.system.category.builder.WeaponCategoryAdderBuilder;
-import sleys.sl.library.annotations.LegacyFunction;
-import sleys.sl.library.util.io.BuildPathOrFile;
-
-import java.nio.file.Path;
-import java.util.function.Consumer;
+import sleys.efedp.neoforge.api.registry.RegistryWeaponTrackers;
 
 public class BootstrapBuilds {
 
     protected static void Initialize() {
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing Builds & Start To Tracking...");
+        startWeaponBuilders();
         startSkillBuilds();
-        startInnateSkillsBuilds();
         startAnimationsBuilds();
+        startInnateSkillsBuilds();
     }
 
-    private static void buildConfigTracker(String category, String subfolder, Consumer<Path> tracker) {
-        Path dir = FMLPaths.CONFIGDIR.get()
-                .resolve("epicfight_edp")
-                .resolve(category)
-                .resolve(subfolder);
-        BuildPathOrFile.buildPathFolder(dir);
-        tracker.accept(dir);
+    private static void startWeaponBuilders() {
+        RegistryWeaponTrackers.WEAPON_CATEGORY_REGISTRY.startToTracking();
     }
 
-    @LegacyFunction(since = "2.5.5", value = "They will move to DFU in the future")
     private static void startSkillBuilds() {
         RegistrySkillTrackers.PASSIVE_SKILL_MODIFIER.startToTracking();
         RegistrySkillTrackers.GUARD_SKILL_MODIFIER.startToTracking();
         RegistrySkillTrackers.CATEGORY_SKILL_ICON.startToTracking();
-        buildConfigTracker("weapon_builder", "category", WeaponCategoryAdderBuilder::startToTracking);
     }
 
     private static void startInnateSkillsBuilds() {
