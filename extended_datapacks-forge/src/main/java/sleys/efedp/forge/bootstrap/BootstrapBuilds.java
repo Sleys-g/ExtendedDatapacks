@@ -1,43 +1,29 @@
 package sleys.efedp.forge.bootstrap;
 
-import net.minecraftforge.fml.loading.FMLPaths;
 import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.api.registry.RegistryAnimationsTrackers;
 import sleys.efedp.forge.api.registry.RegistryInnateSkillTrackers;
-import sleys.efedp.forge.system.skills.guard.builder.GuardSkillModifierBuilder;
-import sleys.efedp.forge.system.skills.passive.builder.PassiveSkillModifierBuilder;
-import sleys.efedp.forge.system.skills.icon.builder.IconSkillModifierBuilder;
-import sleys.efedp.forge.system.category.builder.WeaponCategoryAdderBuilder;
-import sleys.sl.library.annotations.LegacyFunction;
-import sleys.sl.library.util.io.BuildPathOrFile;
-
-import java.nio.file.Path;
-import java.util.function.Consumer;
+import sleys.efedp.forge.api.registry.RegistrySkillTrackers;
+import sleys.efedp.forge.api.registry.RegistryWeaponTrackers;
 
 public class BootstrapBuilds {
 
     protected static void Initialize() {
         ExtendedDatapacks.LOGGER.info("[Extended Datapacks - Bootstrap] Initializing Builds & Start To Tracking...");
+        startWeaponBuilders();
         startSkillBuilds();
-        startInnateSkillsBuilds();
         startAnimationsBuilds();
+        startInnateSkillsBuilds();
     }
 
-    private static void buildConfigTracker(String category, String subfolder, Consumer<Path> tracker) {
-        Path dir = FMLPaths.CONFIGDIR.get()
-                .resolve("epicfight_edp")
-                .resolve(category)
-                .resolve(subfolder);
-        BuildPathOrFile.buildPathFolder(dir);
-        tracker.accept(dir);
+    private static void startWeaponBuilders() {
+        RegistryWeaponTrackers.WEAPON_CATEGORY_REGISTRY.startToTracking();
     }
 
-    @LegacyFunction(since = "2.5.5", value = "They will move to DFU in the future")
     private static void startSkillBuilds() {
-        buildConfigTracker("skill_builder", "passive_skills", PassiveSkillModifierBuilder::startToTracking);
-        buildConfigTracker("skill_builder", "guard_skills", GuardSkillModifierBuilder::startToTracking);
-        buildConfigTracker("skill_builder", "category_icon", IconSkillModifierBuilder::startToTracking);
-        buildConfigTracker("weapon_builder", "category", WeaponCategoryAdderBuilder::startToTracking);
+        RegistrySkillTrackers.PASSIVE_SKILL_MODIFIER.startToTracking();
+        RegistrySkillTrackers.GUARD_SKILL_MODIFIER.startToTracking();
+        RegistrySkillTrackers.CATEGORY_SKILL_ICON.startToTracking();
     }
 
     private static void startInnateSkillsBuilds() {

@@ -9,7 +9,9 @@ import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 import java.util.Map;
 
-public class RegistryCategoryIcon {
+public final class RegistryCategoryIcon {
+
+    private RegistryCategoryIcon() {}
 
     public static void AddAnyIconToCategory(Map<WeaponCategory, ItemStack> icon) {
         for (var dataSet : RegistrySkillTrackers.CATEGORY_SKILL_ICON.getDefinitionData().values()) {

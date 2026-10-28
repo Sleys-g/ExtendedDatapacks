@@ -93,7 +93,7 @@ public class OverlayAssetPacksBuilder {
         if (!LOADED || item.isEmpty()) return Collections.emptyList();
 
         List<OverlayEffect> matchingEffects = new ArrayList<>();
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item.getItem());
+        ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
 
         for (List<OverlayPacket> packets : OVERLAY_PACKETS.values()) {
             for (OverlayPacket packet : packets) {

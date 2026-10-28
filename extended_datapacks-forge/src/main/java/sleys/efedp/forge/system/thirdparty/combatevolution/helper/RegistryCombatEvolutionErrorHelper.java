@@ -1,4 +1,4 @@
-package sleys.efedp.forge.system.thirdparty.combatevolution.builder;
+package sleys.efedp.forge.system.thirdparty.combatevolution.helper;
 
 import javax.annotation.Nullable;
 

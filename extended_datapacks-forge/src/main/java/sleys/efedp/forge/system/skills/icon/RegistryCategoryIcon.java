@@ -3,32 +3,39 @@ package sleys.efedp.forge.system.skills.icon;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import sleys.efedp.forge.ExtendedDatapacks;
-import sleys.efedp.forge.system.skills.icon.builder.IconSkillModifierBuilder;
+import sleys.efedp.forge.api.registry.RegistrySkillTrackers;
+import sleys.sl.library.execution.policy.ExecutionPolicy;
+import sleys.sl.library.execution.policy.ExecutionTasks;
 import yesman.epicfight.api.client.forgeevent.WeaponCategoryIconRegisterEvent;
 
-public class RegistryCategoryIcon {
+public final class RegistryCategoryIcon {
+
+    private RegistryCategoryIcon() {}
 
     @SubscribeEvent
-    public static void onIconCreate(WeaponCategoryIconRegisterEvent icon) {
-        var itemKeyList = IconSkillModifierBuilder.getItemList();
-        if (itemKeyList.isEmpty()) return;
+    public static void AddAnyIconToCategory(WeaponCategoryIconRegisterEvent icon) {
+        for (var dataSet : RegistrySkillTrackers.CATEGORY_SKILL_ICON.getDefinitionData().values()) {
+            for (var dataDefinition : dataSet) {
+                for (var data : dataDefinition.iconSkillBuilder()) {
+                    if (data == null) continue;
 
-        for (var itemKey : itemKeyList) {
-            var data = IconSkillModifierBuilder.getIconData(itemKey);
-            if (data == null) continue;
+                    var item = data.getParseItem();
+                    if (item == null) continue;
 
-            var item = data.getParseItem(itemKey);
-            if (item == null) continue;
+                    var category = data.getParseWeaponCategory();
+                    if (category == null) continue;
 
-            var categoryKey = data.categoryId();
-            var category = data.getParseWeaponCategory(categoryKey);
-            if (category == null) continue;
-
-            try {
-                icon.registerCategory(category, new ItemStack(item));
-            } catch (Exception e) {
-                ExtendedDatapacks.LOGGER.fatal("[Icon Category Mutator] A fatal error occurred while trying to register your icon: {}", e.getMessage());
-                ExtendedDatapacks.LOGGER.warn("[Icon Category Mutator] Error captured, ignore this message");
+                    var newItem = new ItemStack(item);
+                    ExecutionTasks.runAndGetResult(ExecutionPolicy.RESIST, () -> icon.registerCategory(category, newItem))
+                            .peek(valid -> ExtendedDatapacks.LOGGER.info(
+                                    "[Icon Category Adder] Item {} has been successfully added as an icon to category {}",
+                                    newItem, category
+                            ))
+                            .peekError(error -> ExtendedDatapacks.LOGGER.warn(
+                                    "[Icon Category Adder] An error occurred while trying to assign a Icon to Weapon Category {} for item {}...",
+                                    category, newItem, error
+                            ));
+                }
             }
         }
     }

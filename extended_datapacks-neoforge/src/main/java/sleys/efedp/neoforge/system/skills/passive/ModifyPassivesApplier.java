@@ -18,7 +18,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-public class ModifyPassivesApplier {
+public final class ModifyPassivesApplier {
+
+    private ModifyPassivesApplier() {}
 
     public static void addAnyParameterToSkill(ResourceLocation skillRegistry, SkillBuilder<?> skillBuilder) {
         if (skillRegistry == null || isExcludedSkillBuilder(skillBuilder)) return;

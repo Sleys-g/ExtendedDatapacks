@@ -1,30 +1,14 @@
 package sleys.efedp.forge.bootstrap;
 
-import net.minecraftforge.fml.loading.FMLPaths;
-import sleys.efedp.forge.system.thirdparty.combatevolution.builder.ExecutionAnimationBuilder;
-import sleys.sl.library.util.io.BuildPathOrFile;
-
-import java.nio.file.Path;
-import java.util.function.Consumer;
+import sleys.efedp.forge.api.registry.RegistryThirdPartiesTrackers;
 
 public class BootstrapThirdPartiesBuilds {
+
     protected static void Initialize() {
         startThirdPartyBuilds();
     }
 
-    
-    @SuppressWarnings("SameParameterValue")
-    private static void buildThirdPartyConfigTracker(String category, String subfolder, Consumer<Path> tracker) {
-        Path dir = FMLPaths.CONFIGDIR.get()
-                .resolve("epicfight_edp")
-                .resolve("third_party")
-                .resolve(category)
-                .resolve(subfolder);
-        BuildPathOrFile.buildPathFolder(dir);
-        tracker.accept(dir);
-    }
-
     private static void startThirdPartyBuilds() {
-        buildThirdPartyConfigTracker("combat_evolution", "execution", ExecutionAnimationBuilder::startToTracking);
+        RegistryThirdPartiesTrackers.EXECUTION_ANIMATIONS_REGISTRY.startToTracking();
     }
 }

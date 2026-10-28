@@ -1,19 +1,24 @@
 package sleys.efedp.forge.system.skills.guard;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sleys.efedp.forge.system.skills.guard.builder.GuardSkillModifierBuilder;
+import sleys.efedp.forge.api.registry.RegistrySkillTrackers;
+import sleys.efedp.forge.system.skills.guard.definitions.GuardMotionData;
+import sleys.efedp.forge.system.skills.guard.definitions.RawGuardBuilderData;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.world.capabilities.item.Style;
+import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ModifyGuardsApplier {
+public final class ModifyGuardsApplier {
+
+    private ModifyGuardsApplier() {}
 
     @SubscribeEvent
     public static void addAnyParameterToGuards(SkillBuildEvent.ModRegistryWorker.SkillCreateEvent<GuardSkill.Builder> event) {
@@ -23,142 +28,114 @@ public class ModifyGuardsApplier {
         var skillBuilder = event.getSkillBuilder();
         if (skillBuilder == null) return;
 
-        var dataList = GuardSkillModifierBuilder.get(skillRegistry.toString());
-        if (dataList == null || dataList.isEmpty()) return;
-        for (var data : dataList) {
-            var weaponCategory = data.getParseWeaponCategory();
-            var skillID = data.getParseSkill();
-            if (!data.isSameSkill(skillRegistry, skillID)) continue;
-
-            /// Segmento de Guard Motion
-            var isGuardPerStyle = data.guardMotion().isPerStyle();
-            if (!isGuardPerStyle) {
-                var guardMotion = data.guardMotion().getAnimationForStyle("return");
-                var guardAnimation = data.getParseMotions(guardMotion);
-
-                skillBuilder.addGuardMotion(
-                        weaponCategory,
-                        (item, player) -> guardAnimation
-                );
-            } else {
-                var styleSet = data.guardMotion().getDeclaredStyles();
-                Map<Style, AnimationManager.AnimationAccessor<? extends StaticAnimation>> styleToAnim = new HashMap<>();
-
-                for (var styleKey : styleSet) {
-                    var guardMotion = data.guardMotion().getAnimationForStyle(styleKey);
-                    if (guardMotion == null) continue;
-
-                    var guardAnimation = data.getParseMotions(guardMotion);
-                    if (guardAnimation != null) {
-                        var parseStyle = data.getParseStyle(styleKey);
-                        if (parseStyle != null) {
-                            styleToAnim.put(parseStyle, guardAnimation);
-                        }
-                    }
-                }
-
-                skillBuilder.addGuardMotion(
-                        weaponCategory,
-                        (item, player) ->
-                                styleToAnim.get(item.getStyle(player))
-                );
-            }
-
-            /// Segmento de Guard Break Motion
-            var guardBreakMotion = data.guardBreakMotion().getAnimationForStyle("return");
-            var guardBreakAnimation = data.getParseMotions(guardBreakMotion);
-            skillBuilder.addGuardBreakMotion(
-                    weaponCategory,
-                    (item, player) -> guardBreakAnimation
-
-            );
-
-            /// Segmento de Guard Advanced Motion
-            var implementAdvancedMotion = data.hasAdvancedMotion();
-            var existAdvancedMotion = data.guardAdvancedMotion() != null;
-            if (implementAdvancedMotion && existAdvancedMotion) {
-                var isAdvancedPerStyle = data.guardAdvancedMotion().isPerStyle();
-                var isAdvancedMulti = data.guardAdvancedMotion().isMulti();
-                if (!isAdvancedMulti) {
-                    if (!isAdvancedPerStyle) {
-                        var advancedMotion = data.guardAdvancedMotion().getAnimationForStyle("return");
-                        var advancedAnimation = data.getParseMotions(advancedMotion);
-                        skillBuilder.addAdvancedGuardMotion(
-                                weaponCategory,
-                                (item, player) -> advancedAnimation
-                        );
-                    } else {
-                        var styleSet = data.guardAdvancedMotion().getDeclaredStyles();
-                        Map<Style, AnimationManager.AnimationAccessor<? extends StaticAnimation>> styleToAnim = new HashMap<>();
-
-                        for (var styleKey : styleSet) {
-                            var advancedMotion = data.guardAdvancedMotion().getAnimationForStyle(styleKey);
-                            if (advancedMotion == null) continue;
-
-                            var advancedAnimation = data.getParseMotions(advancedMotion);
-                            if (advancedAnimation != null) {
-                                var parseStyle = data.getParseStyle(styleKey);
-                                if (parseStyle != null) {
-                                    styleToAnim.put(parseStyle, advancedAnimation);
-                                }
-                            }
-                        }
-
-                        skillBuilder.addAdvancedGuardMotion(
-                                weaponCategory,
-                                (item, player) ->
-                                        styleToAnim.get(item.getStyle(player))
-                        );
-                    }
-                } else {
-                    if (!isAdvancedPerStyle) {
-                        var advancedMotions = data.guardAdvancedMotion().getAnimationsForStyle("return");
-                        if (advancedMotions != null && !advancedMotions.isEmpty()) {
-                            List<AnimationManager.AnimationAccessor<? extends StaticAnimation>> advancedAnimations = new ArrayList<>();
-                            for (var advancedMotion : advancedMotions) {
-                                var advancedAnimation = data.getParseMotions(advancedMotion);
-                                if (advancedAnimation == null) continue;
-                                advancedAnimations.add(advancedAnimation);
-                            }
-
-                            if (!advancedAnimations.isEmpty()) {
-                                skillBuilder.addAdvancedGuardMotion(
-                                        weaponCategory,
-                                        (item, player) -> advancedAnimations
-                                );
-                            }
-                        }
-                    } else {
-                        var styleSet = data.guardAdvancedMotion().getDeclaredStyles();
-                        Map<Style, List<AnimationManager.AnimationAccessor<? extends StaticAnimation>>> styleToAnim = new HashMap<>();
-
-                        for (var styleKey : styleSet) {
-                            var advancedMotions = data.guardAdvancedMotion().getAnimationsForStyle(styleKey);
-                            if (advancedMotions != null && !advancedMotions.isEmpty()) {
-                                List<AnimationManager.AnimationAccessor<? extends StaticAnimation>> advancedAnimations = new ArrayList<>();
-                                for (var advancedMotion : advancedMotions) {
-                                    var advancedAnimation = data.getParseMotions(advancedMotion);
-                                    if (advancedAnimation == null) continue;
-                                    advancedAnimations.add(advancedAnimation);
-                                }
-
-                                if (!advancedAnimations.isEmpty()) {
-                                    var parseStyle = data.getParseStyle(styleKey);
-                                    if (parseStyle != null) {
-                                        styleToAnim.put(parseStyle, advancedAnimations);
-                                    }
-                                }
-                            }
-                        }
-
-                        skillBuilder.addAdvancedGuardMotion(
-                                weaponCategory,
-                                (item, player) ->
-                                        styleToAnim.get(item.getStyle(player))
-                        );
-                    }
+        for (var dataSet : RegistrySkillTrackers.GUARD_SKILL_MODIFIER.getDefinitionData().values()) {
+            for (var dataDefinition : dataSet) {
+                for (var data : dataDefinition.skillGuardBuilder()) {
+                    if (!data.isSameSkill(skillRegistry, data.getParseSkill())) continue;
+                    applyGuardData(skillBuilder, data);
                 }
             }
         }
+    }
+
+    private static void applyGuardData(GuardSkill.Builder builder, RawGuardBuilderData data) {
+        var category = data.getParseWeaponCategory();
+
+        applyGuardMotion(builder, category, data);
+        applyGuardBreakMotion(builder, category, data);
+        applyAdvancedMotion(builder, category, data);
+    }
+
+    private static void applyGuardMotion(GuardSkill.Builder builder, WeaponCategory category, RawGuardBuilderData data) {
+        var motion = data.guardMotion();
+
+        if (!motion.isPerStyle()) {
+            var animation = parseDefault(data, motion);
+            builder.addGuardMotion(category, (item, player) -> animation);
+            return;
+        }
+
+        var animationByStyle = parseByStyle(data, motion);
+        builder.addGuardMotion(category, (item, player) -> animationByStyle.get(item.getStyle(player)));
+    }
+
+    private static void applyGuardBreakMotion(GuardSkill.Builder builder, WeaponCategory category, RawGuardBuilderData data) {
+        var animation = parseDefault(data, data.guardBreakMotion());
+        builder.addGuardBreakMotion(category, (item, player) -> animation);
+    }
+
+    private static void applyAdvancedMotion(GuardSkill.Builder builder, WeaponCategory category, RawGuardBuilderData data) {
+        var motion = data.guardAdvancedMotion();
+        if (!data.hasAdvancedMotion() || motion == null) return;
+
+        boolean perStyle = motion.isPerStyle();
+
+        if (motion.isMulti()) {
+            applyAdvancedMulti(builder, category, data, motion, perStyle);
+        } else if (perStyle) {
+            var animationByStyle = parseByStyle(data, motion);
+            builder.addAdvancedGuardMotion(category, (item, player) -> animationByStyle.get(item.getStyle(player)));
+        } else {
+            var animation = parseDefault(data, motion);
+            builder.addAdvancedGuardMotion(category, (item, player) -> animation);
+        }
+    }
+
+    private static void applyAdvancedMulti(GuardSkill.Builder builder, WeaponCategory category,
+                                           RawGuardBuilderData data, GuardMotionData motion, boolean perStyle) {
+        if (!perStyle) {
+            var animations = parseAll(data, motion.getReturnAnimations());
+            if (animations.isEmpty()) return;
+
+            builder.addAdvancedGuardMotion(category, (item, player) -> animations);
+            return;
+        }
+
+        var animationsByStyle = parseAllByStyle(data, motion);
+        builder.addAdvancedGuardMotion(category, (item, player) -> animationsByStyle.get(item.getStyle(player)));
+    }
+
+    private static AnimationManager.AnimationAccessor<? extends StaticAnimation> parseDefault(RawGuardBuilderData data, GuardMotionData motion) {
+        return data.getParseMotions(motion.getReturnAnimation());
+    }
+
+    private static Map<Style, AnimationManager.AnimationAccessor<? extends StaticAnimation>> parseByStyle(RawGuardBuilderData data, GuardMotionData motion) {
+        Map<Style, AnimationManager.AnimationAccessor<? extends StaticAnimation>> result = new HashMap<>();
+
+        for (var styleKey : motion.getDeclaredStyles()) {
+            var motionName = motion.getAnimationForStyle(styleKey);
+            if (motionName == null) continue;
+
+            var animation = data.getParseMotions(motionName);
+            if (animation == null) continue;
+
+            var style = data.getParseStyle(styleKey);
+            if (style != null) result.put(style, animation);
+        }
+        return result;
+    }
+
+    private static List<AnimationManager.AnimationAccessor<? extends StaticAnimation>> parseAll(RawGuardBuilderData data, Iterable<String> motionNames) {
+        List<AnimationManager.AnimationAccessor<? extends StaticAnimation>> result = new ArrayList<>();
+        if (motionNames == null) return result;
+
+        for (var motionName : motionNames) {
+            var animation = data.getParseMotions(motionName);
+            if (animation != null) result.add(animation);
+        }
+        return result;
+    }
+
+    private static Map<Style, List<AnimationManager.AnimationAccessor<? extends StaticAnimation>>> parseAllByStyle(RawGuardBuilderData data, GuardMotionData motion) {
+        Map<Style, List<AnimationManager.AnimationAccessor<? extends StaticAnimation>>> result = new HashMap<>();
+
+        for (var styleKey : motion.getDeclaredStyles()) {
+            var animations = parseAll(data, motion.getAnimationsForStyle(styleKey));
+            if (animations.isEmpty()) continue;
+
+            var style = data.getParseStyle(styleKey);
+            if (style != null) result.put(style, animations);
+        }
+        return result;
     }
 }

@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class WeaponCategoriesRegistry implements WeaponCategory {
+public final class WeaponCategoriesRegistry implements WeaponCategory {
 
     private static boolean INITIALIZED = false;
     public static final WeaponCategoriesRegistry INSTANCE = new WeaponCategoriesRegistry();
