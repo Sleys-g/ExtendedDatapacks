@@ -28,14 +28,14 @@ mixins = ["mixins.epicfight_edp.json", "mixins.won_edp.json"]
 [[dependencies.epicfight_edp]]
 modId="sl_library"
 mandatory=true
-versionRange="[1.7,)"
+versionRange="[2.0,)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.epicfight_edp]]
 modId="slm_epicfight"
 mandatory=true
-versionRange="[1.4,)"
+versionRange="[1.4.1,)"
 ordering="AFTER"
 side="BOTH"
 

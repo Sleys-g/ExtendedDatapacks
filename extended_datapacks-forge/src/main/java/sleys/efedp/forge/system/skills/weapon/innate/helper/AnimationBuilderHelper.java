@@ -1,6 +1,7 @@
 package sleys.efedp.forge.system.skills.weapon.innate.helper;
 
 import net.minecraft.resources.ResourceLocation;
+import sleys.efedp.forge.ExtendedDatapacks;
 import sleys.efedp.forge.system.skills.weapon.innate.data.ConditionalType;
 import sleys.sl.epicfight.util.helper.animation.AnimationHelper;
 import sleys.sl.epicfight.util.helper.animation.VirtualAnimationRegistry;
@@ -16,7 +17,7 @@ public final class AnimationBuilderHelper extends AnimationHelper {
             String modId, String name, String postfix, ResourceLocation animationId, List<String> errors) {
 
         var virtualAnimationId = VirtualAnimationRegistry.getParsedSkill(modId, name + "_" + postfix);
-        VirtualAnimationRegistry.manualVirtualizationProtocol(animationId, virtualAnimationId);
+        VirtualAnimationRegistry.manualVirtualizationProtocol(ExtendedDatapacks.LOGGER, animationId, virtualAnimationId);
 
         var animationKey = AnimationManager.byKey(virtualAnimationId);
         if (animationKey == null) {
@@ -32,7 +33,7 @@ public final class AnimationBuilderHelper extends AnimationHelper {
             String modId, String name, ResourceLocation animationId, List<String> errors) {
 
         var virtualAnimationId = VirtualAnimationRegistry.getParsedSkill(modId, name);
-        VirtualAnimationRegistry.manualVirtualizationProtocol(animationId, virtualAnimationId);
+        VirtualAnimationRegistry.manualVirtualizationProtocol(ExtendedDatapacks.LOGGER, animationId, virtualAnimationId);
 
         var animationKey = AnimationManager.byKey(virtualAnimationId);
         if (animationKey == null) {
@@ -48,7 +49,7 @@ public final class AnimationBuilderHelper extends AnimationHelper {
             String modId, String name, ConditionalType type, ResourceLocation animationId, List<String> errors) {
         var stringKey = type.toString().toLowerCase(Locale.ROOT);
         var virtualAnimationId = VirtualAnimationRegistry.getParsedSkill(modId, name + "_" + stringKey);
-        VirtualAnimationRegistry.manualVirtualizationProtocol(animationId, virtualAnimationId);
+        VirtualAnimationRegistry.manualVirtualizationProtocol(ExtendedDatapacks.LOGGER, animationId, virtualAnimationId);
 
         var animationKey = AnimationManager.byKey(virtualAnimationId);
         if (animationKey == null) {
@@ -64,7 +65,7 @@ public final class AnimationBuilderHelper extends AnimationHelper {
             String modId, String name, String postfix, ConditionalType type, ResourceLocation animationId, List<String> errors) {
         var stringKey = type.toString().toLowerCase(Locale.ROOT);
         var virtualAnimationId = VirtualAnimationRegistry.getParsedSkill(modId, name + "_" + postfix + "_" + stringKey);
-        VirtualAnimationRegistry.manualVirtualizationProtocol(animationId, virtualAnimationId);
+        VirtualAnimationRegistry.manualVirtualizationProtocol(ExtendedDatapacks.LOGGER, animationId, virtualAnimationId);
 
         var animationKey = AnimationManager.byKey(virtualAnimationId);
         if (animationKey == null) {
@@ -79,7 +80,7 @@ public final class AnimationBuilderHelper extends AnimationHelper {
     public static AnimationManager.AnimationAccessor<? extends StaticAnimation> resolveChargingAnimation(
             String modId, String name, ResourceLocation animationId, List<String> errors) {
         var virtualAnimationId = VirtualAnimationRegistry.getParsedSkill(modId, name + "_charging");
-        VirtualAnimationRegistry.manualVirtualizationProtocol(animationId, virtualAnimationId);
+        VirtualAnimationRegistry.manualVirtualizationProtocol(ExtendedDatapacks.LOGGER, animationId, virtualAnimationId);
 
         var animationKey = AnimationManager.byKey(virtualAnimationId);
         if (animationKey == null) {

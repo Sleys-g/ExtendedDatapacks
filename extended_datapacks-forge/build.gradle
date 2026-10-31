@@ -117,8 +117,8 @@ repositories {
 }
 
 dependencies {
-    implementation name: 'SLM-EpicFight-1.4-1.20.1+[Forge]-api'
-    implementation name: 'SL-Library-1.7-1.20.1+[Forge]-api'
+    implementation name: 'SLM-EpicFight-1.4.1-1.20.1+[Forge]-api'
+    implementation name: 'SL-Library-2.0-1.20.1+[Forge]-api'
     implementation name: 'SLM-Shaders-3.0.1-1.20.1+[Forge]-api'
 }
 

@@ -141,12 +141,12 @@ Take a look at what is currently implemented and what is coming next!
 > Major updates/content releases will be temporarily paused; minor fixes will be prioritized. The update pool is mostly complete. Once "Innate Skills II & Payloads" is finished, updates will be frozen.
 
 ## 🔭 Next Updates
-| Update                                    | Priority | version |
-|-------------------------------------------|----------|---------|
-| Camera Packet on Animations               | 🔻 Low   | v2.6    |
-| Weapons Passive Skill                     | 🔻 Low   | v2.7    |
-| Skill Books (Dodge / Guard / Passive)     | 🔻 Low   | v2.8    |
-| Custom Skill Slots, Slots, Modified Slots | 🔻 Low   | v2.9    |
+| Update                                    | Priority    | version |
+|-------------------------------------------|-------------|---------|
+| Camera Packet on Animations               | ⭕ Very Low  | v2.6    |
+| Weapons Passive Skill                     | 🔺 High     | v2.7    |
+| Skill Books (Dodge / Guard / Passive)     | 🔶 Medium   | v2.8    |
+| Custom Skill Slots, Slots, Modified Slots | 🔻 Low      | v2.9    |
 
 > The release disposition can vary based on priority, if the entire table has a low priority and then one goes to medium or high, it will become the next update
 

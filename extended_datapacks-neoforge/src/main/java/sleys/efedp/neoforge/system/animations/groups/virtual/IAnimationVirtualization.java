@@ -82,7 +82,9 @@ public interface IAnimationVirtualization<T extends StaticAnimation> {
     }
 
     default void setProtocol() {
-        VirtualAnimationRegistry.manualVirtualizationProtocol(realAnimation(), virtualAnimation());
+        VirtualAnimationRegistry.manualVirtualizationProtocol(
+                ExtendedDatapacks.LOGGER, realAnimation(), virtualAnimation()
+        );
     }
 
     default void configProtocol(IAnimationProperties<T> property) {
