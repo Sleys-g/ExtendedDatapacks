@@ -110,8 +110,9 @@ public class Bootstrap {
                         For internal virtualization (InJar) modifications, the folder name changes from 'virtualizate' to 'virtualization'.
                         Within 'innate_skill_builder', for all declared skills, the 'modid' data field is renamed to 'mod_id'.
                         
-                        If you do not apply these renames, your virtualized animations within InJar will fail, as will your skills defined in 'innate_skill_builder'.
-                        If you do not use any of these features, please ignore this message.
+                        Although some backward compatibility has been added temporarily, it will be removed in version 3.0.
+                        
+                        Please consider migrating!
                         
                         You can review the changes here: https://github.com/Sleys-g/ExtendedDatapacks/wiki/Recent-Changes
                         """

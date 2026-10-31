@@ -39,6 +39,13 @@ public class AnimationRegistryOperations {
                 .forEach((modId, virtualizationList) ->
                 virtualizationList.forEach(AnimationRegistryOperations::virtualizationDef)
        );
+
+        /// !!!
+        RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION_LEGACY
+                .getDefinitionData()
+                .forEach((modId, virtualizationList) ->
+                        virtualizationList.forEach(AnimationRegistryOperations::virtualizationDef)
+                );
     }
 
     public static void onModifierAnimationsClient(FMLLoadCompleteEvent event) {
@@ -59,6 +66,13 @@ public class AnimationRegistryOperations {
 
         /// Config Virtual
         RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION
+                .getDefinitionData()
+                .forEach((modId, virtualizationList) ->
+                        virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)
+                );
+
+        /// !!!
+        RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION_LEGACY
                 .getDefinitionData()
                 .forEach((modId, virtualizationList) ->
                         virtualizationList.forEach(AnimationRegistryOperations::configVirtualizationDef)

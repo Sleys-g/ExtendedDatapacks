@@ -43,6 +43,7 @@ public class BootstrapBuilds {
     private static void startAnimationsBuilds() {
         RegistryAnimationsTrackers.ANIMATION_REGISTRY.startToTracking();
         RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION.startToTracking();
+        RegistryAnimationsTrackers.ANIMATION_VIRTUALIZATION_LEGACY.startToTracking();
         RegistryAnimationsTrackers.ANIMATION_CONFIGURATION.startToTracking();
     }
 }
